@@ -24,6 +24,70 @@ Ehhez tartozhatnak forgatókönyvek (\textit{scenario}-k).
 A szemléletesség kedvéért lehet hozzájuk képernyőkép vázlatokat is készíteni, vagy a használati eseteket más módon szemléltetni.
 \end{itemize}
 
+\Section{Hasonló rendszerek, megoldások áttekintése}
+
+Az Amazonnak már működő szállítási rendszere van, mely 30 percen belül eljuttatja a csomagokat drónnal az ügyfelekhez.
+Ezt a rendszert Prime Air-nek hívják \cite{prime-air}.
+Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt.
+Az Amazon felhőszolgáltásai között is található olyan szolgáltatás amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
+Ilyen az IoT Core vagy az IoT Things Graph amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közti kommunikációt.
+A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett Parcelcopter-el szállították a csomagokat.
+Ám ők más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.
+A FlytBase \cite{flyt} vállalat már kínál szoftveres megoldásokat a automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.
+
+\Section{A szállítási probléma absztrakt modellje}
+
+A szállítási modellünk alapvetően úgy nézne ki, hogy a raktár és a kiszállítási hely közti távolság függvényében a csomagokat a raktárból drónok, vagy drónokkal felszerelt teherautók viszik ki.
+A teherautók a kiszállítási hely közelében használnák a drónokat hogy kézbesítsék a drónokat.
+A drónok 3G, 4G vagy 5G hálózaton kommunikálnának az adatközpontokkal.
+Az adott hálózaton elérhető sávszélesség függvényében a drónok változtathatják az elküldött adatok mennyiségét és a küldés ütemezését, gyakoriságát.
+A drónok repülése előre megtervezett, minél hatékonyabb kell hogy legyen de valós időben kell reagálniuk a helyzetekre, problémákra.
+A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben hibamentesen és hatékonyan kell tudnia kezelni anomáliák nélkül. Ehhez nagyon fontos a terhelés megfelelő elosztása.
+
+A drónon csomag szállítási folyamatáról a következőket feltételezzük:
+\begin{itemize}
+    \item Egy drón  véges akkumlátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
+    \item A csomag kézbesítés a csomag átvételére vonatkozó ideje elhanyagolható.
+    \item Minden drón fel van szerelve megfelelő kommunikácós és helymeghatározó eszközökkel, valamint az kommunikál az adatközpontokkal.
+    \item Feltételezzük hogy a drónok el vannak látva szenzorokkal hogy felismerjék az akadályokat és erről értesítsék az adatközpontokat.
+\end{itemize}
+
+\Section{A Go nyelv áttekintése }
+A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.
+A Google-nél olyan problémák adódtak, hogy a konkurrenciát nem tudták megfelelően kezelni a még eredetileg 1 processzoros számítógépekre kifejlesztett nyelvek, mint a Java, C++.
+Persze azóta sokat fejlődött ezen nyelvek konkurrenciakezelése de nem tudnak versenyezni a Go-val ha a gépi és fejlesztői hatékonyságot is figyelembe vesszük.
+Probléma volt az is, hogy ezeknek a nyelveknek nagyon nagy a fordítási idejük. A 2000-es évek végén ez azt jelentette hogy egy Java vagy C++ program a Google-nél 1 hét alatt fordult le,
+csak hogy ki tudják próbálni.
+A nyelvek bonyolultságával is baj volt, ahogy fejlődtek a nyelvek egyre nehezebb volt egy régi programot tovább fejleszteni.
+Hogy ezeket a problémákat orvosolják, a Google a legjobb tervezőket hívta össze, hogy megalkossák a Go nyelvet.
+A tervezők közt volt Ken Thompson, Rob Pike és Robert Griesemer. A végeredmény egy olyan nyelv amely kifejező, tömör, tiszta és hatékony.
+Szintaktikailag a C-hez hasonlít de nagyon könnyen tanulható nyelv.
+A legnagyobb újítás a konkurrencia mechanizmus volt.
+
+A Go konkurrencia mechanizmusa megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
+Gyorsan lefordul gépi kódra de rendelkezik garbage collection-el és runtime reflection is van beépítve.
+Gyors, statikus nyelv de úgy érezzük mintha egy dinamikus futás időben fordított nyelv lenne.
+Tartalmaz race detectort is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
+Mivel nagyon jól kihasználja a gép erőforrásait és a hálózatot manapság a felhőben futó kódok nagyrésze Go.
+Ez lehet valamilyen mikroszerviz, infrastruktúra kezelés vagy konténer virtualizáció, konténer kezelés.
+Például a Docker és Kubernetes Go-ban lett kifejlesztve, a felhőszolgáltatóknál ez a két szoftver a szolgáltatások alapja.
+
+Pár vállalat aki használja:
+\begin{itemize}
+    \item Google %todo: mire hasznája
+    \item Uber %todo: mire hasznája
+    \item Netflix %todo: mire hasznája
+    \item Youtube %todo: mire hasznája
+    \item Dropbox %todo: mire hasznája
+    \item BBC %todo: mire hasznája
+\end{itemize}
+
+Az előnyökhöz persze hátrányok is tartoznak, az egyszerűség mellé nem férnek el a generikus függvények.
+Maga a nyelv nem tartalmaz osztályokat, illetve nincs öröklődés.
+Viszont az objektum orientált paradigmákat használja és így is kell benne programozni.
+Tartalmaz interfészeket, a típusokhoz így a structhoz is tudunk hozzárendelni úgynevezett receiver függvényeket, amelyeket más nyelvekben metódusoknak nevezünk, mert a típus egy példányára tudjuk meghívni.
+
+
 \Section{Amit csak említés szintjén érdemes szerepeltetni}
 
 Az olvasóról annyit feltételezhetünk, hogy programozásban valamilyen szinten járatos, és a matematikai alapfogalmakkal sem ebben a dolgozatban kell megismertetni.
