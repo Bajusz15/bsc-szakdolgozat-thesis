@@ -19,6 +19,7 @@ services:
       - PGPORT=5432
       - PGDATABASE=
       - PGPASSWORD=
+#      todo: itt majd lesz több adatbázis is, mert ugye össze kell hasonlítani
   client:
     build:
       dockerfile: Dockerfile
