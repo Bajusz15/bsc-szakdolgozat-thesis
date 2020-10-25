@@ -1,0 +1,40 @@
+version: '3'
+services:
+  redis:
+    image: 'redis:latest'
+  server:
+    build:
+      dockerfile: Dockerfile
+      context: ./server
+    depends_on:
+      - redis
+    ports:
+    - '5000:5000'
+    links:
+      - client
+      - redis
+    environment:
+      - PGUSER=postgres
+      - PGHOST=
+      - PGPORT=5432
+      - PGDATABASE=
+      - PGPASSWORD=
+  client:
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    depends_on:
+      - redis
+      - server
+    links:
+      - server
+      - redis
+    ports:
+    - '8080'
+  simulation:
+    build:
+      dockerfile: Dockerfile
+      context: ./simulation
+    depends_on:
+      - client
+      - server
