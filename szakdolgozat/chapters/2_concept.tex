@@ -1,37 +1,18 @@
 \Chapter{Koncepció}
 
-\Section{A fejezet célja}
-
-Ez a fejezet még nem a saját eredményekkel foglalkozik, hanem bemutatja, mi a problémakör, milyen módszerekkel, milyeneredményeket sikerült elérni eddig másoknak.
-
-A hivatkozások jelentős része ehhez a fejezethez szokott kötődni.
-(Egy hivatkozás például így néz ki \cite{coombs1987markup}.)
-Itt lehet bemutatni a hasonló alkalmazásokat.
-
-\Section{Tartalom és felépítés}
-
-A fejezet tartalma témától függően változhat. Az alábbiakat attól függően különböző arányban tartalmazhatják.
-\begin{itemize}
-\item Irodalomkutatás. Amennyiben a dolgozat egy módszer kidolgozására, kifejlesztésére irányul, akkor itt lehet részletesen végignézni (módszertani vagy időrendi bontásban), hogy az eddigiekben milyen eredmények születtek a témakörben.
-\item Technológia. Mivel jellemzően kutatásról vagy szoftverfejlesztésről van szó, ezért annak a jellemző elemeit, technikai részleteit itt kell bemutatni.
-Ez tehát egy módszeres bevezetés ahhoz, hogy ha valaki nem jártas a témakörben, akkor tudja, hogy a dolgozat milyen aktuálisan elérhető eredményeket, eszközöket használt fel.
-\item Piackutatás. Bizonyos témáknál új termék vagy szolgáltatás kifejlesztése a cél.
-Ekkor érdemes annak alaposan utánanézni, hogy aktuálisan milyen eszközök érhetők el a piacon.
-Ez szoftverek esetében a hasonló alkalmazások bemutatását, táblázatos formában történő összehasonlítását jelentheti.
-Szerepelhetnek képek és észrevételek a viszonyításként bemutatott alkalmazásokhoz.
-\item Követelmény specifikáció. Külön szakaszban érdemes részletesen kitérni az elkészítendő alkalmazással kapcsolatos követelményekre.
-Ehhez tartozhatnak forgatókönyvek (\textit{scenario}-k).
-A szemléletesség kedvéért lehet hozzájuk képernyőkép vázlatokat is készíteni, vagy a használati eseteket más módon szemléltetni.
-\end{itemize}
-
 \Section{Hasonló rendszerek, megoldások áttekintése}
 
 Az Amazonnak már működő szállítási rendszere van, mely 30 percen belül eljuttatja a csomagokat drónnal az ügyfelekhez.
+% TODO: Milyen távolságon belül?
+% TODO: Milyen jellegű, méretű csomagokat?
+% TODO: Lehet tudni, hogy milyen jogi korlátozások akadályozzák a bevezetését?
 Ezt a rendszert Prime Air-nek hívják \cite{prime-air}.
+% TODO: Érdemes lehet képet, vagy akár csak valamilyen logót, brossúra félét beilleszteni, hogy szinesebb legyen.
 Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt.
 Az Amazon felhőszolgáltásai között is található olyan szolgáltatás amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
 Ilyen az IoT Core vagy az IoT Things Graph amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közti kommunikációt.
 A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett Parcelcopter-el szállították a csomagokat.
+% TODO: A Parcelcopter-ről érdemes betenni képet!
 Ám ők más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.
 A FlytBase \cite{flyt} vállalat már kínál szoftveres megoldásokat a automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.
 
@@ -52,7 +33,12 @@ A drónon csomag szállítási folyamatáról a következőket feltételezzük:
     \item Feltételezzük hogy a drónok el vannak látva szenzorokkal hogy felismerjék az akadályokat és erről értesítsék az adatközpontokat.
 \end{itemize}
 
+% TODO: Ezek így szövegesen leírva stimmelnek, de érdemes lenne jelöléseket is rakni hozzá, hogy fel lehessen majd írni az optimalizálási feladatot belőle.
+
+% TODO: Készíteni kellene egy sematikus ábrát, amin egy szállítási állapot, gráfos formában megadott probléma látható.
+
 \Section{A Go nyelv áttekintése }
+
 A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.
 A Google-nél olyan problémák adódtak, hogy a konkurrenciát nem tudták megfelelően kezelni a még eredetileg 1 processzoros számítógépekre kifejlesztett nyelvek, mint a Java, C++.
 Persze azóta sokat fejlődött ezen nyelvek konkurrenciakezelése de nem tudnak versenyezni a Go-val ha a gépi és fejlesztői hatékonyságot is figyelembe vesszük.
@@ -64,10 +50,12 @@ A tervezők közt volt Ken Thompson, Rob Pike és Robert Griesemer. A végeredm�
 Szintaktikailag a C-hez hasonlít de nagyon könnyen tanulható nyelv.
 A legnagyobb újítás a konkurrencia mechanizmus volt.
 
+% TODO: Ide kellene hivatkozás.
+
 A Go konkurrencia mechanizmusa megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
 Gyorsan lefordul gépi kódra de rendelkezik garbage collection-el és runtime reflection is van beépítve.
 Gyors, statikus nyelv de úgy érezzük mintha egy dinamikus futás időben fordított nyelv lenne.
-Tartalmaz race detectort is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
+Tartalmaz \textit{race detector}-t is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
 Mivel nagyon jól kihasználja a gép erőforrásait és a hálózatot manapság a felhőben futó kódok nagyrésze Go.
 Ez lehet valamilyen mikroszerviz, infrastruktúra kezelés vagy konténer virtualizáció, konténer kezelés.
 Például a Docker és Kubernetes Go-ban lett kifejlesztve, a felhőszolgáltatóknál ez a két szoftver a szolgáltatások alapja.
@@ -87,8 +75,4 @@ Maga a nyelv nem tartalmaz osztályokat, illetve nincs öröklődés.
 Viszont az objektum orientált paradigmákat használja és így is kell benne programozni.
 Tartalmaz interfészeket, a típusokhoz így a structhoz is tudunk hozzárendelni úgynevezett receiver függvényeket, amelyeket más nyelvekben metódusoknak nevezünk, mert a típus egy példányára tudjuk meghívni.
 
-
-\Section{Amit csak említés szintjén érdemes szerepeltetni}
-
-Az olvasóról annyit feltételezhetünk, hogy programozásban valamilyen szinten járatos, és a matematikai alapfogalmakkal sem ebben a dolgozatban kell megismertetni.
-A speciális eszközök, programozási nyelvek, matematikai módszerekk és jelölések persze jó, hogy ha említésre kerülnek, de nem kell nagyon belemenni a közismertnek tekinthető dolgokba.
+% TODO: Külön szakaszban érdemes lenne kifejteni, hogy a konkurrencia kezelése (az aktor modell) pontosan mit takar, és hogy valósul meg a nyelvben.
