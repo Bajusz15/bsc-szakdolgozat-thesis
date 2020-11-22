@@ -46,11 +46,19 @@ A drónokból a szállítás során keletkező nagymennyiségű adatot az adatk�
 
 A drónon csomag szállítási folyamatáról a következőket feltételezzük:
 \begin{itemize}
-    \item Egy drón  véges akkumlátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
+    \item Egy drón véges akkumlátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
     \item A csomag kézbesítés a csomag átvételére vonatkozó ideje elhanyagolható.
     \item Minden drón fel van szerelve megfelelő kommunikácós és helymeghatározó eszközökkel, valamint az kommunikál az adatközpontokkal.
     \item Feltételezzük hogy a drónok el vannak látva szenzorokkal hogy felismerjék az akadályokat és erről értesítsék az adatközpontokat.
 \end{itemize}
+A mi esetünkben csak akkumlátorral üzemelő drónok lesznek. Minden drón küld telemetria adatokat,
+ebbe benne lesz az akkumlátor töltöttség százalékban, valamint az akkumlátor hőmérséklete is.
+A drónok a telemetria adatok részeként küldenek helymeghatérozásra alkalmas
+földrajzi szélesség, hosszúság koordinátákat és magasságot.
+Továbbá kapunk még információkat a drón sebességéről,
+gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről,
+mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
+
 
 \Section{A Go nyelv áttekintése }
 A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.
@@ -60,17 +68,66 @@ Probléma volt az is, hogy ezeknek a nyelveknek nagyon nagy a fordítási idejü
 csak hogy ki tudják próbálni.
 A nyelvek bonyolultságával is baj volt, ahogy fejlődtek a nyelvek egyre nehezebb volt egy régi programot tovább fejleszteni.
 Hogy ezeket a problémákat orvosolják, a Google a legjobb tervezőket hívta össze, hogy megalkossák a Go nyelvet.
-A tervezők közt volt Ken Thompson, Rob Pike és Robert Griesemer. A végeredmény egy olyan nyelv amely kifejező, tömör, tiszta és hatékony.
+A fejlesztést olyan szakemberek vezették, akik korábban a Unix operációs rendszer, a Java HotSpot JVM vagy az UTF-8 karakterkódolás fejlesztésében is kulcsszerepet játszottak.
+Például Ken Thompson, Rob Pike és Robert Griesemer.
+A cél az volt, hogy régebbi általános célú nyelvek hiányosságait kiküszöböljék, hiszen a megváltozott üzleti és technológiai körülmények között ezek a nyelvek nem bizonyultak elég hatékonynak.
+A felhőben való futtatásra olyan alkalmazások készítésére volt igény, amelyek nagy hatékonysággal futnak és kiválóan skálázódnak.
+A végeredmény egy olyan nyelv amely általános célú, könnyen tanulható, kifejező, tömör, letisztult és hatékony.
+éppen ezért kiválóan alkalmazható ott, ahol a kódbázishoz nagyszámú, gyakran cserélődő, változó összetételű programozói gárda fér hozzá,
+időben és földrajzi elhelyezkedésben is megosztva.
 Szintaktikailag a C-hez hasonlít de nagyon könnyen tanulható nyelv.
-A legnagyobb újítás a konkurrencia mechanizmus volt.
+A legnagyobb újítás a konkurrencia mechanizmus és hibakezelés volt.
 
-A Go konkurrencia mechanizmusa megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
+A Go konkurrencia mechanizmusa remekül képes kihasználni a többmagos processzorok
+és konkurens futtatás adta számítási kapacitást.
+Megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
 Gyorsan lefordul gépi kódra de rendelkezik garbage collection-el és runtime reflection is van beépítve.
 Gyors, statikus nyelv de úgy érezzük mintha egy dinamikus futás időben fordított nyelv lenne.
 Tartalmaz race detectort is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
 Mivel nagyon jól kihasználja a gép erőforrásait és a hálózatot manapság a felhőben futó kódok nagyrésze Go.
-Ez lehet valamilyen mikroszerviz, infrastruktúra kezelés vagy konténer virtualizáció, konténer kezelés.
-Például a Docker és Kubernetes Go-ban lett kifejlesztve, a felhőszolgáltatóknál ez a két szoftver a szolgáltatások alapja.
+Beszédes, hogy a Linux Foundation által létrehozott Cloud Native Computing Foundation (CNCF) keretein
+belül támogatott projektek nagy része Go-ban íródott, többek között a Kubernetes, a Prometheus, az Istio, de ebben írták a Dockert is.
+
+A Go konkurrencia mechanizmusa:
+A konkurrencia a nyelv alapjának része. A két legfontosab dolog ebből a szempontból a gorutinok (`goroutine`) és csatornák (`channel`).
+A gorutinok ugyanabban a címtérben futnak, ezért a megosztott memóriához való hozzáférést szinkronizálni kell.
+
+A csatornák a típusos vezetékek amelyeken adatokat küldhetünk és fogadhatunk a csatorna operátorral, <-.
+Az adatok a nyíl irányába folynak.
+\begin{python}
+    ch <- v    // Snd v to channel ch.
+    v := <-ch  // Receive from ch, and
+    // assign value to v.
+\end{python}
+Alapértelmezett beaállítás szerint a csatornák blokkolnak amíg az egyik oldal küld vagy fogad.
+Ez lehetővé teszi a szinkrinizációt anélkül hogy zárakat vagy feltétel változókat hoznánk létre.
+
+Bufferelt csatornák
+\begin{python}
+    ch := make(chan int, 100)   
+\end{python}
+
+A Go hibakezelése:
+A hibakezelés nagyban megváltozott azzal hogy a Go-ban nem try és catch blokkba zárjuk a hibára futható programkódot
+hanem van egy beépített hiba típus, ami a függvények visszatérési értéke lehet. Fontos tudni, hogy a Go-ban egy függvény többféle
+visszatérési értékkel rendelkezhet. Amit mi írunk programkódot, szinte minden függvényünk utolsó visszatérési értéke egy hiba típus lesz.
+Csak az olyan atomi műveleteket végző függvényeknél nem szoktunk hiba típust használni ami biztos hogy nem fut hibára normális körülmények között.
+\begin{python}
+func Open(name string) (file *File, err error)
+\end{python}
+A fenti függvény például egy File típus pointerét és egy error típust ad vissza. Ha nem futott hibába a program, az err változó nil értéket kap.
+
+Tehát egy hiba kezelése például így nézhet ki:
+\begin{python}
+file, err := Open(''fajlnev'')
+if err != nil {
+    log.Println(err)
+    return 0, err
+}
+\end{python}
+
+
+
 
 Pár vállalat aki használja:
 \begin{itemize}
