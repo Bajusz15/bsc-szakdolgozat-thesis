@@ -10,6 +10,20 @@ Ebben a fejezetben az implementáció nem kell, hogy túl nagy szerepet kapjon.
 Ez még csak a tervezési fázis.
 (Nyilván ha olyan a téma, hogy magának az implementációnak a módjával foglalkozik, adott formális nyelvet mutat be, úgy a kódpéldákat már innen sem lehet kihagyni.)
 
+\Section{Program struktúra}
+A probléma szimulációja 3 programból áll. Egy program az adatközpont, egy program a drónok szerepét veszi fel, a harmadik program vezéreli a szimulációt,
+tehát igazából csak paraméterek alapján konfigurálja a másik 2 program működését. Az első két programot mikroszervízes struktúrában használható lesz.\\
+Az adatközpontot szimuláló program lesz a legbonyolultabb. Ennek a programnak tudnia kell hibamentesen, adatvesztés nélkül
+feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni kell tudni a drónok indítását.
+A szimulációban több féle protokolt és adattovábbításra képes formátumot hasonlítunk össze, így a programot úgy kell felépíteni,
+hogy paraméterek alapján ki lehessen cserélni ezeket a végpontokat.
+Erre megoldásként a Hexagonal architektúrát és DDD tervezési alapelvet fogom alkalmazni.
+%TODO: Ide ezekről képet beszúrni
+Így a program belülről kifelé rétegesen epül fel, interfaceket alkalmazva, úgy hogy a pontos implemetáció absztraktálva van, az csak az üzleti logikát ismerjük.
+így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.\\
+A drónokat szimuláló program olyan adatokat fog generálni, amelyet egy valós drón generálna és ezeket az adatokat tovább fogja küldeni az adatközpontnak.
+A megfelelő működéshez egy algoritmust kell írni, aminek az outputja nagyon hasonlít eredeti mintákhoz.
+
 \Section{Táblázatok}
 
 Táblázatokhoz a \texttt{table} környezetet ajánlott használni.
