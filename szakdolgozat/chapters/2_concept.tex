@@ -3,15 +3,36 @@
 \Section{Hasonló rendszerek, megoldások áttekintése}
 
 Az Amazonnak már működő szállítási rendszere van, mely drónnal 30 percen belül eljuttatja az 2,3 kg-tól kevesebbet nyomó csomagokat az ügyfelekhez.
-% TODO: Milyen távolságon belül?
-% TODO: Lehet tudni, hogy milyen jogi korlátozások akadályozzák a bevezetését?
-Ezt a rendszert Prime Air-nek hívják \cite{prime-air}.
-% TODO: Érdemes lehet képet, vagy akár csak valamilyen logót, brossúra félét beilleszteni, hogy szinesebb legyen.
-Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt.
+Ezek a drónok csak 24 km-es hatótávval rendelkeznek, így csak akkor biztonságos egy kézbesítés ha a célállomás maximum 12 km-re van.
+A csomag maximum térfogatáról nincsenek pontos adatok.
+Ezt a rendszert Prime Air-nek hívják \cite{prime-air}. Az Amazon Prime Air egy \aref{fig:prime} drónja.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{images/prime.jpg}
+    \caption{Amazon Prime Air drón}
+    \label{fig:prime}
+\end{figure}
+
+Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt. Olyan jogi elvárásoknak kell megfelelni, mint hogy:
+\begin{itemize}
+    \item Muszáj egy drón pilótának ellenőrizni a repülést és szükség esetén kötelező közbeavatkoznia.
+    \item Egy ilyen pilóta csak 1 drónt felügyelhet egyszerre, kivéve ha rendelkezik megfelelő engedéllyel.
+    \item A drónokat nem lehet közvetlen egy személy vagy gépjármű fellett működtetni.
+    \item Problémát jelent továbba hogy nem minden légtér megfelelő a drónokkal való szállításra. A reptér mellett fekvő nagyvárosokban például biztos hogy nem lehet drónokkal szállítani.
+    \item A csomagot szállító drónnak is kell rendelkeznie engedéllyel, hogy alkalmas kereskedelmi szállításra.
+\end{itemize}
+
+Az FAA 2020-ban engedélyezte az Amazonnak a drónokkal való csomagszállítást, de egyelőre csak tesztelik a technológiát pár városban.\\
 Az Amazon felhőszolgáltásai között is található olyan szolgáltatás amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
 Ilyen az IoT Core vagy az IoT Things Graph amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közti kommunikációt. \\
-A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett Parcelcopter-el szállították a csomagokat.
+A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett  Parcelcopter-el szállították a csomagokat.
 % TODO: A Parcelcopter-ről érdemes betenni képet!
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=1.0]{images/parcelcopter.jpeg}
+    \caption{DHL Parcelcopter V4.0}
+    \label{fig:parcelcopter}
+\end{figure}
 Ám ők más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.\\
 A FlytBase \cite{flyt} vállalat már kínál szoftveres megoldásokat a automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.\\
 A jövőben teljesen elképzelhető hogy a csomagok felét drónok szállítják ki. Csak az Amazon naponta átlagosan 7 millió csomagot szállít ki,
@@ -27,7 +48,7 @@ A drónok repülése előre megtervezett, minél hatékonyabb kell hogy legyen d
 A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben hibamentesen
 és hatékonyan kell tudnia kezelni anomáliák nélkül. Ehhez nagyon fontos a terhelés megfelelő elosztása. \\
 
-A drónon csomag szállítási folyamatáról a következőket feltételezzük:
+A drónok csomag szállítási folyamatáról a következőket feltételezzük:
 \begin{itemize}
     \item Egy drón  véges akkumlátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
     \item A csomag kézbesítés a csomag átvételére vonatkozó ideje elhanyagolható.
@@ -96,7 +117,7 @@ előnyben. De fontos hogy az ütemező nem determinisztikus, így nem tudjuk el�
 \end{itemize}
 A \emph{go} kulcsszó használata: \par
 A go kulcsszó létrehoz egy új gorutint, így az ütemezőnek lehetősége van beavatkozni.\\
-Szinkronizálás és vezérlés:
+Szinkronizálás és vezérlés: \par
 Ha egy atomi, mutex, vagy csatorna művelet, függvényhívás miatt egy Gorutin blokkolni fog, az ütemező kontextus cserével egy másik gorutinnak adhat erőforrást. Ha a blokkolt Gorutin újra futtathatóvá válik, sorba állítja az ütemező és végül visszakapja az erőforrást.\\
 
 A gorutinok ugyanabban a címtérben futnak, ezért a megosztott memóriához való hozzáférést szinkronizálni kell.
@@ -138,12 +159,12 @@ Tehát egy hiba kezelése például így nézhet ki:
 
 Pár vállalat aki használja:
 \begin{itemize}
-    \item Google %todo: mire hasznája
-    \item Uber %todo: mire hasznája
-    \item Netflix %todo: mire hasznája
-    \item Youtube %todo: mire hasznája
-    \item Dropbox %todo: mire hasznája
-    \item BBC %todo: mire hasznája
+    \item Google
+    \item Uber
+    \item Netflix
+    \item Youtube
+    \item Dropbox
+    \item BBC
 \end{itemize}
 
 Az előnyökhöz persze hátrányok is tartoznak, az egyszerűség mellé nem férnek el a generikus függvények.
