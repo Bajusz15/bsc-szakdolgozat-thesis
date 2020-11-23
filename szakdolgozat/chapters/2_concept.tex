@@ -26,25 +26,31 @@ A szemléletesség kedvéért lehet hozzájuk képernyőkép vázlatokat is kés
 
 \Section{Hasonló rendszerek, megoldások áttekintése}
 
-Az Amazonnak már működő szállítási rendszere van, mely 30 percen belül eljuttatja a csomagokat drónnal az ügyfelekhez.
+Az Amazonnak már működő szállítási rendszere van, mely drónnal 30 percen belül eljuttatja az 2,3 kg-tól kevesebbet nyomó csomagokat az ügyfelekhez.
 Ezt a rendszert Prime Air-nek hívják \cite{prime-air}.
 Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt.
 Az Amazon felhőszolgáltásai között is található olyan szolgáltatás amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
 Ilyen az IoT Core vagy az IoT Things Graph amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közti kommunikációt.
+
 A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett Parcelcopter-el szállították a csomagokat.
 Ám ők más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.
+
 A FlytBase \cite{flyt} vállalat már kínál szoftveres megoldásokat a automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.
+
+A jövőben teljesen elképzelhető hogy a csomagok felét drónok szállítják ki. Csak az Amazon naponta átlagosan 7 millió csomagot szállít ki,
+és bevallásuk szerint a csomagok 86\%-a drónnal szállítható.
 
 \Section{A szállítási probléma absztrakt modellje}
 
 A szállítási modellünk alapvetően úgy nézne ki, hogy a raktár és a kiszállítási hely közti távolság függvényében a csomagokat a raktárból drónok, vagy drónokkal felszerelt teherautók viszik ki.
-A teherautók a kiszállítási hely közelében használnák a drónokat hogy kézbesítsék a drónokat.
-A drónok 3G, 4G vagy 5G hálózaton kommunikálnának az adatközpontokkal.
-Az adott hálózaton elérhető sávszélesség függvényében a drónok változtathatják az elküldött adatok mennyiségét és a küldés ütemezését, gyakoriságát.
-A drónok repülése előre megtervezett, minél hatékonyabb kell hogy legyen de valós időben kell reagálniuk a helyzetekre, problémákra.
-A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben hibamentesen és hatékonyan kell tudnia kezelni anomáliák nélkül. Ehhez nagyon fontos a terhelés megfelelő elosztása.
+A teherautók a kiszállítási hely közelében használnák a drónokat hogy kézbesítsék a drónokat.\\
+A drónok 3G, 4G vagy 5G hálózaton kommunikálnának az adatközpontokkal.\\
+Az adott hálózaton elérhető sávszélesség függvényében a drónok változtathatják az elküldött adatok mennyiségét és a küldés ütemezését, gyakoriságát.\\
+A drónok repülése előre megtervezett, minél hatékonyabb kell hogy legyen de valós időben kell reagálniuk a helyzetekre, problémákra.\\
+A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben hibamentesen
+és hatékonyan kell tudnia kezelni anomáliák nélkül. Ehhez nagyon fontos a terhelés megfelelő elosztása. \\
 
-A drónon csomag szállítási folyamatáról a következőket feltételezzük:
+A drónok csomag szállítási folyamatáról a következőket feltételezzük:
 \begin{itemize}
     \item Egy drón véges akkumlátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
     \item A csomag kézbesítés a csomag átvételére vonatkozó ideje elhanyagolható.
@@ -61,23 +67,28 @@ mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idej
 
 
 \Section{A Go nyelv áttekintése }
-A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.
-A Google-nél olyan problémák adódtak, hogy a konkurrenciát nem tudták megfelelően kezelni a még eredetileg 1 processzoros számítógépekre kifejlesztett nyelvek, mint a Java, C++.
-Persze azóta sokat fejlődött ezen nyelvek konkurrenciakezelése de nem tudnak versenyezni a Go-val ha a gépi és fejlesztői hatékonyságot is figyelembe vesszük.
-Probléma volt az is, hogy ezeknek a nyelveknek nagyon nagy a fordítási idejük. A 2000-es évek végén ez azt jelentette hogy egy Java vagy C++ program a Google-nél 1 hét alatt fordult le,
-csak hogy ki tudják próbálni.
-A nyelvek bonyolultságával is baj volt, ahogy fejlődtek a nyelvek egyre nehezebb volt egy régi programot tovább fejleszteni.
+A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.\\
+A Google-nél olyan problémák adódtak, hogy a konkurrenciát nem tudták megfelelően kezelni a még eredetileg
+1 processzoros számítógépekre kifejlesztett nyelvek, mint a Java, C++.
+Persze azóta sokat fejlődött ezen nyelvek konkurrenciakezelése de nem tudnak versenyezni a Go-val
+ha a gépi és fejlesztői hatékonyságot is figyelembe vesszük.
+Probléma volt az is, hogy ezeknek a nyelveknek nagyon nagy a fordítási idejük. A 2000-es évek végén ez azt jelentette
+hogy egy Java vagy C++ program a Google-nél 1 hét alatt fordult le, csak hogy ki tudják próbálni.
+A nyelvek bonyolultságával is baj volt, ahogy fejlődtek a nyelvek egyre nehezebb volt egy régi programot tovább fejleszteni,
+illetve új programozóknak megtanulni a nyelvet.\\
 Hogy ezeket a problémákat orvosolják, a Google a legjobb tervezőket hívta össze, hogy megalkossák a Go nyelvet.
-A fejlesztést olyan szakemberek vezették, akik korábban a Unix operációs rendszer, a Java HotSpot JVM vagy az UTF-8 karakterkódolás fejlesztésében is kulcsszerepet játszottak.
-Például Ken Thompson, Rob Pike és Robert Griesemer.
-A cél az volt, hogy régebbi általános célú nyelvek hiányosságait kiküszöböljék, hiszen a megváltozott üzleti és technológiai körülmények között ezek a nyelvek nem bizonyultak elég hatékonynak.
+A fejlesztést olyan szakemberek vezették, akik korábban a Unix operációs rendszer, a Java HotSpot JVM
+vagy az UTF-8 karakterkódolás fejlesztésében is kulcsszerepet játszottak.
+Például Ken Thompson, Rob Pike és Robert Griesemer.\\
+A cél az volt, hogy régebbi általános célú nyelvek hiányosságait kiküszöböljék, és csökkentsék a bonyolultságot, hiszen a megváltozott üzleti és technológiai körülmények
+között ezek a nyelvek nem bizonyultak elég hatékonynak.
+Nem várhatták el hogy egy friss diplomás hatékonyan kezeljen egy olyan ''felpuffadt'' nyelvet mint a Java.\\
 A felhőben való futtatásra olyan alkalmazások készítésére volt igény, amelyek nagy hatékonysággal futnak és kiválóan skálázódnak.
 A végeredmény egy olyan nyelv amely általános célú, könnyen tanulható, kifejező, tömör, letisztult és hatékony.
-éppen ezért kiválóan alkalmazható ott, ahol a kódbázishoz nagyszámú, gyakran cserélődő, változó összetételű programozói gárda fér hozzá,
-időben és földrajzi elhelyezkedésben is megosztva.
+Éppen ezért kiválóan alkalmazható ott, ahol a kódbázishoz nagyszámú, gyakran cserélődő, változó összetételű programozói gárda fér hozzá,
+akár időben és földrajzi elhelyezkedésben is megosztva.\\
 Szintaktikailag a C-hez hasonlít de nagyon könnyen tanulható nyelv.
-A legnagyobb újítás a konkurrencia mechanizmus és hibakezelés volt.
-
+A legnagyobb újítás a konkurrencia mechanizmus (főleg a saját ütemező) és hibakezelés volt.
 A Go konkurrencia mechanizmusa remekül képes kihasználni a többmagos processzorok
 és konkurens futtatás adta számítási kapacitást.
 Megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
@@ -86,12 +97,28 @@ Gyors, statikus nyelv de úgy érezzük mintha egy dinamikus futás időben ford
 Tartalmaz race detectort is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
 Mivel nagyon jól kihasználja a gép erőforrásait és a hálózatot manapság a felhőben futó kódok nagyrésze Go.
 Beszédes, hogy a Linux Foundation által létrehozott Cloud Native Computing Foundation (CNCF) keretein
-belül támogatott projektek nagy része Go-ban íródott, többek között a Kubernetes, a Prometheus, az Istio, de ebben írták a Dockert is.
+belül támogatott projektek nagy része Go-ban íródott, többek között a Kubernetes, a Prometheus, az Istio, de ebben írták a Dockert is.\\
 
-A Go konkurrencia mechanizmusa:
-A konkurrencia a nyelv alapjának része. A két legfontosab dolog ebből a szempontból a gorutinok (`goroutine`) és csatornák (`channel`).
+\paragraph{A Go konkurrencia mechanizmusa} \mbox{} \\
+A konkurrencia a nyelv alapjának része. A 3 legfontosab dolog ebből a szempontból az hogy a Go-nak saját ütemezője van,
+a gorutinok (''goroutine'') és csatornák (''channel'').\\
+A saját ütemező (scheduler) sokkal hatékonyabb mintha csak létrehoznánk egy processzt és hagynánk hogy az OS ütemezze,
+mivel így az ütemező meg tudja határozni hogy az adott gorution milyen állapotban van (várakozik, futtatható, vagy fut) és hatékonyabban tudja
+kiosztani az erőforrásokat. Értelemszerűen például egy blokkoló, épp I/O műveletet végző gorutint nem fog futtatni hanem helyette más gorutinokat részesít
+előnyben. De fontos hogy az ütemező nem determinisztikus, így nem tudjuk előre megmondani melyik gorutin fog következni.\\
+4 féle esemény fordulhat elő a Go programokban ami miatt az ütemező döntéseket hozhat:
+\begin{itemize}
+    \item A \emph{go} kulcsszó használata
+    \item Garbage collection
+    \item Rendszer hívások
+    \item Szinkronizálás és orchesztráció, vezérelés
+\end{itemize}
+A \emph{go} kulcsszó használata: \par
+A go kulcsszó létrehoz egy új gorutint, így az ütemezőnek lehetősége van beavatkozni.\\
+Szinkronizálás és vezérlés:
+Ha egy atomi, mutex, vagy csatorna operáció hívás miatt Gorutin blokkolni fog, az ütemező kontextus cserével egy új gorutinnak adhat erőforrást. Ha a régi Gorutin újra futtathatóvá válik, sorba állítja az ütemező és végül visszakapja az erőforrást.\\
+
 A gorutinok ugyanabban a címtérben futnak, ezért a megosztott memóriához való hozzáférést szinkronizálni kell.
-
 A csatornák a típusos vezetékek amelyeken adatokat küldhetünk és fogadhatunk a csatorna operátorral, <-.
 Az adatok a nyíl irányába folynak.
 \begin{python}
@@ -107,7 +134,7 @@ Bufferelt csatornák
     ch := make(chan int, 100)   
 \end{python}
 
-A Go hibakezelése:
+\paragraph{A Go hibakezelése} \mbox{} \\
 A hibakezelés nagyban megváltozott azzal hogy a Go-ban nem try és catch blokkba zárjuk a hibára futható programkódot
 hanem van egy beépített hiba típus, ami a függvények visszatérési értéke lehet. Fontos tudni, hogy a Go-ban egy függvény többféle
 visszatérési értékkel rendelkezhet. Amit mi írunk programkódot, szinte minden függvényünk utolsó visszatérési értéke egy hiba típus lesz.
@@ -115,7 +142,7 @@ Csak az olyan atomi műveleteket végző függvényeknél nem szoktunk hiba típ
 \begin{python}
 func Open(name string) (file *File, err error)
 \end{python}
-A fenti függvény például egy File típus pointerét és egy error típust ad vissza. Ha nem futott hibába a program, az err változó nil értéket kap.
+A fenti függvény például egy Fájl típus pointerét és egy hiba típust ad vissza. Ha nem futott hibába a program, az err változó nil értéket kap.
 
 Tehát egy hiba kezelése például így nézhet ki:
 \begin{python}
@@ -129,7 +156,7 @@ if err != nil {
 
 
 
-Pár vállalat aki használja:
+Pár vállalat aki használja a Go-t:
 \begin{itemize}
     \item Google %todo: mire hasznája
     \item Uber %todo: mire hasznája
