@@ -1,42 +1,19 @@
 \Chapter{Koncepció}
 
-\Section{A fejezet célja}
-
-Ez a fejezet még nem a saját eredményekkel foglalkozik, hanem bemutatja, mi a problémakör, milyen módszerekkel, milyeneredményeket sikerült elérni eddig másoknak.
-
-A hivatkozások jelentős része ehhez a fejezethez szokott kötődni.
-(Egy hivatkozás például így néz ki \cite{coombs1987markup}.)
-Itt lehet bemutatni a hasonló alkalmazásokat.
-
-\Section{Tartalom és felépítés}
-
-A fejezet tartalma témától függően változhat. Az alábbiakat attól függően különböző arányban tartalmazhatják.
-\begin{itemize}
-\item Irodalomkutatás. Amennyiben a dolgozat egy módszer kidolgozására, kifejlesztésére irányul, akkor itt lehet részletesen végignézni (módszertani vagy időrendi bontásban), hogy az eddigiekben milyen eredmények születtek a témakörben.
-\item Technológia. Mivel jellemzően kutatásról vagy szoftverfejlesztésről van szó, ezért annak a jellemző elemeit, technikai részleteit itt kell bemutatni.
-Ez tehát egy módszeres bevezetés ahhoz, hogy ha valaki nem jártas a témakörben, akkor tudja, hogy a dolgozat milyen aktuálisan elérhető eredményeket, eszközöket használt fel.
-\item Piackutatás. Bizonyos témáknál új termék vagy szolgáltatás kifejlesztése a cél.
-Ekkor érdemes annak alaposan utánanézni, hogy aktuálisan milyen eszközök érhetők el a piacon.
-Ez szoftverek esetében a hasonló alkalmazások bemutatását, táblázatos formában történő összehasonlítását jelentheti.
-Szerepelhetnek képek és észrevételek a viszonyításként bemutatott alkalmazásokhoz.
-\item Követelmény specifikáció. Külön szakaszban érdemes részletesen kitérni az elkészítendő alkalmazással kapcsolatos követelményekre.
-Ehhez tartozhatnak forgatókönyvek (\textit{scenario}-k).
-A szemléletesség kedvéért lehet hozzájuk képernyőkép vázlatokat is készíteni, vagy a használati eseteket más módon szemléltetni.
-\end{itemize}
-
 \Section{Hasonló rendszerek, megoldások áttekintése}
 
 Az Amazonnak már működő szállítási rendszere van, mely drónnal 30 percen belül eljuttatja az 2,3 kg-tól kevesebbet nyomó csomagokat az ügyfelekhez.
+% TODO: Milyen távolságon belül?
+% TODO: Lehet tudni, hogy milyen jogi korlátozások akadályozzák a bevezetését?
 Ezt a rendszert Prime Air-nek hívják \cite{prime-air}.
+% TODO: Érdemes lehet képet, vagy akár csak valamilyen logót, brossúra félét beilleszteni, hogy szinesebb legyen.
 Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt.
 Az Amazon felhőszolgáltásai között is található olyan szolgáltatás amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
-Ilyen az IoT Core vagy az IoT Things Graph amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közti kommunikációt.
-
+Ilyen az IoT Core vagy az IoT Things Graph amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közti kommunikációt. \\
 A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett Parcelcopter-el szállították a csomagokat.
-Ám ők más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.
-
-A FlytBase \cite{flyt} vállalat már kínál szoftveres megoldásokat a automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.
-
+% TODO: A Parcelcopter-ről érdemes betenni képet!
+Ám ők más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.\\
+A FlytBase \cite{flyt} vállalat már kínál szoftveres megoldásokat a automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.\\
 A jövőben teljesen elképzelhető hogy a csomagok felét drónok szállítják ki. Csak az Amazon naponta átlagosan 7 millió csomagot szállít ki,
 és bevallásuk szerint a csomagok 86\%-a drónnal szállítható.
 
@@ -50,9 +27,9 @@ A drónok repülése előre megtervezett, minél hatékonyabb kell hogy legyen d
 A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben hibamentesen
 és hatékonyan kell tudnia kezelni anomáliák nélkül. Ehhez nagyon fontos a terhelés megfelelő elosztása. \\
 
-A drónok csomag szállítási folyamatáról a következőket feltételezzük:
+A drónon csomag szállítási folyamatáról a következőket feltételezzük:
 \begin{itemize}
-    \item Egy drón véges akkumlátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
+    \item Egy drón  véges akkumlátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
     \item A csomag kézbesítés a csomag átvételére vonatkozó ideje elhanyagolható.
     \item Minden drón fel van szerelve megfelelő kommunikácós és helymeghatározó eszközökkel, valamint az kommunikál az adatközpontokkal.
     \item Feltételezzük hogy a drónok el vannak látva szenzorokkal hogy felismerjék az akadályokat és erről értesítsék az adatközpontokat.
@@ -65,8 +42,12 @@ Továbbá kapunk még információkat a drón sebességéről,
 gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről,
 mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
 
+% TODO: Ezek így szövegesen leírva stimmelnek, de érdemes lenne jelöléseket is rakni hozzá, hogy fel lehessen majd írni az optimalizálási feladatot belőle.
+
+% TODO: Készíteni kellene egy sematikus ábrát, amin egy szállítási állapot, gráfos formában megadott probléma látható.
 
 \Section{A Go nyelv áttekintése }
+
 A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.\\
 A Google-nél olyan problémák adódtak, hogy a konkurrenciát nem tudták megfelelően kezelni a még eredetileg
 1 processzoros számítógépekre kifejlesztett nyelvek, mint a Java, C++.
@@ -89,15 +70,15 @@ A végeredmény egy olyan nyelv amely általános célú, könnyen tanulható, k
 akár időben és földrajzi elhelyezkedésben is megosztva.\\
 Szintaktikailag a C-hez hasonlít de nagyon könnyen tanulható nyelv.
 A legnagyobb újítás a konkurrencia mechanizmus (főleg a saját ütemező) és hibakezelés volt.
-A Go konkurrencia mechanizmusa remekül képes kihasználni a többmagos processzorok
-és konkurens futtatás adta számítási kapacitást.
-Megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
+A Go konkurrencia mechanizmusa megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
 Gyorsan lefordul gépi kódra de rendelkezik garbage collection-el és runtime reflection is van beépítve.
 Gyors, statikus nyelv de úgy érezzük mintha egy dinamikus futás időben fordított nyelv lenne.
-Tartalmaz race detectort is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
+Tartalmaz \textit{race detector}-t is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
 Mivel nagyon jól kihasználja a gép erőforrásait és a hálózatot manapság a felhőben futó kódok nagyrésze Go.
 Beszédes, hogy a Linux Foundation által létrehozott Cloud Native Computing Foundation (CNCF) keretein
 belül támogatott projektek nagy része Go-ban íródott, többek között a Kubernetes, a Prometheus, az Istio, de ebben írták a Dockert is.\\
+
+% TODO: Ide kellene hivatkozás.
 
 \paragraph{A Go konkurrencia mechanizmusa} \mbox{} \\
 A konkurrencia a nyelv alapjának része. A 3 legfontosab dolog ebből a szempontból az hogy a Go-nak saját ütemezője van,
@@ -116,7 +97,7 @@ előnyben. De fontos hogy az ütemező nem determinisztikus, így nem tudjuk el�
 A \emph{go} kulcsszó használata: \par
 A go kulcsszó létrehoz egy új gorutint, így az ütemezőnek lehetősége van beavatkozni.\\
 Szinkronizálás és vezérlés:
-Ha egy atomi, mutex, vagy csatorna operáció hívás miatt Gorutin blokkolni fog, az ütemező kontextus cserével egy új gorutinnak adhat erőforrást. Ha a régi Gorutin újra futtathatóvá válik, sorba állítja az ütemező és végül visszakapja az erőforrást.\\
+Ha egy atomi, mutex, vagy csatorna művelet, függvényhívás miatt egy Gorutin blokkolni fog, az ütemező kontextus cserével egy másik gorutinnak adhat erőforrást. Ha a blokkolt Gorutin újra futtathatóvá válik, sorba állítja az ütemező és végül visszakapja az erőforrást.\\
 
 A gorutinok ugyanabban a címtérben futnak, ezért a megosztott memóriához való hozzáférést szinkronizálni kell.
 A csatornák a típusos vezetékek amelyeken adatokat küldhetünk és fogadhatunk a csatorna operátorral, <-.
@@ -131,7 +112,7 @@ Ez lehetővé teszi a szinkrinizációt anélkül hogy zárakat vagy feltétel v
 
 Bufferelt csatornák
 \begin{python}
-    ch := make(chan int, 100)   
+    ch := make(chan int, 100)
 \end{python}
 
 \paragraph{A Go hibakezelése} \mbox{} \\
@@ -140,23 +121,22 @@ hanem van egy beépített hiba típus, ami a függvények visszatérési érték
 visszatérési értékkel rendelkezhet. Amit mi írunk programkódot, szinte minden függvényünk utolsó visszatérési értéke egy hiba típus lesz.
 Csak az olyan atomi műveleteket végző függvényeknél nem szoktunk hiba típust használni ami biztos hogy nem fut hibára normális körülmények között.
 \begin{python}
-func Open(name string) (file *File, err error)
+    func Open(name string) (file *File, err error)
 \end{python}
 A fenti függvény például egy Fájl típus pointerét és egy hiba típust ad vissza. Ha nem futott hibába a program, az err változó nil értéket kap.
 
 Tehát egy hiba kezelése például így nézhet ki:
 \begin{python}
-file, err := Open(''fajlnev'')
-if err != nil {
+    file, err := Open(''fajlnev'')
+    if err != nil {
     log.Println(err)
     return 0, err
-}
+    }
 \end{python}
 
 
 
-
-Pár vállalat aki használja a Go-t:
+Pár vállalat aki használja:
 \begin{itemize}
     \item Google %todo: mire hasznája
     \item Uber %todo: mire hasznája
@@ -171,8 +151,4 @@ Maga a nyelv nem tartalmaz osztályokat, illetve nincs öröklődés.
 Viszont az objektum orientált paradigmákat használja és így is kell benne programozni.
 Tartalmaz interfészeket, a típusokhoz így a structhoz is tudunk hozzárendelni úgynevezett receiver függvényeket, amelyeket más nyelvekben metódusoknak nevezünk, mert a típus egy példányára tudjuk meghívni.
 
-
-\Section{Amit csak említés szintjén érdemes szerepeltetni}
-
-Az olvasóról annyit feltételezhetünk, hogy programozásban valamilyen szinten járatos, és a matematikai alapfogalmakkal sem ebben a dolgozatban kell megismertetni.
-A speciális eszközök, programozási nyelvek, matematikai módszerekk és jelölések persze jó, hogy ha említésre kerülnek, de nem kell nagyon belemenni a közismertnek tekinthető dolgokba.
+% TODO: Külön szakaszban érdemes lenne kifejteni, hogy a konkurrencia kezelése (az aktor modell) pontosan mit takar, és hogy valósul meg a nyelvben.
