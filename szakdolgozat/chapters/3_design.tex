@@ -17,10 +17,34 @@ Az adatközpontot szimuláló program lesz a legbonyolultabb. Ennek a programnak
 feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni kell tudni a drónok indítását.
 A szimulációban több féle protokolt és adattovábbításra képes formátumot hasonlítunk össze, így a programot úgy kell felépíteni,
 hogy paraméterek alapján ki lehessen cserélni ezeket a végpontokat.
-Erre megoldásként a Hexagonal architektúrát és DDD tervezési alapelvet fogom alkalmazni.
+Erre megoldásként a Hexagonal architektúrát \aref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
 %TODO: Ide ezekről képet beszúrni
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.07]{images/hexa-inward.png}
+    \caption{Hexagonal architecture inward pointing dependencies}
+    \label{fig:hexagonal-inward}
+\end{figure}
 Így a program belülről kifelé rétegesen epül fel, interfaceket alkalmazva, úgy hogy a pontos implemetáció absztraktálva van, az csak az üzleti logikát ismerjük.
-így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.\\
+Minden réteg csak befelé mutat \aref{fig:hexagonal-inward}, így az üzleti logikánk megmaradhat, miközben az alkalmazás teljes infrastuktúráját kicserélhetnénk.
+így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.
+Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \aref{fig:hexagonal-inward} tökéletesen bemutatja.
+Az alkalmazást fel lehet osztani verérlő és vezérelt részre. Ez nagyon jól igazodik az üzleti logikához, egy inputra szinte mindig valamiféle vezérlést várunk el,
+tehát hogyha az alkalmazásunkat használjuk, vezéreljük akkor az az adatok hatására valamit csináljon. Ezután az alkalmazásunk beszélhet más, külső forrásokkal, amiket az alkalmazás használ, azaz vezéreli őket.
+Ilyen lehet egy adatbázis implementációja, vagy egy üzenet sor, amibe adatokat rakunk be, hogy valami más később kiolvassa.
+Azért jó ez a felépítés, mert így például mindegy hogy a terminálból valamilyen konzolos applikáción keresztül hívjuk meg az alkalmazásunkat,
+vagy egy webes felületről, esetleg mobil applikációból. A vezérelt egységeket is ki lehet cserélni, nem vagyunk röghöz kötve
+mert egyszer így lett megírva az alkalmazésunk, csak a megfelelő réteget kicseréljük, feltéve hogy megírtuk hozzá az implementációnkat és az implementációnk
+az intefészen keresztül teljesít minden feltételt. Így például könnyen átállhatunk r1elációs adatbázisról egy dokumentum alapúra, ha valami miatt úgy kívánjuk.
+A Netflix is ezt az architektúrát használja \cite{netflix}, ugyanis a gyors növekedésük közben több skálázhatósággal összefüggő problémába ütköztek, amit úgy oldottak meg hogy
+ebben az architektúrában szétosztották a feladatokat több, az adott kis feladatra megfelelő adatbázisra, mikroszervízre.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/hexa-actor.png}
+    \caption{Hexagonal architecture driver and driven actors}
+    \label{fig:hexagonal-actor}
+\end{figure}
+\\
 A drónokat szimuláló program olyan adatokat fog generálni, amelyet egy valós drón generálna és ezeket az adatokat tovább fogja küldeni az adatközpontnak.
 A megfelelő működéshez egy algoritmust kell írni, aminek az outputja nagyon hasonlít eredeti mintákhoz.
 %TODO: ide még írni és a program struktúráját jobban megmutatni, a konkrét jegyzék struktúra is akár, hogy mi tartozik infrastruktúrához, mi a program magja stb. Interfacek kapcsolata,
