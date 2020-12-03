@@ -13,5 +13,11 @@ func Handler(d drone.Service, t telemetry.Service) http.Handler {
 		return c.String(http.StatusOK, "Hello, World!")
 
 	})
+	router.GET("/drones", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Itt lesznek a drónok!")
+	})
+	router.GET("/drones", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Itt lesznek a drónok!")
+	})
 	return router
 }

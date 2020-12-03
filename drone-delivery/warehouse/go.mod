@@ -1,4 +1,4 @@
-module github.com/bajusz15/drone-delivery/simulation
+module github.com/bajusz15/drone-delivery/warehousea
 
 go 1.12
 
