@@ -9,6 +9,7 @@ CREATE TABLE drone
 
 CREATE TABLE shipping_address
 (
+    id      SERIAL PRIMARY KEY,
     name    VARCHAR(50) NOT NULL,
     country VARCHAR(10) NOT NULL,
     region  VARCHAR(15) DEFAULT NULL,
@@ -40,8 +41,8 @@ CREATE TABLE telemetry
     speed               INT       DEFAULT 0,
     location            jsonb     DEFAULT '{}'::jsonb,
     altitude            FLOAT     default 1,
-    compass_direction   FLOAT     DEFAULT '{}'::jsonb,
-    acceleration        FLOAT     DEFAULT '{}'::jsonb,
+    compass_direction   FLOAT     DEFAULT 0,
+    acceleration        FLOAT     DEFAULT 0,
     battery_level       INT       DEFAULT NULL,
     battery_temperature INT       DEFAULT NULL,
     motor_temperatures  INTEGER[],

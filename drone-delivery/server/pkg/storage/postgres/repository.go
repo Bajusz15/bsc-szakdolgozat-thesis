@@ -63,11 +63,11 @@ func (s *Storage) GetFreeDrones() ([]models.Drone, error) {
 	if err != nil {
 		return nil, err
 	}
+	//this is needed so there is no dirty read, repeatable read or phantom read
 	_, err = tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
 	if err != nil {
 		return nil, err
 	}
-	//this is needed so there is no dirty read, repeatable read or phantom read
 	err = tx.Get(&drones, "SELECT id FROM drone WHERE state='free' ")
 	if err != nil {
 		tx.Rollback()

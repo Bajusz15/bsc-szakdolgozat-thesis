@@ -1,35 +1,39 @@
 version: '3'
 services:
-  redis:
-    image: 'redis:latest'
+#  redis:
+#    image: 'redis:latest'
+  postgres:
+    build:
+      dockerfile: Dockerfile
+      context: ./databases/postgres
+    ports:
+    - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
   server:
     build:
       dockerfile: Dockerfile.dev
       context: ./server
     depends_on:
-      - redis
+      - postgres
+    links:
+      - postgres
     ports:
     - '5000:5000'
-    links:
-      - client
-      - redis
     environment:
       - PGUSER=postgres
-      - PGHOST=
+      - PGHOST=host.docker.internal
       - PGPORT=5432
-      - PGDATABASE=
-      - PGPASSWORD=
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres
 #      todo: itt majd lesz több adatbázis is, mert ugye össze kell hasonlítani
-  client:
+  warehouse:
     build:
       dockerfile: Dockerfile
-      context: ./client
+      context: ./warehouse
     depends_on:
-      - redis
       - server
-    links:
-      - server
-      - redis
     ports:
     - '8080'
   simulation:
@@ -37,5 +41,5 @@ services:
       dockerfile: Dockerfile
       context: ./simulation
     depends_on:
-      - client
+      - warehouse
       - server
