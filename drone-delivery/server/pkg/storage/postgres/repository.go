@@ -58,8 +58,44 @@ func (s *Storage) InsertTelemetry(id int, t models.Telemetry) error {
 }
 
 func (s *Storage) GetFreeDrones() ([]models.Drone, error) {
+	var drones []models.Drone
+	tx, err := s.db.Beginx()
+	if err != nil {
+		return nil, err
+	}
+	_, err = tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+	if err != nil {
+		return nil, err
+	}
+	//this is needed so there is no dirty read, repeatable read or phantom read
+	err = tx.Get(&drones, "SELECT id FROM drone WHERE state='free' ")
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 	return nil, nil
 }
+
+func (s *Storage) SetDroneState(id int, state string) error {
+	tx, err := s.db.Beginx()
+	if err != nil {
+		return err
+	}
+	//this is needed so there is no dirty read, repeatable read or phantom read
+	_, err = tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	_, err = tx.Exec("UPDATE drone SET state=$1 WHERE id=$2 ", state, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	tx.Commit()
+	return nil
+}
+
 func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
 	return nil, nil
 }
