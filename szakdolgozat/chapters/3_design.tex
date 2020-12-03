@@ -10,14 +10,27 @@ Ebben a fejezetben az implementáció nem kell, hogy túl nagy szerepet kapjon.
 Ez még csak a tervezési fázis.
 (Nyilván ha olyan a téma, hogy magának az implementációnak a módjával foglalkozik, adott formális nyelvet mutat be, úgy a kódpéldákat már innen sem lehet kihagyni.)
 
-\Section{Program struktúra}
+\Section{Követelmények}
 A probléma szimulációja 3 programból áll. Egy program az adatközpont, egy program a drónok szerepét veszi fel, a harmadik program vezéreli a szimulációt,
-tehát igazából csak paraméterek alapján konfigurálja a másik 2 program működését. Az első két programot mikroszervízes struktúrában használható lesz.\\
+tehát igazából csak paraméterek alapján konfigurálja a másik 2 program működését. Az első két program mikroszervízes struktúrában használhatónak kell lennie, hogy a konkurrens működést megfelelően tudjuk tesztelni.\\
 Az adatközpontot szimuláló program lesz a legbonyolultabb. Ennek a programnak tudnia kell hibamentesen, adatvesztés nélkül
-feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni kell tudni a drónok indítását.
+feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni kell tudni a drónok indítását, logisztikai feladatait.
+
 A szimulációban több féle protokolt és adattovábbításra képes formátumot hasonlítunk össze, így a programot úgy kell felépíteni,
-hogy paraméterek alapján ki lehessen cserélni ezeket a végpontokat.
-Erre megoldásként a Hexagonal architektúrát \aref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
+hogy ki lehessen cserélni ezeket a végpontokat anélkül hogy a program üzleti logikájának működését befolyásolnánk. Az adatközpontok és drónok közötti kommunikációt és adatfeldolgozást összehasonlítjuk
+egy HTTP 1.1 -en műkodő JSON adatformátumot használó REST API-n, egy HTTP 2 -n futó gRPC API-n és egy MQTT protokollt használó végponton is.
+
+Az adatok adatbázisba mentése, adatbázisból olvasása közben több probléma merülhet fel, a rendszer konkurrens felépítéséből kiindulva.
+Például amikor az épp szabad drónoknak adunk feladatot, lehet hogy 2 vagy több egyede az adatközpont programunknak kiolvassa azt az értéket hogy
+a drón nem csinál semmit, az állapota szabad, adhat neki feladatot ha van szállítsra váró csomag. De, az üzleti logika futtatása közben az egyik egyed módosíthatta
+az értéket arra hogy már repül, vagy épp csomagot vesz fel. Az ilyen Lost Update problémákkal szemben a program implementációjának ellenállónak kell lennie.
+
+A adatközpont programnak elosztott rendszerként kell működnie, tehát terheléselosztás és megfelelő vezérlés szükséges.
+\Section{Program struktúra}
+\subsection{Architektúra, program felépítés}
+Ahhoz hogy a programot a követelmányben megfogalmazott módon építsük fel, értem ezalatt azt hogy több protokollt és adatbázist hasonlítsunk össze egy olyan
+program architektúrát, felépítést kell választani ami megendegi ezt.
+Erre a problémára megoldásként a Hexagonal architektúrát \aref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
 %TODO: Ide ezekről képet beszúrni
 \begin{figure}[h]
     \centering
@@ -25,7 +38,7 @@ Erre megoldásként a Hexagonal architektúrát \aref{fig:hexagonal-inward} és 
     \caption{Hexagonal architecture inward pointing dependencies}
     \label{fig:hexagonal-inward}
 \end{figure}
-Így a program belülről kifelé rétegesen epül fel, interfaceket alkalmazva, úgy hogy a pontos implemetáció absztraktálva van, az csak az üzleti logikát ismerjük.
+Így a program belülről kifelé rétegesen epül fel, interfaceket alkalmazva, úgy hogy a pontos implemetáció absztraktálva van, az csak az üzleti logikát ismerjük biztosan, minden ráépülő réteg implementációja cserélhető marad.
 Minden réteg csak befelé mutat \aref{fig:hexagonal-inward}, így az üzleti logikánk megmaradhat, miközben az alkalmazás teljes infrastuktúráját kicserélhetnénk.
 így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.
 Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \aref{fig:hexagonal-inward} tökéletesen bemutatja.
@@ -49,6 +62,11 @@ A drónokat szimuláló program olyan adatokat fog generálni, amelyet egy való
 A megfelelő működéshez egy algoritmust kell írni, aminek az outputja nagyon hasonlít eredeti mintákhoz.
 %TODO: ide még írni és a program struktúráját jobban megmutatni, a konkrét jegyzék struktúra is akár, hogy mi tartozik infrastruktúrához, mi a program magja stb. Interfacek kapcsolata,
 %TODO: Új section ami a program folyamatával foglalkozik, nem a struktúrával
+
+%TODO: Még a struktúrához kell a Go-kit, azért lett ez választva mert nem framework, hanem egy library/ecosystem, így több szabadságot kap a program,
+%hogy hogyan is lesz mikroszerviz. Go kit ben van service discovery,  beepitett Observability (Prometheus), többszintes logger, és A hexagonal architektúrát támogatja
+%Pl más hasonló mikroszervizeket kezelő framework (pl. Micro) nem elég rugalmas, sok mindent nem enged meg, egy féleképpen lehet használni.
+
 \Section{Táblázatok}
 
 Táblázatokhoz a \texttt{table} környezetet ajánlott használni.
