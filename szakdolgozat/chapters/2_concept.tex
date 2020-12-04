@@ -42,6 +42,9 @@ A jövőben teljesen elképzelhető hogy a csomagok felét drónok szállítják
 
 A szállítási modellünk alapvetően úgy nézne ki, hogy a raktár és a kiszállítási hely közti távolság függvényében a csomagokat a raktárból drónok, vagy drónokkal felszerelt teherautók viszik ki.
 A teherautók a kiszállítási hely közelében használnák a drónokat hogy kézbesítsék a drónokat.\\
+Feltételezzük, hogy a drón és a csomag ugyanazon a raktárba vagy tehergépkocsiba található,
+de a szimuláció szemszögéből nem fontos hogy raktár vagy tehergépkocsi, lényeg hogy egy helységben található, és a drón automatikusan fel tudja venni az adott csomagot
+valamilyen rendszeren keresztül, kevesebb mint 5 perc alatt.\\
 A drónok 3G, 4G vagy 5G hálózaton kommunikálnának az adatközpontokkal.\\
 Az adott hálózaton elérhető sávszélesség függvényében a drónok változtathatják az elküldött adatok mennyiségét és a küldés ütemezését, gyakoriságát.\\
 A drónok repülése előre megtervezett, minél hatékonyabb kell hogy legyen de valós időben kell reagálniuk a helyzetekre, problémákra.\\
@@ -61,22 +64,65 @@ A drónok a telemetria adatok részeként küldenek helymeghatérozásra alkalma
 földrajzi szélesség, hosszúság koordinátákat és magasságot.
 Továbbá kapunk még információkat a drón sebességéről,
 gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről,
-mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
-
-% TODO: Ezek így szövegesen leírva stimmelnek, de érdemes lenne jelöléseket is rakni hozzá, hogy fel lehessen majd írni az optimalizálási feladatot belőle.
+mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.\\
 Hogy el tudjuk dönteni melyik drón hova tud a leghatékonyabban szállítani, a következő mennyiségeket jelölni kell. Hány km-re van a felszállási ponttól a csomag leadási helye (távolság km-ben),
 mekkora akkumlátor töltöttséggel rendelkezik a drón (töltöttség százalékban), és a csomag súlya.
-Ezekből a jelölésekből, ha tudjuk hány csomag rendelés és hány drón van, már fel tudjuk írni az optimalizálási feladatot.
+Ezekből a jelölésekből, ha tudjuk hány csomag rendelés és hány drón van, már fel tudjuk írni az optimalizálási feladatot \ref{tab:optim}.
+Persze ezeket lehet még bonyolítani, tiltási tényezőket használni, például hogy nem melegedhet túl a motor.
 
-
+\begin{table}[h]
+    \centering
+    \caption{Optimalizálási feladat táblázat.}
+    \label{tab:optim}
+    \begin{tabular}{l|c|c|c|}
+        költségek &  &  & \\
+        \hline
+        távolság (km)  & 2 & 0.5 & 1 \\
+        töltöttség & 75 & 25 & 40 \\
+        súly & 1.2 & 0.5 & 0.9 \\
+        \hline
+    \end{tabular}
+\end{table}
+A szállítási költségeket leíró  mátrix a következő:
 \[
 \begin{bmatrix}
-    0.9 & 1 & 1 \\
-    1 & 1.45 & 0.8\\
-    1.32 & 1 & 0.8
+    2 & 0.5 & 1 \\
+    75 & 25 & 40\\
+    1.2 & 0.5 & 0.9
 \end{bmatrix}
 \]
-\Section{A szállítási probléma egy konkrét számítási példája}
+Az egyszerűség kedvéért tegyük fel, hogy három termelő és három fogyasztó kapcsolatát vizsgáljuk. A termelők készletei
+rendre 20, 15, 10; a fogyasztók igényei pedig 5, 20 és 20. Így a kereslet és kínálat egyensúlyban van.
+Jelölje $x_{ij}$ a $T_{i}$ termelőtől az $F_{j}$ fogyasztóhoz szállítandó árumennyiséget, $i, j = 1, 2, 3.$ A feladat modellje a következő:
+\begin{gather*}
+    2x_{11} +0.5x_{12} +1x_{13} +75x_{21} +25x_{22} +40x_{23} +1.2x_{31} +0.5x_{32} +0.9x_{33} \rightarrow min \\
+    x_{11} +x_{12} +x_{13} =20 \\
+    x_{21} +x_{22} +x_{24} =15 \\
+    x_{31} +_{32} +x_{33} =10 \\
+    x_{11} +x_{21} +x_{31} =5 \\
+    x_{12} +x_{22} +x_{32} =20 \\
+    x_{13} +x_{23} +x_{33} =20 \\
+    x_{ij} \geq0,  i,j = 1,2,3.
+\end{gather*}
+%TODO ezt befejezni
+
+\Section{A szállítási probléma egy konkrét példája}
+
+A szállítás úgy kezdődik, hogy az adatközpont lekérdezi a szállításra váró csomagokat. Ezután lekérdezi az összes szabad drónt.
+Elemzi a drónok és a csomagok paraméterei alapján, hogy hogyan lenne a legoptimálisabb a szállítás. Ez valamilyen eredményt generál, ami
+alapján az adatközpont a csomagokhoz drónokat rendel a megfelelő útvonallal. A drónok elhagyják a raktárat a csomaggal, és folyamatosan küldik az adatokat állapotukról,
+az adatközpont pedig elemzi és feldolgozza ezeket.
+
+Pédaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg. A drón a kijelölt útvonalon halad, nem adódik semmilyen probléma a cél
+elérése közben. A drón leadja a csomagot a kijelölt helyen, és jelez az adatközpontnak hogy sikeresen kézbesítette a csomagot.
+Ekkor az adatközpont jelez a megrendelőnek hogy a csomagját átveheti. A drón felemelkedik és visszatér a raktárba, a kijelölt útvonalon. Itt az akkumlátorját szükség esetén
+feltöltik, majd a drón felveheti a következő csomagot.
+
+Egy másik példaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg. A drón a szállítás közben különösen magas hálózat interferenciát érzékel,
+és hibajelet küld az adatközpontnak. Az adatközpont az elemzés szerint arra jut hogy az interferencia nem természetes,
+túl nagy az esélye hogy a drónt szándékosan zavarják. Az adatközpont jelez a drónnak, hogy a szállítást szakítsa meg, térjen vissza a raktárba.
+A drónnak a hiba miatt a legközelebbi repülés előtt több diagnosztikai teszten át kell mennie, hogy megbizonyosodjunk az drón üzemképes működéséről.
+%TODO
 % TODO: Készíteni kellene egy sematikus ábrát, amin egy szállítási állapot, gráfos formában megadott probléma látható.
 
 \Section{A Go nyelv áttekintése }
