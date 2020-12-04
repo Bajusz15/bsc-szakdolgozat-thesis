@@ -30,7 +30,7 @@ A adatközpont programnak elosztott rendszerként kell működnie, tehát terhel
 \subsection{Architektúra, program felépítés}
 Ahhoz hogy a programot a követelmányben megfogalmazott módon építsük fel, értem ezalatt azt hogy több protokollt és adatbázist hasonlítsunk össze egy olyan
 program architektúrát, felépítést kell választani ami megendegi ezt.
-Erre a problémára megoldásként a Hexagonal architektúrát \aref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
+Erre a problémára megoldásként a Hexagonal architektúrát \ref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
 %TODO: Ide ezekről képet beszúrni
 \begin{figure}[h]
     \centering
@@ -39,9 +39,9 @@ Erre a problémára megoldásként a Hexagonal architektúrát \aref{fig:hexagon
     \label{fig:hexagonal-inward}
 \end{figure}
 Így a program belülről kifelé rétegesen epül fel, interfaceket alkalmazva, úgy hogy a pontos implemetáció absztraktálva van, az csak az üzleti logikát ismerjük biztosan, minden ráépülő réteg implementációja cserélhető marad.
-Minden réteg csak befelé mutat \aref{fig:hexagonal-inward}, így az üzleti logikánk megmaradhat, miközben az alkalmazás teljes infrastuktúráját kicserélhetnénk.
+Minden réteg csak befelé mutat \ref{fig:hexagonal-inward}, így az üzleti logikánk megmaradhat, miközben az alkalmazás teljes infrastuktúráját kicserélhetnénk.
 így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.
-Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \aref{fig:hexagonal-inward} tökéletesen bemutatja.
+Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \ref{fig:hexagonal-inward} tökéletesen bemutatja.
 Az alkalmazást fel lehet osztani verérlő és vezérelt részre. Ez nagyon jól igazodik az üzleti logikához, egy inputra szinte mindig valamiféle vezérlést várunk el,
 tehát hogyha az alkalmazásunkat használjuk, vezéreljük akkor az az adatok hatására valamit csináljon. Ezután az alkalmazásunk beszélhet más, külső forrásokkal, amiket az alkalmazás használ, azaz vezéreli őket.
 Ilyen lehet egy adatbázis implementációja, vagy egy üzenet sor, amibe adatokat rakunk be, hogy valami más később kiolvassa.

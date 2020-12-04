@@ -5,7 +5,7 @@
 Az Amazonnak már működő szállítási rendszere van, mely drónnal 30 percen belül eljuttatja az 2,3 kg-tól kevesebbet nyomó csomagokat az ügyfelekhez.
 Ezek a drónok csak 24 km-es hatótávval rendelkeznek, így csak akkor biztonságos egy kézbesítés ha a célállomás maximum 12 km-re van.
 A csomag maximum térfogatáról nincsenek pontos adatok.
-Ezt a rendszert Prime Air-nek hívják \cite{prime-air}. Az Amazon Prime Air egy \aref{fig:prime} drónja.
+Ezt a rendszert Prime Air-nek hívják \cite{prime-air}. Az Amazon Prime Air egy \ref{fig:prime} drónja.
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.4]{images/prime.jpg}
@@ -25,7 +25,7 @@ Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különb
 Az FAA 2020-ban engedélyezte az Amazonnak a drónokkal való csomagszállítást, de egyelőre csak tesztelik a technológiát pár városban.\\
 Az Amazon felhőszolgáltásai között is található olyan szolgáltatás amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
 Ilyen az IoT Core vagy az IoT Things Graph amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közti kommunikációt. \\
-A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett  Parcelcopter-el \aref{fig:parcelcopter} szállították a csomagokat.
+A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett  Parcelcopter-el \ref{fig:parcelcopter} szállították a csomagokat.
 
 \begin{figure}[h]
     \centering
@@ -35,7 +35,7 @@ A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgy
 \end{figure}
 Ám ők más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.\\
 A FlytBase \cite{flyt} vállalat már kínál szoftveres megoldásokat a automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.\\
-A jövőben teljesen elképzelhető hogy a csomagok felét drónok szállítják ki. Csak az Amazon naponta átlagosan 7 millió csomagot szállít ki,
+A jövőben teljesen elképzelhető hogy a csomagok felét drónok szállítják ki. Csak az Amazon naponta átlagosan 7 mill3ió csomagot szállít ki,
 és bevallásuk szerint a csomagok 86\%-a drónnal szállítható.
 
 \Section{A szállítási probléma absztrakt modellje}
@@ -64,6 +64,11 @@ gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsé
 mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
 
 % TODO: Ezek így szövegesen leírva stimmelnek, de érdemes lenne jelöléseket is rakni hozzá, hogy fel lehessen majd írni az optimalizálási feladatot belőle.
+Hogy el tudjuk dönteni melyik drón hova tud a leghatékonyabban szállítani, a következő mennyiségeket jelölni kell. Hány km-re van a felszállási ponttól a csomag leadási helye (távolság km-ben),
+mekkora akkumlátor töltöttséggel rendelkezik a drón (töltöttség százalékban), és a csomag súlya.
+Ezekből a jelölésekből, ha tudjuk hány csomag rendelés és hány drón van, már fel tudjuk írni az optimalizálási feladatot.
+
+
 \[
 \begin{bmatrix}
     0.9 & 1 & 1 \\
@@ -71,7 +76,7 @@ mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idej
     1.32 & 1 & 0.8
 \end{bmatrix}
 \]
-
+\Section{A szállítási probléma egy konkrét számítási példája}
 % TODO: Készíteni kellene egy sematikus ábrát, amin egy szállítási állapot, gráfos formában megadott probléma látható.
 
 \Section{A Go nyelv áttekintése }
