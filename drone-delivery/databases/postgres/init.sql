@@ -33,7 +33,7 @@ CREATE TABLE parcel
     to_address     INT REFERENCES shipping_address (id)
 );
 
-
+-- tme stamp is null bc this is not the time of insertion, this timestamp is signed by the drone so we know the order of messages
 CREATE TABLE telemetry
 (
     id                  SERIAL PRIMARY KEY,
@@ -46,7 +46,7 @@ CREATE TABLE telemetry
     battery_level       INT       DEFAULT NULL,
     battery_temperature INT       DEFAULT NULL,
     motor_temperatures  INTEGER[],
-    time_stamp          timestamp DEFAULT now()
+    time_stamp          timestamp DEFAULT NULL
 );
 
 

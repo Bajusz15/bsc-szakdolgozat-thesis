@@ -54,7 +54,11 @@ func (s *Storage) GetTelemetry(droneID int) ([]models.Telemetry, error) {
 }
 
 func (s *Storage) InsertTelemetry(id int, t models.Telemetry) error {
-	return nil
+	_, err := s.db.Exec(`INSERT INTO telemetry (drone_id, speed, location, altitude, compass_direction, acceleration, battery_level,
+                       			battery_temperature, motor_temperatures, time_stamp) VALUES ($1, $2, $3,$4,$5,$6,$7) `,
+		id, t.Speed, t.Location, t.Altitude, t.CompassDirection, t.Acceleration, t.BatteryLevel,
+		t.BatteryTemperature, t.MotorTemperatures, t.TimeStamp)
+	return err
 }
 
 func (s *Storage) GetFreeDrones() ([]models.Drone, error) {
@@ -73,7 +77,8 @@ func (s *Storage) GetFreeDrones() ([]models.Drone, error) {
 		tx.Rollback()
 		return nil, err
 	}
-	return nil, nil
+	tx.Commit()
+	return drones, nil
 }
 
 func (s *Storage) SetDroneState(id int, state string) error {
