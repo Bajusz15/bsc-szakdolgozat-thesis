@@ -46,6 +46,7 @@ CREATE TABLE telemetry
     battery_level       INT       DEFAULT NULL,
     battery_temperature INT       DEFAULT NULL,
     motor_temperatures  INTEGER[],
+    errors  INTEGER[],
     time_stamp          timestamp DEFAULT NULL
 );
 

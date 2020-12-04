@@ -11,6 +11,7 @@ type Telemetry struct {
 	BatteryLevel       int   `json:"battery_level"`
 	BatteryTemperature int   `json:"battery_temperature"`
 	MotorTemperatures  []int `json:"motor_temperatures"`
+	Errors             []int `json:"errors" db:"errors""`
 	TimeStamp          time.Time
 }
 
