@@ -107,7 +107,6 @@ Jelölje $x_{ij}$ a $T_{i}$ termelőtől az $F_{j}$ fogyasztóhoz szállítandó
 %TODO ezt befejezni
 
 \Section{A szállítási probléma egy konkrét példája}
-
 A szállítás úgy kezdődik, hogy az adatközpont lekérdezi a szállításra váró csomagokat. Ezután lekérdezi az összes szabad drónt.
 Elemzi a drónok és a csomagok paraméterei alapján, hogy hogyan lenne a legoptimálisabb a szállítás. Ez valamilyen eredményt generál, ami
 alapján az adatközpont a csomagokhoz drónokat rendel a megfelelő útvonallal. A drónok elhagyják a raktárat a csomaggal, és folyamatosan küldik az adatokat állapotukról,
@@ -126,7 +125,6 @@ A drónnak a hiba miatt a legközelebbi repülés előtt több diagnosztikai tes
 % TODO: Készíteni kellene egy sematikus ábrát, amin egy szállítási állapot, gráfos formában megadott probléma látható.
 
 \Section{A Go nyelv áttekintése }
-
 A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.\\
 A Google-nél olyan problémák adódtak, hogy a konkurrenciát nem tudták megfelelően kezelni a még eredetileg
 1 processzoros számítógépekre kifejlesztett nyelvek, mint a Java, C++.
@@ -177,7 +175,6 @@ A \emph{go} kulcsszó használata: \par
 A go kulcsszó létrehoz egy új gorutint, így az ütemezőnek lehetősége van beavatkozni.\\
 Szinkronizálás és vezérlés: \par
 Ha egy atomi, mutex, vagy csatorna művelet, függvényhívás miatt egy Gorutin blokkolni fog, az ütemező kontextus cserével egy másik gorutinnak adhat erőforrást. Ha a blokkolt Gorutin újra futtathatóvá válik, sorba állítja az ütemező és végül visszakapja az erőforrást.\\
-
 A gorutinok ugyanabban a címtérben futnak, ezért a megosztott memóriához való hozzáférést szinkronizálni kell.
 A csatornák a típusos vezetékek amelyeken adatokat küldhetünk és fogadhatunk a csatorna operátorral, <-.
 Az adatok a nyíl irányába folynak.
