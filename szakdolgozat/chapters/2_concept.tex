@@ -2,10 +2,11 @@
 
 \Section{Hasonló rendszerek, megoldások áttekintése}
 
-Az Amazonnak már működő szállítási rendszere van, mely drónnal 30 percen belül eljuttatja az 2,3 kg-tól kevesebbet nyomó csomagokat az ügyfelekhez.
+Az Amazonnak már működő szállítási rendszere van, mely drónnal 30 percen belül eljuttatja a 2,3 kg-nál kisebb tömegű csomagokat az ügyfelekhez.
 Ezek a drónok csak 24 km-es hatótávval rendelkeznek, így csak akkor biztonságos egy kézbesítés ha a célállomás maximum 12 km-re van.
 A csomag maximum térfogatáról nincsenek pontos adatok.
-Ezt a rendszert Prime Air-nek hívják \cite{prime-air}. Az Amazon Prime Air egy \ref{fig:prime} drónja.
+Ezt a rendszert \textit{Prime Air}-nek hívják \cite{prime-air}. Az Amazon Prime Air egy drónja látható \aref{fig:prime}. ábrán.
+
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.4]{images/prime.jpg}
@@ -13,19 +14,20 @@ Ezt a rendszert Prime Air-nek hívják \cite{prime-air}. Az Amazon Prime Air egy
     \label{fig:prime}
 \end{figure}
 
-Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt. Olyan jogi elvárásoknak kell megfelelni, mint hogy:
+Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt. Olyan jogi elvárásoknak kell megfelelni, mint például az alábbiak.
 \begin{itemize}
     \item Muszáj egy drón pilótának ellenőrizni a repülést és szükség esetén kötelező közbeavatkoznia.
-    \item Egy ilyen pilóta csak 1 drónt felügyelhet egyszerre, kivéve ha rendelkezik megfelelő engedéllyel.
+    \item Egy ilyen pilóta csak 1 drónt felügyelhet egyszerre, kivéve ha rendelkezik több felügyeletéhez megfelelő engedéllyel.
     \item A drónokat nem lehet közvetlen egy személy vagy gépjármű fellett működtetni.
-    \item Problémát jelent továbba hogy nem minden légtér megfelelő a drónokkal való szállításra. A reptér mellett fekvő nagyvárosokban például biztos hogy nem lehet drónokkal szállítani.
+    \item Problémát jelent továbba, hogy nem minden légtér megfelelő a drónokkal való szállításra. A reptér mellett fekvő nagyvárosokban például biztos hogy nem lehet drónokkal szállítani.
     \item A csomagot szállító drónnak is kell rendelkeznie engedéllyel, hogy alkalmas kereskedelmi szállításra.
 \end{itemize}
 
-Az FAA 2020-ban engedélyezte az Amazonnak a drónokkal való csomagszállítást, de egyelőre csak tesztelik a technológiát pár városban.\\
-Az Amazon felhőszolgáltásai között is található olyan szolgáltatás amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
-Ilyen az IoT Core vagy az IoT Things Graph amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közti kommunikációt. \\
-A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgynevezett  Parcelcopter-el \ref{fig:parcelcopter} szállították a csomagokat.
+Az FAA 2020-ban engedélyezte az Amazonnak a drónokkal való csomagszállítást, de egyelőre csak tesztelik a technológiát pár városban.
+
+Az Amazon felhőszolgáltásai között is található olyan szolgáltatás, amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
+Ilyen az \textit{IoT Core} vagy az \textit{IoT Things Graph} amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közötti kommunikációt.
+A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal. Ők egy úgynevezett  \textit{Parcelcopter}-el szállították a csomagokat (\ref{fig:parcelcopter}. ábra).
 
 \begin{figure}[h]
     \centering
@@ -33,38 +35,42 @@ A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal, ők egy úgy
     \caption{DHL Parcelcopter V4.0}
     \label{fig:parcelcopter}
 \end{figure}
-Ám ők más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.\\
-A FlytBase \cite{flyt} vállalat már kínál szoftveres megoldásokat a automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.\\
-A jövőben teljesen elképzelhető hogy a csomagok felét drónok szállítják ki. Csak az Amazon naponta átlagosan 7 mill3ió csomagot szállít ki,
-és bevallásuk szerint a csomagok 86\%-a drónnal szállítható.
+
+Alapvetően más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.
+
+A \textit{FlytBase} \cite{flyt} vállalat már kínál szoftveres megoldásokat az automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.
+A jövőben teljesen elképzelhető, hogy a csomagok felét drónok szállítják ki. Önmagában az Amazon naponta átlagosan 7 millió csomagot szállít ki, és bevallásuk szerint a csomagok 86\%-a drónnal szállítható.
 
 \Section{A szállítási probléma absztrakt modellje}
 
 A szállítási modellünk alapvetően úgy nézne ki, hogy a raktár és a kiszállítási hely közti távolság függvényében a csomagokat a raktárból drónok, vagy drónokkal felszerelt teherautók viszik ki.
-A teherautók a kiszállítási hely közelében használnák a drónokat hogy kézbesítsék a drónokat.\\
-Feltételezzük, hogy a drón és a csomag ugyanazon a raktárba vagy tehergépkocsiba található,
-de a szimuláció szemszögéből nem fontos hogy raktár vagy tehergépkocsi, lényeg hogy egy helységben található, és a drón automatikusan fel tudja venni az adott csomagot
-valamilyen rendszeren keresztül, kevesebb mint 5 perc alatt.\\
-A drónok 3G, 4G vagy 5G hálózaton kommunikálnának az adatközpontokkal.\\
-Az adott hálózaton elérhető sávszélesség függvényében a drónok változtathatják az elküldött adatok mennyiségét és a küldés ütemezését, gyakoriságát.\\
-A drónok repülése előre megtervezett, minél hatékonyabb kell hogy legyen de valós időben kell reagálniuk a helyzetekre, problémákra.\\
-A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben hibamentesen
-és hatékonyan kell tudnia kezelni anomáliák nélkül. Ehhez nagyon fontos a terhelés megfelelő elosztása. \\
+A teherautók a kiszállítási hely közelében használnák a drónokat hogy kézbesítsék a csomagokat.
+
+Feltételezzük, hogy a drón és a csomag ugyanazon a raktárba vagy tehergépkocsiba található, de a szimuláció szemszögéből nem fontos hogy raktár vagy tehergépkocsi, az a lényeges, hogy egy helyen található, és a drón automatikusan fel tudja venni az adott csomagot
+valamilyen rendszeren keresztül, kevesebb mint 5 perc alatt.
+
+A drónok 3G, 4G vagy 5G hálózaton kommunikálnának az adatközpontokkal.
+Az adott hálózaton elérhető sávszélesség függvényében a drónok változtathatják az elküldött adatok mennyiségét és a küldés ütemezését, gyakoriságát.
+
+A drónok repülése előre megtervezett. Minél hatékonyabb kell hogy legyen de valós időben kell reagálniuk a helyzetekre, problémákra.
+A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben, hibamentesen
+és hatékonyan kell tudnia kezelni anomáliák nélkül.
+Ehhez nagyon fontos a terhelés megfelelő elosztása.
 
 A drónok csomag szállítási folyamatáról a következőket feltételezzük:
 \begin{itemize}
-    \item Egy drón  véges akkumlátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
+    \item Egy drón  véges akkumulátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
     \item A csomag kézbesítés a csomag átvételére vonatkozó ideje elhanyagolható.
     \item Minden drón fel van szerelve megfelelő kommunikácós és helymeghatározó eszközökkel, valamint az kommunikál az adatközpontokkal.
     \item Feltételezzük hogy a drónok el vannak látva szenzorokkal hogy felismerjék az akadályokat és erről értesítsék az adatközpontokat.
 \end{itemize}
-A mi esetünkben csak akkumlátorral üzemelő drónok lesznek. Minden drón küld telemetria adatokat,
-ebbe benne lesz az akkumlátor töltöttség százalékban, valamint az akkumlátor hőmérséklete is.
-A drónok a telemetria adatok részeként küldenek helymeghatérozásra alkalmas
-földrajzi szélesség, hosszúság koordinátákat és magasságot.
-Továbbá kapunk még információkat a drón sebességéről,
-gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről,
-mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.\\
+
+A mi esetünkben csak akkumlátorral üzemelő drónok lesznek.
+Minden drón küld telemetria adatokat.
+Ebbe benne lesz az akkumulátor töltöttség százalékban, valamint az akkumulátor hőmérséklete is.
+A drónok a telemetria adatok részeként küldenek helymeghatérozásra alkalmas földrajzi szélesség, hosszúság koordinátákat és magasságot.
+Továbbá, kapunk még információkat a drón sebességéről,
+gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről, mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
 Hogy el tudjuk dönteni melyik drón hova tud a leghatékonyabban szállítani, a következő mennyiségeket jelölni kell. Hány km-re van a felszállási ponttól a csomag leadási helye (távolság km-ben),
 mekkora akkumlátor töltöttséggel rendelkezik a drón (töltöttség százalékban), és a csomag súlya.
 Ezekből a jelölésekből, ha tudjuk hány csomag rendelés és hány drón van, már fel tudjuk írni az optimalizálási feladatot \ref{tab:optim}.
@@ -107,6 +113,7 @@ Jelölje $x_{ij}$ a $T_{i}$ termelőtől az $F_{j}$ fogyasztóhoz szállítandó
 %TODO ezt befejezni
 
 \Section{A szállítási probléma egy konkrét példája}
+
 A szállítás úgy kezdődik, hogy az adatközpont lekérdezi a szállításra váró csomagokat. Ezután lekérdezi az összes szabad drónt.
 Elemzi a drónok és a csomagok paraméterei alapján, hogy hogyan lenne a legoptimálisabb a szállítás. Ez valamilyen eredményt generál, ami
 alapján az adatközpont a csomagokhoz drónokat rendel a megfelelő útvonallal. A drónok elhagyják a raktárat a csomaggal, és folyamatosan küldik az adatokat állapotukról,
@@ -114,7 +121,7 @@ az adatközpont pedig elemzi és feldolgozza ezeket.
 
 Pédaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg. A drón a kijelölt útvonalon halad, nem adódik semmilyen probléma a cél
 elérése közben. A drón leadja a csomagot a kijelölt helyen, és jelez az adatközpontnak hogy sikeresen kézbesítette a csomagot.
-Ekkor az adatközpont jelez a megrendelőnek hogy a csomagját átveheti. A drón felemelkedik és visszatér a raktárba, a kijelölt útvonalon. Itt az akkumlátorját szükség esetén
+Ekkor az adatközpont jelez a megrendelőnek hogy a csomagját átveheti. A drón felemelkedik és visszatér a raktárba, a kijelölt útvonalon. Itt az akkumulátorját szükség esetén
 feltöltik, majd a drón felveheti a következő csomagot.
 
 Egy másik példaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg. A drón a szállítás közben különösen magas hálózat interferenciát érzékel,
@@ -125,26 +132,33 @@ A drónnak a hiba miatt a legközelebbi repülés előtt több diagnosztikai tes
 % TODO: Készíteni kellene egy sematikus ábrát, amin egy szállítási állapot, gráfos formában megadott probléma látható.
 
 \Section{A Go nyelv áttekintése }
-A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.\\
+
+A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.
+
 A Google-nél olyan problémák adódtak, hogy a konkurrenciát nem tudták megfelelően kezelni a még eredetileg
 1 processzoros számítógépekre kifejlesztett nyelvek, mint a Java, C++.
+
 Persze azóta sokat fejlődött ezen nyelvek konkurrenciakezelése de nem tudnak versenyezni a Go-val
 ha a gépi és fejlesztői hatékonyságot is figyelembe vesszük.
 Probléma volt az is, hogy ezeknek a nyelveknek nagyon nagy a fordítási idejük. A 2000-es évek végén ez azt jelentette
 hogy egy Java vagy C++ program a Google-nél 1 hét alatt fordult le, csak hogy ki tudják próbálni.
 A nyelvek bonyolultságával is baj volt, ahogy fejlődtek a nyelvek egyre nehezebb volt egy régi programot tovább fejleszteni,
-illetve új programozóknak megtanulni a nyelvet.\\
+illetve új programozóknak megtanulni a nyelvet.
+
 Hogy ezeket a problémákat orvosolják, a Google a legjobb tervezőket hívta össze, hogy megalkossák a Go nyelvet.
 A fejlesztést olyan szakemberek vezették, akik korábban a Unix operációs rendszer, a Java HotSpot JVM
 vagy az UTF-8 karakterkódolás fejlesztésében is kulcsszerepet játszottak.
-Például Ken Thompson, Rob Pike és Robert Griesemer.\\
+Például Ken Thompson, Rob Pike és Robert Griesemer.
+
 A cél az volt, hogy régebbi általános célú nyelvek hiányosságait kiküszöböljék, és csökkentsék a bonyolultságot, hiszen a megváltozott üzleti és technológiai körülmények
 között ezek a nyelvek nem bizonyultak elég hatékonynak.
-Nem várhatták el hogy egy friss diplomás hatékonyan kezeljen egy olyan ''felpuffadt'' nyelvet mint a Java.\\
+Nem várhatták el hogy egy friss diplomás hatékonyan kezeljen egy olyan ''felpuffadt'' nyelvet mint a Java.
+
 A felhőben való futtatásra olyan alkalmazások készítésére volt igény, amelyek nagy hatékonysággal futnak és kiválóan skálázódnak.
 A végeredmény egy olyan nyelv amely általános célú, könnyen tanulható, kifejező, tömör, letisztult és hatékony.
 Éppen ezért kiválóan alkalmazható ott, ahol a kódbázishoz nagyszámú, gyakran cserélődő, változó összetételű programozói gárda fér hozzá,
-akár időben és földrajzi elhelyezkedésben is megosztva.\\
+akár időben és földrajzi elhelyezkedésben is megosztva.
+
 Szintaktikailag a C-hez hasonlít de nagyon könnyen tanulható nyelv.
 A legnagyobb újítás a konkurrencia mechanizmus (főleg a saját ütemező) és hibakezelés volt.
 A Go konkurrencia mechanizmusa megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
@@ -153,7 +167,7 @@ Gyors, statikus nyelv de úgy érezzük mintha egy dinamikus futás időben ford
 Tartalmaz \textit{race detector}-t is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
 Mivel nagyon jól kihasználja a gép erőforrásait és a hálózatot manapság a felhőben futó kódok nagyrésze Go.
 Beszédes, hogy a Linux Foundation által létrehozott Cloud Native Computing Foundation (CNCF) keretein
-belül támogatott projektek nagy része Go-ban íródott, többek között a Kubernetes, a Prometheus, az Istio, de ebben írták a Dockert is.\\
+belül támogatott projektek nagy része Go-ban íródott, többek között a Kubernetes, a Prometheus, az Istio, de ebben írták a Dockert is.
 
 % TODO: Ide kellene hivatkozás.
 
@@ -175,6 +189,7 @@ A \emph{go} kulcsszó használata: \par
 A go kulcsszó létrehoz egy új gorutint, így az ütemezőnek lehetősége van beavatkozni.\\
 Szinkronizálás és vezérlés: \par
 Ha egy atomi, mutex, vagy csatorna művelet, függvényhívás miatt egy Gorutin blokkolni fog, az ütemező kontextus cserével egy másik gorutinnak adhat erőforrást. Ha a blokkolt Gorutin újra futtathatóvá válik, sorba állítja az ütemező és végül visszakapja az erőforrást.\\
+
 A gorutinok ugyanabban a címtérben futnak, ezért a megosztott memóriához való hozzáférést szinkronizálni kell.
 A csatornák a típusos vezetékek amelyeken adatokat küldhetünk és fogadhatunk a csatorna operátorral, <-.
 Az adatok a nyíl irányába folynak.
@@ -209,8 +224,6 @@ Tehát egy hiba kezelése például így nézhet ki:
     return 0, err
     }
 \end{python}
-
-
 
 Pár vállalat aki használja:
 \begin{itemize}
