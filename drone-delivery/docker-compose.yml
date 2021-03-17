@@ -5,7 +5,7 @@ services:
   postgres:
     build:
       dockerfile: Dockerfile
-      context: ./databases/postgres
+      context: backend/databases/postgres
     ports:
     - '5432:5432'
     environment:
@@ -14,7 +14,7 @@ services:
   server:
     build:
       dockerfile: Dockerfile.dev
-      context: ./server
+      context: backend/server
     depends_on:
       - postgres
     links:
@@ -31,7 +31,7 @@ services:
   warehouse-drones:
     build:
       dockerfile: Dockerfile
-      context: ./warehouse
+      context: backend/warehouse
     depends_on:
       - server
     ports:
@@ -39,7 +39,7 @@ services:
   simulation:
     build:
       dockerfile: Dockerfile
-      context: ./simulation
+      context: backend/simulation
     depends_on:
       - warehouse-drones
       - server

@@ -1,0 +1,14 @@
+FROM golang:1.14 AS builder
+
+RUN mkdir -p /go/src/drone-delivery/warehouse
+RUN go get -u github.com/cosmtrek/air
+
+COPY go.mod /go/src/drone-delivery/warehouse
+COPY go.sum /go/src/drone-delivery/warehouse
+WORKDIR /go/src/drone-delivery/warehouse
+RUN go mod download
+#RUN go install
+COPY ./ /go/src/drone-delivery/warehouse
+#hot reload
+ENTRYPOINT ["air", "-c", ".air.toml", "-d"]
+EXPOSE 2000
