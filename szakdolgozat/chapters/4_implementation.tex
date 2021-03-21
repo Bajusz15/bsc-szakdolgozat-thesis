@@ -49,7 +49,7 @@ Adatbázisok esetén az ACID az Atomicity (atomiság), Consistency (konzisztenci
 A PostgreSQL többféle izolációs szintet biztosít a tranzakciókhoz \cite{postgres-transaction}. A Lost Update problémát garantáltan megoldja a PostgreSQL `Serializable` izolációs szintje.
 \begin{table}[h]
     \centering
-    \caption{ Standard SQL Transaction Isolation Levels}}
+    \caption{ Standard SQL Transaction Isolation Levels}
     \begin{tabular}{l|c|c|c|}
 Isolation Level & Dirty Read  & Nonrepeatable Read & Phantom Read\\
         \hline
@@ -63,3 +63,4 @@ Serializable & Not possible & Not possible & Not Possible \\
         \hline
     \end{tabular}
 \end{table}
+

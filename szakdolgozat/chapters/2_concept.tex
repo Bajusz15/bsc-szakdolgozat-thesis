@@ -1,3 +1,4 @@
+\usepackage{amsmath}
 \Chapter{Koncepció}
 
 \Section{Hasonló rendszerek, megoldások áttekintése}
@@ -110,7 +111,46 @@ Jelölje $x_{ij}$ a $T_{i}$ termelőtől az $F_{j}$ fogyasztóhoz szállítandó
     x_{13} +x_{23} +x_{33} =20 \\
     x_{ij} \geq0,  i,j = 1,2,3.
 \end{gather*}
-%TODO ezt befejezni
+A feladat megoldását a fenti modell felírása helyett a feladat adatait tartalmazó táblázat megadásával kezdjük, feltüntetve a termelők készleteit, a fogyasztók igényeit és a szállítási költségeket:
+\[
+    \begin{matrix}
+         & F1 & F2 & F3 \\
+      T1 & 2 & 0.5 & 1 &  20 \\
+      T2 & 75 & 25 & 40 & 15\\
+      T3 & 1.2 & 0.5 & 0.9 & 10 \\
+         & 5 & 20 & 20
+    \end{matrix}
+\]
+
+%A megoldás menete: kiindulunk egy kezdeti megoldásból, amelyet fokozatosan javítunk, míg optimális megoldáshoz nem jutunk. A kezdeti megoldás felírásához az északnyugat sarok módszert használjuk. Tehát elinduun a táblázat bal felső cellájából, és olyan nagyságú szállítást kötünk le, amekkora csak lehetséges az adott viszonylatban, azaz az adott sor illetve oszlop végén álló számok közül a kisebbet.
+%Esetünkben ez 5 egységnyi áru, amivel az F1 fogyasztó igényeit teljesítjük, a T1 termelő készleteit 20-ról 15-re csökkentjük. Az első oszlopot elhagyhatjuk a táblázatból mivel az F1 fogyasztó igényeit teljesítettük.
+%Az első sor második cellája lesz az új északnyugat sarok. A T1 termelő maradék 15 áruját ide leköthetjük. Az F2 fogyasztónak így már csak 5 az igénye, a T1 termelőtől pedig mindent elszállítottunk.
+%Így haladva tovább a következő eredményt kapjuk:
+%
+%\[
+%    \begin{matrix}
+%        & F1 & F2 & F3 \\
+%        T1 & 5 & 15 & 0 &  20 \\
+%        T2 & 0 & 5 & 10 & 15\\
+%        T3 & 0 & 0 & 10 & 10 \\
+%        & 5 & 20 & 20
+%    \end{matrix}
+%\]
+
+%Azok a cellák, ahol szállítás valósul meg, a kiinduló megoldás bázisváltozóit jelzik. A kiinduló megoldás optimalitását a feladatban szereplő változók segítségével vizsgáljuk.
+%Minden sorhoz rendeljünk egy $u_{i}$ változót, minden oszlophoz pedig egy $v_{j}$ változót, majd a táblázatban szereplő bázismegoldás elemeire írjuk fel az egyenlőségeket (vagyis azon cellák esetén, ahol szállítás történik):
+%$u_{1} + v_{1}=2; u_{1} + v_{2} =0.5; u_{2} + v_{2}=25;u_{2} + v_{3}=40;u_{3} + v_{3}=0.9$
+%Az egyenletrendszert megoldhatjuk, ha az egyik változó értékét rögzítjük. Legyen $u_{1} = 0$! Így $v_{1}=2; v_{2}=0.5; u_{2}=24.5; v_{3}=15.5; u_{3}=-14.6$.
+%Azokra a cellákra ahol nem volt szállítás, képezzük ezt a különbséget: $\bar{c_{kl}} = c_{kl} - u_{k} - v_{l}$. Ezek az értékek mutatják meg mennyivel változna a célfüggvény,
+%ha az adott cellán 1 egységnyi szállítást kötünk le.
+%\begin{align}
+%    \bar{c_{13}} = c_{13} - u_{1} - v_{3} = 1 - 0 - 15.5 =  -14.5
+%    \bar{c_{21}} = c_{21} - u_{2} - v_{1} = 0.5 - 24.5 - 2 =  -26
+%    \bar{c_{31}} = c_{31} - u_{3} - v_{1} = 1 - 14.6 - 2 =  -15.6
+%\end{align}
+
+Az egyszerűség kedvéért a lineáris egyenletrendszer megoldását nem vezetem le. Végeredményként, a minimális szállítási költség pontosan 41.
+
 
 \Section{A szállítási probléma egy konkrét példája}
 
