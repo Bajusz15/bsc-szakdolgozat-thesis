@@ -1,4 +1,3 @@
-\usepackage{amsmath}
 \Chapter{Koncepció}
 
 \Section{Hasonló rendszerek, megoldások áttekintése}
@@ -121,7 +120,7 @@ A feladat megoldását a fenti modell felírása helyett a feladat adatait tarta
          & 5 & 20 & 20
     \end{matrix}
 \]
-
+A lineáris egyenletrendszer megoldását levezetni hosszú folyamat, erre nem tér ki a szakdolgozat. Egy programmal ellenőriztem hogy a végeredmény, azaz a minimális szállítási költség pontosan 41.
 %A megoldás menete: kiindulunk egy kezdeti megoldásból, amelyet fokozatosan javítunk, míg optimális megoldáshoz nem jutunk. A kezdeti megoldás felírásához az északnyugat sarok módszert használjuk. Tehát elinduun a táblázat bal felső cellájából, és olyan nagyságú szállítást kötünk le, amekkora csak lehetséges az adott viszonylatban, azaz az adott sor illetve oszlop végén álló számok közül a kisebbet.
 %Esetünkben ez 5 egységnyi áru, amivel az F1 fogyasztó igényeit teljesítjük, a T1 termelő készleteit 20-ról 15-re csökkentjük. Az első oszlopot elhagyhatjuk a táblázatból mivel az F1 fogyasztó igényeit teljesítettük.
 %Az első sor második cellája lesz az új északnyugat sarok. A T1 termelő maradék 15 áruját ide leköthetjük. Az F2 fogyasztónak így már csak 5 az igénye, a T1 termelőtől pedig mindent elszállítottunk.
@@ -149,7 +148,6 @@ A feladat megoldását a fenti modell felírása helyett a feladat adatait tarta
 %    \bar{c_{31}} = c_{31} - u_{3} - v_{1} = 1 - 14.6 - 2 =  -15.6
 %\end{align}
 
-Az egyszerűség kedvéért a lineáris egyenletrendszer megoldását nem vezetem le. Végeredményként, a minimális szállítási költség pontosan 41.
 
 
 \Section{A szállítási probléma egy konkrét példája}
@@ -209,12 +207,14 @@ Mivel nagyon jól kihasználja a gép erőforrásait és a hálózatot manapság
 Beszédes, hogy a Linux Foundation által létrehozott Cloud Native Computing Foundation (CNCF) keretein
 belül támogatott projektek nagy része Go-ban íródott, többek között a Kubernetes, a Prometheus, az Istio, de ebben írták a Dockert is.
 
-% TODO: Ide kellene hivatkozás.
+% TODO: Ide kellene hivatkozás. ha jól emlékszem HWSW cikk volt de kikeresem majd.
 
 \paragraph{A Go konkurrencia mechanizmusa} \mbox{} \\
 A konkurrencia a nyelv alapjának része. A 3 legfontosab dolog ebből a szempontból az hogy a Go-nak saját ütemezője van,
 a gorutinok (''goroutine'') és csatornák (''channel'').\\
-A saját ütemező (scheduler) sokkal hatékonyabb mintha csak létrehoznánk egy processzt és hagynánk hogy az OS ütemezze,
+A goroutin egy szójáték a hasonló coroutine-al. A lényege hogy ezek a folyamatok a Go runtime-on belül futnak, sokkal kisebbek mint egy processz, megabájtok helyett csak pár kilobájt,
+így pillekönnyűnek számítanak az Operációs rendszer processzeihez képest. \emph{Egy programban akár több millió gorutin is futhat egyszerre!}
+A saját ütemező (scheduler) sokkal hatékonyabb mintha csak létrehoznánk egy processzt és hagynánk hogy az Operációs rendszer ütemezze,
 mivel így az ütemező meg tudja határozni hogy az adott gorution milyen állapotban van (várakozik, futtatható, vagy fut) és hatékonyabban tudja
 kiosztani az erőforrásokat. Értelemszerűen például egy blokkoló, épp I/O műveletet végző gorutint nem fog futtatni hanem helyette más gorutinokat részesít
 előnyben. De fontos hogy az ütemező nem determinisztikus, így nem tudjuk előre megmondani melyik gorutin fog következni.\\
@@ -229,10 +229,13 @@ A \emph{go} kulcsszó használata: \par
 A go kulcsszó létrehoz egy új gorutint, így az ütemezőnek lehetősége van beavatkozni.\\
 Szinkronizálás és vezérlés: \par
 Ha egy atomi, mutex, vagy csatorna művelet, függvényhívás miatt egy Gorutin blokkolni fog, az ütemező kontextus cserével egy másik gorutinnak adhat erőforrást. Ha a blokkolt Gorutin újra futtathatóvá válik, sorba állítja az ütemező és végül visszakapja az erőforrást.\\
-
 A gorutinok ugyanabban a címtérben futnak, ezért a megosztott memóriához való hozzáférést szinkronizálni kell.
+
 A csatornák a típusos vezetékek amelyeken adatokat küldhetünk és fogadhatunk a csatorna operátorral, <-.
-Az adatok a nyíl irányába folynak.
+Az adatok a nyíl irányába folynak. Ahhoz, hogy jobban megértsük a csatornák szükségességét meg kell értenünk a következő, a Golang tervezői szerint információmegosztásra megfelelő konkurrencia modellt:
+\emph{''Do not communicate by sharing memory; instead, share memory by communicating.''}
+Tehát arról van szó, hogy ha direkt megosztott memórián keresztül kommunikálunk abból csak baj lehet, a megosztott memória ilyen használata veszélyes, helyette egy olyan módszert
+kell alkalmazni ami védelmet biztosít a megosztott memória felett. A Golang csatornái pont ezt az elvet követik.
 \begin{python}
     ch <- v    // Snd v to channel ch.
     v := <-ch  // Receive from ch, and
@@ -246,11 +249,14 @@ Bufferelt csatornák
     ch := make(chan int, 100)
 \end{python}
 
+
 \paragraph{A Go hibakezelése} \mbox{} \\
 A hibakezelés nagyban megváltozott azzal hogy a Go-ban nem try és catch blokkba zárjuk a hibára futható programkódot
 hanem van egy beépített hiba típus, ami a függvények visszatérési értéke lehet. Fontos tudni, hogy a Go-ban egy függvény többféle
-visszatérési értékkel rendelkezhet. Amit mi írunk programkódot, szinte minden függvényünk utolsó visszatérési értéke egy hiba típus lesz.
+visszatérési értékkel rendelkezhet. Ha nem egy nagyon egyszerű programot fejlesztünk, a legtöbb függvényünk utolsó visszatérési értéke egy hiba típus lesz.
 Csak az olyan atomi műveleteket végző függvényeknél nem szoktunk hiba típust használni ami biztos hogy nem fut hibára normális körülmények között.
+Például egy függvénynek ami összeadásokat, vagy egyéb egyszerű műveleteket végez értelemszerűen nincs értelme hogy hibával térjen vissza.
+De egy olyan függvénynek ami egy fájlt nyit meg, már van értelme hiba típussal visszatérnie, mert több hiba is előfordulhat az instrukciók futása közben, lehet nem létezik a fájl, vagy nincs jogosultságunk megnyitni.
 \begin{python}
     func Open(name string) (file *File, err error)
 \end{python}
@@ -260,10 +266,15 @@ Tehát egy hiba kezelése például így nézhet ki:
 \begin{python}
     file, err := Open(''fajlnev'')
     if err != nil {
-    log.Println(err)
-    return 0, err
+        log.Println(err)
+        return nil, err
     }
 \end{python}
+
+Ennek a hibakezelésnek az előnye, hogy a hibák mint visszatérési értékek buborékként felpezsegnek a függvényhívásokon keresztül.
+De a programokban amiket fejlesztünk célszerű saját hiba típusokat létrehoznunk rétegenként, vagy legalább az üzleti logika rétegben. Ez jó a kód átláthatóságához,
+az esetleges hibakereséshez (debugging) elengedhetetlen. Ezen kívül fontos hogy az alkalmazásunk nyitott részén ne látszódjanak olyan hibák amik másra nem tartoznak. Például nem előnyös az, ha egy API hívás azzal tér vissza, hogy
+a relációs adatbázishoz használt driver milyen hibába ütközött. Így ugyanis eláruljuk az alkalmazásunkhoz használt infrastruktúrát vagy más akár bizalmas információt, megkönnyítve a lehetséges támadásokat.
 
 Pár vállalat aki használja:
 \begin{itemize}
