@@ -23,7 +23,7 @@ Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különb
     \item A csomagot szállító drónnak is kell rendelkeznie engedéllyel, hogy alkalmas kereskedelmi szállításra.
 \end{itemize}
 
-Az FAA 2020-ban engedélyezte az Amazonnak a drónokkal való csomagszállítást, de egyelőre csak tesztelik a technológiát pár városban.
+Az FAA 2020-ban engedélyezte az Amazonnak a drónokkal való csomagszállítást, de egyelőre csak tesztelik a technológiát pár városban.A jövőben teljesen elképzelhető, hogy a csomagok felét drónok szállítják ki. Önmagában az Amazon naponta átlagosan 7 millió csomagot szállít ki, és bevallásuk szerint a csomagok 86\%-a drónnal szállítható lenne.
 
 Az Amazon felhőszolgáltásai között is található olyan szolgáltatás, amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
 Ilyen az \textit{IoT Core} vagy az \textit{IoT Things Graph} amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közötti kommunikációt.
@@ -36,10 +36,34 @@ A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal. Ők egy úgy
     \label{fig:parcelcopter}
 \end{figure}
 
-Alapvetően más problémát akarnak megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.
+A DHL Percelcopter alapvetően más problémát akar megoldani, a nagyon nehezen elérhető helyekre probálnak csomagokat szállítani.
 
-A \textit{FlytBase} \cite{flyt} vállalat már kínál szoftveres megoldásokat az automatizált drónok valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.
-A jövőben teljesen elképzelhető, hogy a csomagok felét drónok szállítják ki. Önmagában az Amazon naponta átlagosan 7 millió csomagot szállít ki, és bevallásuk szerint a csomagok 86\%-a drónnal szállítható.
+A \textit{FlytBase} \cite{flyt} vállalat már kínál szoftveres megoldásokat drónok automatizációjára és valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.
+Már van kész megoldásuk a következőkre:
+\begin{itemize}
+    \item Biztonsági megfigyelések
+    \item Automatikus dokkolás állomásokhoz
+    \item Veszélyhelyzetre reagálás, ez lehet vér, szerv vagy gyógyszer szállítás.
+    \item Csomag szállítás
+\end{itemize}
+
+Elterjedt rendszerük a FlytNow, ami úgy működik, hogy a drónunkat összekötjük egy appon keresztül a felhőben lévő FlytNow rendszerrel,
+majd internetet keresztül elérünk egy verzérélőpultot \ref{fig:flytdash} amin irányíthatjuk a drónjainkat és láthatjhuk az adatokat.
+Ez a rendszer arra összpontosít hogy gyorsan, bonyolult telepítés és beállítás nélkül tudjunk drónokat irányítani.
+Ezt a rendszer magánembereknek és cégeknek egyaránt elérhető, több csomagban.
+Van egy másik FlytWare nevű rendszerük raktár menedzselésre és logisztikai feladatokra. Olyan feladatokra specializálódnak a drónok mint a bárkód szkennelés,
+zárt környezetben repülés. Természetesen a raktár adatait elérjük a rendszer vezérlőpultján. Így például egy leltár sokkal egyszerűbben megoldható.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/flyt-dashboard.png}
+    \caption{Flytnow livestream dashboard}
+    \label{fig:flytdash}
+\end{figure}
+
+Hasonló szolgáltatások elérhetőek az ANRA SmartSkies néven futó rendszerrel. Nem csak drónokat kezel a rendszerük
+
 
 \Section{A szállítási probléma absztrakt modellje}
 
