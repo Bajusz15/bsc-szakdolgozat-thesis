@@ -1,6 +1,4 @@
-package provision
-
-//todo: create a process of a drone program
+package warehouse
 
 type Service interface {
 	ProvisionDrone() error

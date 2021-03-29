@@ -1,0 +1,14 @@
+FROM golang:1.14 AS builder
+
+RUN mkdir -p /go/src/drone-delivery/drone-swarm
+RUN go get -u github.com/cosmtrek/air
+
+COPY go.mod /go/src/drone-delivery/drone-swarm
+COPY go.sum /go/src/drone-delivery/drone-swarm
+WORKDIR /go/src/drone-delivery/drone-swarm
+RUN go mod download
+#RUN go install
+COPY ./ /go/src/drone-delivery/drone-swarm
+#hot reload
+ENTRYPOINT ["air", "-c", ".air.toml", "-d"]
+EXPOSE 2000

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/bajusz15/drone-delivery/warehousea/pkg/rest"
+	"github.com/bajusz15/drone-delivery/drone-swarm/pkg/network/inbound/http/rest"
 	"log"
 	"net/http"
 )

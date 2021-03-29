@@ -9,7 +9,7 @@ This repository contains code for the simulation, server, warehouse and setting 
   - databases
   - server
   - simulation
-  - warehouse
+  - drone-swarm
   - docker-compose.yml
   - README.md
   
