@@ -8,7 +8,7 @@ import (
 )
 
 type Service interface {
-	ProvisionAllDrones() error
+	DeliverParcels() error
 	ProvisionDrone(d models.Drone, p models.Parcel) error // azert nem id-t adok át hanem magat a dron modellt mert kesobb lehet hozza rakni tobb logikat is, pl akkumlatorido vagy suly kapacitast is fog nezni.
 	GetFreeDrones() ([]models.Drone, error)
 }
@@ -32,7 +32,7 @@ func NewService(r Repository, ea OutboundAdapter, l log.Logger) Service {
 	return &service{r, ea, l}
 }
 
-func (s *service) ProvisionAllDrones() error {
+func (s *service) DeliverParcels() error {
 	parcels, err := s.repo.GetParcelsInWarehouse()
 	if err != nil {
 		s.logger.Log("err", err)
