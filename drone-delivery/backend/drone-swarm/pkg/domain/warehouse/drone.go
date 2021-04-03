@@ -6,6 +6,8 @@ import "drone-delivery/server/pkg/domain/models"
 type Drone struct {
 	ID     int `json:"id" db:"id"`
 	Parcel `json:"parcel"`
+	LastTelemetry models.Telemetry
+	Destinations []Destination
 }
 
 type Parcel struct {
@@ -13,6 +15,12 @@ type Parcel struct {
 	Weight      float64         `json:"weight"`
 	FromAddress ShippingAddress `json:"from_address"` //ez lehet nem is kell
 	ToAddress   ShippingAddress `json:"to_address"`
+	DropOffSite models.GPS
+}
+
+type Destination struct {
+	Coordinates models.GPS
+	ParcelDestination bool
 }
 
 type ShippingAddress struct {

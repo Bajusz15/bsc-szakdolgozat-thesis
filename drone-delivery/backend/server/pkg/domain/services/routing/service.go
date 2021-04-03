@@ -17,7 +17,7 @@ func NewService() *service {
 	return &service{}
 }
 
-func (s *service) CalculateDistance(lat1 float64, lng1 float64, lat2 float64, lng2 float64, unit ...string) float64 {
+func (s *service) CalculateDistance(lat1, lng1, lat2, lng2 float64, unit ...string) float64 {
 	const PI float64 = float64(math.Pi) //3.141592653589793
 
 	radlat1 := float64(PI * lat1 / 180)
