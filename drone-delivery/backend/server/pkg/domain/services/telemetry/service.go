@@ -1,7 +1,7 @@
 package telemetry
 
 import (
-	"github.com/bajusz15/drone-delivery/server/pkg/domain/models"
+	"drone-delivery/server/pkg/domain/models"
 	"github.com/go-kit/kit/log"
 )
 

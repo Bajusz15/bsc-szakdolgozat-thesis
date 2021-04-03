@@ -1,6 +1,7 @@
 package warehouse
 
-//TODO: make model of drone
+import "drone-delivery/server/pkg/domain/models"
+
 
 type Drone struct {
 	ID     int `json:"id" db:"id"`

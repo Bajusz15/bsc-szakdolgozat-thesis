@@ -1,9 +1,10 @@
 package flying
 
 import (
-	"github.com/bajusz15/drone-delivery/drone-swarm/pkg/domain/routing"
-	"github.com/bajusz15/drone-delivery/drone-swarm/pkg/domain/telemetry"
-	"github.com/bajusz15/drone-delivery/drone-swarm/pkg/domain/warehouse"
+	"drone-delivery/drone-swarm/pkg/domain/routing"
+	"drone-delivery/drone-swarm/pkg/domain/telemetry"
+	"drone-delivery/drone-swarm/pkg/domain/warehouse"
+	"drone-delivery/server/pkg/domain/models"
 	goKitLog "github.com/go-kit/kit/log"
 	"log"
 	"time"
@@ -17,14 +18,14 @@ type Repository interface {
 }
 
 type service struct {
-	repo   Repository
+	//repo   Repository
 	ts     telemetry.Service
 	rs     routing.Service
 	logger goKitLog.Logger
 }
 
-func NewService(r Repository, ts telemetry.Service, rs routing.Service, l goKitLog.Logger) Service {
-	return &service{r, ts, rs, l}
+func NewService(ts telemetry.Service, rs routing.Service, l goKitLog.Logger) Service {
+	return &service{ts, rs, l}
 }
 
 func (s *service) StartFlight(d warehouse.Drone) error {
