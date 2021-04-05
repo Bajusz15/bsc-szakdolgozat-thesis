@@ -20,7 +20,7 @@ func (s *service) ProvisionDrone() error {
 }
 
 func (s *service) StartDrone() error {
-	//TODO: make a new instance of the drone program with an id so we know which program it is.
+	//TODO: call flying service to start the flight
 	panic("implement me")
 }
 

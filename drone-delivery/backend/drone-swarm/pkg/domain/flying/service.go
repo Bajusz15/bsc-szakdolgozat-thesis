@@ -6,12 +6,14 @@ import (
 	"drone-delivery/drone-swarm/pkg/domain/warehouse"
 	"drone-delivery/server/pkg/domain/models"
 	goKitLog "github.com/go-kit/kit/log"
-	"log"
+	"github.com/go-kit/kit/log/level"
+	"math/rand"
 	"time"
 )
 
 type Service interface {
 	StartFlight(d warehouse.Drone) error
+	DropParcel() error
 }
 
 type Repository interface {
@@ -38,17 +40,34 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 	//Ha regebbi a Go verzio mint 1.14, akkor nincs ticker.Reset() és range helyett for-select kell és reassign (ticker = time.NewTicker()... ),
 	//mert a range cacheli a loopolando valtozot, esetunkben a ticker.C-t es data race lephet fel
 	//TODO: continously send data to the server through the adapters
-	ticker := time.NewTicker(time.Duration(200) * time.Millisecond)
+	period := time.Duration(200) * time.Millisecond
+	ticker := time.NewTicker(period)
 	go func(drone *warehouse.Drone) {
 		for range ticker.C {
+			var err error
 			i := 0
-			for destination :=drone.Destinations[i];  i < len(drone.Destinations) && drone.LastTelemetry.Location != destination.Coordinates; {
-				//TODO: fly until it reaches destination, then if it's a ParcelDestination, drop off that parcel
-				distance, bearing := s.rs.CalculateDroneDistanceAndDirectionFromDestination(drone.LastTelemetry.Location.Latitude, drone.LastTelemetry.Location.Longitude,
-					destination.Coordinates.Latitude, destination.Coordinates.Longitude)
+			for destination :=drone.Destinations[i];  i < len(drone.Destinations) && destination.WarehouseDestination && drone.LastTelemetry.Location != destination.Coordinates; {
+				distance, bearing := s.rs.CalculateDroneDistanceAndDirectionFromDestination(
+					drone.LastTelemetry.Location.Latitude,
+					drone.LastTelemetry.Location.Longitude,
+					destination.Coordinates.Latitude,
+					destination.Coordinates.Longitude,
+				)
+
+				distanceTravelled := drone.LastTelemetry.Speed * float64(period / (time.Duration(1) * time.Second)) //get meters travelled in a second)
+				currentLat, currentLon := s.rs.CalculateDroneNextCoordinates(
+					drone.LastTelemetry.Location.Latitude,
+					drone.LastTelemetry.Location.Longitude,
+					distanceTravelled,
+					bearing,
+				)
+
 				t := models.Telemetry{
 					Speed:              0,
-					Location:           models.GPS{},
+					Location:           models.GPS{
+						Latitude:  currentLat,
+						Longitude:  currentLon,
+					},
 					Altitude:           50,
 					Bearing:   bearing,
 					Acceleration:       0,
@@ -56,38 +75,59 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 					BatteryTemperature: 0,
 					MotorTemperatures:  nil,
 					Errors:             nil,
-					TimeStamp:          time.Now(),
+					TimeStamp:          time.Now(), // <- ticker.C
 				}
 
-				if distance < 400 && t.Speed > 2 {
-					t.Speed -= 0.1
+				if distance < 150 && t.Speed > 2 {
+					t.Speed -= 1
 				} else if distance < 12{
 					t.Speed = 0.2
 					if distance < 1 {
-						//TODO: drop the package, set drone coordinates equal to parcel drop off site, and move to next destination
+						t.Speed = 0
 						t.Location = drone.Destinations[i].Coordinates
-						i++
+						i++ //move to next destination
+						err = s.DropParcel()
+						if err != nil {
+							level.Warn(s.logger).Log("drone_id", drone.ID, "err", err, "desc", "failed to drop parcel")
+							t.Errors = append(t.Errors, models.FailedToEjectPackage)
+						}
 					}
+				} else if distance > 150 && t.Speed < 15 {
+					t.Speed += 0.5
 				}
-
+ 
 				drone.LastTelemetry = t
-				err := s.ts.SendTelemetry(t)
+				err = s.ts.SendTelemetry(t)
 				if err != nil {
-					s.logger.Log("err", err, "desc", "failed to send telemetry data")
+					level.Warn(s.logger).Log("err", err, "desc", "failed to send telemetry data")
 				}
-
 			}
+			//if signal is weak, change data send interval
 			//ticker.Reset(time.Duration(500) * time.Millisecond)
 
 			//if done, call ticker.Stop()
 		}
-		log.Println("stopped")
+		level.Info(s.logger).Log("drone_id", drone.ID, "desc", "drone stopped")
 	}(&d)
 	//main logic of flying return
 	return nil
 }
 
-//Régi
+func (s *service) DropParcel() error {
+	// 0.1 % chance of dropping the package
+	min := 1
+	max := 1000
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	number := r1.Intn(max - min + 1) + min
+	if number == 1 {
+		return ErrFailedToEjectPackage
+	}
+	return nil
+}
+
+
+//StartFlight alternativ logika go.15 elott
 //ticker := time.NewTicker(200 * time.Microsecond)
 //quit := make(chan struct{})
 //go func() {

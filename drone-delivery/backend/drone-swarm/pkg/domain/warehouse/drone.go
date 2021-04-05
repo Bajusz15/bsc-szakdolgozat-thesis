@@ -21,6 +21,7 @@ type Parcel struct {
 type Destination struct {
 	Coordinates models.GPS
 	ParcelDestination bool
+	WarehouseDestination bool
 }
 
 type ShippingAddress struct {
