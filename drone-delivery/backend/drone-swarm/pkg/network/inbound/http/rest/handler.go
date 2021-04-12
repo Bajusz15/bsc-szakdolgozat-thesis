@@ -1,20 +1,29 @@
 package rest
 
 import (
+	"drone-delivery/drone-swarm/pkg/domain/warehouse"
+	"drone-delivery/server/pkg/domain/models"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-func Handler() http.Handler {
+func Handler(w warehouse.Service) http.Handler {
 	router := echo.New()
 	router.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	router.GET("/provision", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, struct {
-			Message string `json:"message"`
-		}{"provision successful"})
+	router.POST("/provision", func(c echo.Context) error {
+		var payload models.Drone
+		err := c.Bind(&payload)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Bad json format")
+		}
+		err = w.ProvisionDrone(payload)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Could not provision drone")
+		}
+		return c.JSON(http.StatusOK, struct {Message string `json:"message"`}{"provision successful"})
 	})
 
 	router.POST("/route/add", func(c echo.Context) error {
@@ -37,7 +46,6 @@ func Handler() http.Handler {
 		return nil
 	})
 
-
-
+	
 	return router
 }

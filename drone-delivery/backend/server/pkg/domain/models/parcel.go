@@ -6,6 +6,7 @@ type Parcel struct {
 	Location    GPS             `json:"location"`
 	FromAddress ShippingAddress `json:"from_address"` //ez lehet nem is kell
 	ToAddress   ShippingAddress `json:"to_address"`
+	DropOffSite GPS
 }
 
 type ShippingAddress struct {

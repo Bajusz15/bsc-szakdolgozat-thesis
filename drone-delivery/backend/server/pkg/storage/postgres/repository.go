@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"database/sql"
-	"github.com/bajusz15/drone-delivery/server/pkg/domain/models"
+	"drone-delivery/server/pkg/domain/models"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"log"
@@ -107,5 +107,9 @@ func (s *Storage) SetDroneState(id int, state string) error {
 }
 
 func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
+	return nil, nil
+}
+
+func (s *Storage) GetDronesDelivering() ([]models.Drone, error) {
 	return nil, nil
 }

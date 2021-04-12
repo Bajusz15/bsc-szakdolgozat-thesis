@@ -6,8 +6,8 @@ import (
 )
 
 type Service interface {
-	SaveTelemetry(id int, t models.Telemetry) error
-	GetDroneTelemetry(id int) ([]models.Telemetry, error)
+	SaveTelemetry(droneID int, t models.Telemetry) error
+	GetDroneTelemetry(droneID int) ([]models.Telemetry, error)
 }
 
 type Repository interface {
@@ -27,7 +27,11 @@ func NewService(r Repository, l log.Logger) *service {
 func (s *service) SaveTelemetry(droneID int, t models.Telemetry) error {
 	var err error
 	err = s.repo.InsertTelemetry(droneID, t)
-	return err
+	if err != nil {
+		s.logger.Log("err", err, "desc", "failed to save drone telemetry")
+		return err
+	}
+	return nil
 }
 
 func (s *service) GetDroneTelemetry(droneID int) ([]models.Telemetry, error) {

@@ -2,27 +2,22 @@ package warehouse
 
 import "drone-delivery/server/pkg/domain/models"
 
-
 type Drone struct {
 	ID     int `json:"id" db:"id"`
-	Parcel `json:"parcel"`
+	Parcel models.Parcel `json:"parcel"`
 	LastTelemetry models.Telemetry
-	Destinations []Destination
+	Destinations []models.Destination
 }
 
-type Parcel struct {
-	TrackingID  int             `json:"tracking_id"`
-	Weight      float64         `json:"weight"`
-	FromAddress ShippingAddress `json:"from_address"` //ez lehet nem is kell
-	ToAddress   ShippingAddress `json:"to_address"`
-	DropOffSite models.GPS
-}
+//type Parcel struct {
+//	TrackingID  int             `json:"tracking_id"`
+//	Weight      float64         `json:"weight"`
+//	FromAddress ShippingAddress `json:"from_address"` //ez lehet nem is kell
+//	ToAddress   ShippingAddress `json:"to_address"`
+//	DropOffSite models.GPS
+//}
 
-type Destination struct {
-	Coordinates models.GPS
-	ParcelDestination bool
-	WarehouseDestination bool
-}
+
 
 type ShippingAddress struct {
 	Name    string  `json:"name" validate:"required"`

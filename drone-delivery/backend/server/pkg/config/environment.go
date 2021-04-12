@@ -5,8 +5,7 @@ import (
 	"os"
 )
 
-var DroneWarehouseURL string
-var DroneClientProtocol string
+var DroneSwarmURL string
 
 var PostgresConfig struct {
 	UserName string
@@ -18,8 +17,8 @@ var PostgresConfig struct {
 }
 
 func SetConfig() {
-	flag.StringVar(&DroneWarehouseURL, "drone client domain url", os.Getenv("DRONE_WAREHOUSE_URL"),
-		"An url for the drone warehouse, without protocol")
+	flag.StringVar(&DroneSwarmURL, "drone swarm domain url", os.Getenv("DRONE_SWARM_URL"),
+		"An url for the drone swarm application, with protocol")
 
 	PostgresConfig.UserName = os.Getenv("PGUSER")
 	PostgresConfig.Database = os.Getenv("PGDATABASE")

@@ -23,6 +23,7 @@ func (s service) SendTelemetry(t models.Telemetry) error {
 	if err != nil {
 		s.logger.Log("err", err, "desc", "outbound adapter returned with error")
 	}
+	return nil
 }
 
 func NewService(a OutboundAdapter, l goKitLog.Logger) *service {

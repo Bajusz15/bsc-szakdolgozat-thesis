@@ -1,13 +1,13 @@
 package main
 
 import (
+	"drone-delivery/server/pkg/config"
+	"drone-delivery/server/pkg/domain/services/drone"
+	"drone-delivery/server/pkg/domain/services/telemetry"
+	"drone-delivery/server/pkg/network/inbound/http/rest"
+	"drone-delivery/server/pkg/network/outbound"
+	"drone-delivery/server/pkg/storage/postgres"
 	"fmt"
-	"github.com/bajusz15/drone-delivery/server/pkg/config"
-	"github.com/bajusz15/drone-delivery/server/pkg/domain/services/drone"
-	"github.com/bajusz15/drone-delivery/server/pkg/domain/services/telemetry"
-	"github.com/bajusz15/drone-delivery/server/pkg/network/inbound/http/rest"
-	"github.com/bajusz15/drone-delivery/server/pkg/network/outbound"
-	"github.com/bajusz15/drone-delivery/server/pkg/storage/postgres"
 	goKitLog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"log"

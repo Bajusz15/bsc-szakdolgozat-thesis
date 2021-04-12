@@ -2,11 +2,10 @@ package outbound
 
 import (
 	"bytes"
+	"drone-delivery/server/pkg/config"
+	"drone-delivery/server/pkg/domain/models"
 	"encoding/json"
 	"errors"
-	"github.com/bajusz15/drone-delivery/server/pkg/config"
-	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -15,32 +14,59 @@ type JSONAdapter struct{} //just a wrapper
 func NewJSONAdapter() *JSONAdapter {
 	a := new(JSONAdapter)
 	return a
+
 }
 
-func (a *JSONAdapter) FetchProvisionDroneEndpoint(droneID int, trackingID int) (success bool, err error) {
-	data := struct {
-		DroneID    int `json:"drone_id"`
-		TrackingID int `json:"tracking_id"`
-	}{DroneID: droneID, TrackingID: trackingID}
+func (a *JSONAdapter) FetchProvisionDroneEndpoint(d models.Drone) (success bool, err error) {
 
 	buf := new(bytes.Buffer)
-	_ = json.NewEncoder(buf).Encode(data)
-	resp, err := http.Post(config.DroneClientProtocol+config.DroneWarehouseURL, "application/json", buf)
+	_ = json.NewEncoder(buf).Encode(d)
+	resp, err := http.Post(config.DroneSwarmURL+"/provision", "application/json", buf)
 	if err != nil {
 		return false, err
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	//body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return false, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		var r interface{}
-		_ = json.Unmarshal(body, &r)
-		log.Print(body)
+		//var r interface{}
+		//_ = json.Unmarshal(body, &r)
+		//log.Print(body)
 		return false, errors.New("failed to start drone")
 	}
 
 	return true, nil
 }
+
+//func (a *JSONAdapter) GetDrones() ([]models.Drone, error) {
+//	resp, err := http.Get(config.DroneSwarmURL + "/drones")
+//	if err != nil {
+//		return nil, err
+//	}
+//	defer resp.Body.Close()
+//	body, err := ioutil.ReadAll(resp.Body)
+//	if err != nil {
+//		return nil, err
+//	}
+//	var drones []models.Drone
+//	json.Unmarshal(body, &drones)
+//	return drones, nil
+//}
+//
+//func (a *JSONAdapter) GetParcels() ([]models.Drone, error) {
+//	resp, err := http.Get(config.DroneSwarmURL + "/drones")
+//	if err != nil {
+//		return nil, err
+//	}
+//	defer resp.Body.Close()
+//	body, err := ioutil.ReadAll(resp.Body)
+//	if err != nil {
+//		return nil, err
+//	}
+//	var drones []models.Drone
+//	json.Unmarshal(body, &drones)
+//	return drones, nil
+//}

@@ -1,20 +1,62 @@
 package routing
 
 import (
+	"drone-delivery/server/pkg/domain/models"
+	goKitLog "github.com/go-kit/kit/log"
+	hungarianAlgorithm "github.com/oddg/hungarian-algorithm"
 	"math"
 )
 
-//fmt.Printf("%f Kilometers\n", CalculateDistance(32.9697, -96.80322, 29.46786, -98.53506, "K"))
-// units: "M", or the default is miles. "K" is for kilometres. "N" is for Nautical miles.
 type Service interface {
 	CalculateDistance(lat1 float64, lng1 float64, lat2 float64, lng2 float64, unit ...string) float64
+	OptimizeRoutes(warehouse models.Warehouse, drones []models.Drone, parcels []models.Parcel) []models.Drone
 }
 
 type service struct {
+	logger goKitLog.Logger
 }
 
-func NewService() *service {
-	return &service{}
+func NewService(l goKitLog.Logger) *service {
+	return &service{l}
+}
+
+func (s *service) OptimizeRoutes(warehouse models.Warehouse, drones []models.Drone, parcels []models.Parcel) []models.Drone {
+	size := len(drones)
+	var b = make([][]int, size)
+	for i, d := range drones {
+		b[i] = make([]int, size)
+		for j, p := range parcels {
+			cost := d.GetConsumption() * s.CalculateDistance(
+				warehouse.Location.Latitude,
+				warehouse.Location.Longitude,
+				p.DropOffSite.Latitude,
+				p.DropOffSite.Longitude,
+				"K",
+			)
+			b[i][j] = int(math.Round(cost * 100))
+		}
+	}
+	solution, err := hungarianAlgorithm.Solve(b)
+	if err != nil {
+		s.logger.Log("err", err, "desc", "failed to optimize routes")
+	}
+	for i, _ := range drones {
+		drones[i].Parcel = parcels[solution[i]]
+		parcelDestination := models.Destination{
+			Coordinates:          parcels[solution[i]].DropOffSite,
+			ParcelDestination:    true,
+			WarehouseDestination: false,
+		}
+		drones[i].Destinations = append(drones[i].Destinations, parcelDestination)
+
+		warehouselDestination := models.Destination{
+			Coordinates:          warehouse.Location,
+			ParcelDestination:    false,
+			WarehouseDestination: true,
+		}
+		drones[i].Destinations = append(drones[i].Destinations, warehouselDestination)
+	}
+	return drones
 }
 
 func (s *service) CalculateDistance(lat1, lng1, lat2, lng2 float64, unit ...string) float64 {
@@ -41,6 +83,8 @@ func (s *service) CalculateDistance(lat1, lng1, lat2, lng2 float64, unit ...stri
 			dist = dist * 1.609344
 		} else if unit[0] == "N" {
 			dist = dist * 0.8684
+		} else if unit[0] == "METER" {
+			dist = dist * 1.609344 * 1000
 		}
 	}
 
