@@ -1,10 +1,14 @@
 package main
 
 import (
+	"drone-delivery/drone-swarm/pkg/config"
 	"drone-delivery/drone-swarm/pkg/domain/flying"
 	"drone-delivery/drone-swarm/pkg/domain/routing"
 	"drone-delivery/drone-swarm/pkg/domain/telemetry"
+	"drone-delivery/drone-swarm/pkg/domain/warehouse"
 	"drone-delivery/drone-swarm/pkg/network/inbound/http/rest"
+	"drone-delivery/drone-swarm/pkg/network/outbound/http/json"
+	"drone-delivery/server/pkg/storage/postgres"
 	"fmt"
 	"github.com/StefanSchroeder/Golang-Ellipsoid/ellipsoid"
 	goKitLog "github.com/go-kit/kit/log"
@@ -16,16 +20,25 @@ import (
 
 func main() {
 	fmt.Println("ez a raktár a szimulacioban, a raktár és drónok példányait szimulálja.")
+	config.SetConfig()
+	storage, err := postgres.NewStorage(config.PostgresConfig)
+	if err != nil {
+		log.Println("Error connecting to database")
+		panic(err)
+	}
 	var logger goKitLog.Logger
 	logger = goKitLog.NewLogfmtLogger(os.Stderr)
 	logger = level.NewFilter(logger, level.AllowInfo()) // <--
 	logger = goKitLog.With(logger, "ts", goKitLog.DefaultTimestampUTC)
+	outboundAdapter := json.NewOutBoundAdapter()
+	telemetryService := telemetry.NewService(outboundAdapter, logger)
 
-	telemetryService := telemetry.NewService()
 	geo := ellipsoid.Init("WGS84", ellipsoid.Degrees, ellipsoid.Meter, ellipsoid.LongitudeIsSymmetric, ellipsoid.BearingIsSymmetric)
 	routingService := routing.NewService(geo)
-	flying.NewService(telemetryService, routingService, logger)
-	log.Fatal(http.ListenAndServe(":2000", rest.Handler()))
+
+	flyingService := flying.NewService(telemetryService, routingService, logger)
+	warehouseService := warehouse.NewService(storage, flyingService, logger)
+	log.Fatal(http.ListenAndServe(":2000", rest.Handler(warehouseService)))
 }
 
 //ez csak egy sima kliens (drón a szimulacioban), ami megkapja a celt es ez alapjan fog az utvonal alatt mindenfele adatokat generalni es kuldeni magarol.

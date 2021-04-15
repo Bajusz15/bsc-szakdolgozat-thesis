@@ -1,4 +1,4 @@
-package http
+package json
 
 import (
 	"bytes"
@@ -15,21 +15,20 @@ type Adapter interface {
 }
 
 type Repository interface {
-
 }
 
 type adapter struct {
 }
 
-func NewAdapter() *adapter {
+func NewOutBoundAdapter() *adapter {
 	return &adapter{}
 }
 
 func (a *adapter) SendTelemetryDataToServer(t models.Telemetry) error {
-	postBody, _ := json.Marshal(t )
+	postBody, _ := json.Marshal(t)
 	responseBody := bytes.NewBuffer(postBody)
 	//Leverage Go's HTTP Post function to make request
-	resp, err := http.Post(config.ServerDomain + ":" + config.ServerPort, "application/json", responseBody)
+	resp, err := http.Post(config.ServerDomain+":"+config.ServerPort, "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		return err

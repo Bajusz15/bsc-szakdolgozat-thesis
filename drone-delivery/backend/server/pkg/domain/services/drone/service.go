@@ -34,7 +34,11 @@ type service struct {
 	routingService routing.Service
 }
 
-func NewService(r Repository, ea OutboundAdapter, l log.Logger, rs routing.Service) Service {
+func (s *service) GetDronesDelivering() ([]models.Drone, error) {
+	panic("implement me")
+}
+
+func NewService(r Repository, ea OutboundAdapter, l log.Logger, rs routing.Service) *service {
 	return &service{r, ea, l, rs}
 }
 
@@ -70,7 +74,6 @@ func (s *service) DeliverParcels() error {
 
 func (s *service) ProvisionDrone(d models.Drone) error {
 	logger := log.With(s.logger, "method", "ProvisionDrone")
-	d.Parcel = p
 	success, err := s.adapter.FetchProvisionDroneEndpoint(d)
 	if err != nil {
 		level.Warn(logger).Log(

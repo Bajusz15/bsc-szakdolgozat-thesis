@@ -26,7 +26,7 @@ func (s *service) OptimizeRoutes(warehouse models.Warehouse, drones []models.Dro
 	for i, d := range drones {
 		b[i] = make([]int, size)
 		for j, p := range parcels {
-			cost := d.GetConsumption() * s.CalculateDistance(
+			cost := d.GetConsumption(p) * s.CalculateDistance(
 				warehouse.Location.Latitude,
 				warehouse.Location.Longitude,
 				p.DropOffSite.Latitude,
@@ -36,37 +36,41 @@ func (s *service) OptimizeRoutes(warehouse models.Warehouse, drones []models.Dro
 			b[i][j] = int(math.Round(cost * 100))
 		}
 	}
+
 	solution, err := hungarianAlgorithm.Solve(b)
 	if err != nil {
 		s.logger.Log("err", err, "desc", "failed to optimize routes")
 	}
-	for i, _ := range drones {
+
+	warehouseDestination := models.Destination{
+		Coordinates:          warehouse.Location,
+		ParcelDestination:    false,
+		WarehouseDestination: true,
+	}
+
+	for i := range drones {
 		drones[i].Parcel = parcels[solution[i]]
 		parcelDestination := models.Destination{
 			Coordinates:          parcels[solution[i]].DropOffSite,
 			ParcelDestination:    true,
 			WarehouseDestination: false,
 		}
+		//here we could append more destinations if there is something blocking the straight route
 		drones[i].Destinations = append(drones[i].Destinations, parcelDestination)
-
-		warehouselDestination := models.Destination{
-			Coordinates:          warehouse.Location,
-			ParcelDestination:    false,
-			WarehouseDestination: true,
-		}
-		drones[i].Destinations = append(drones[i].Destinations, warehouselDestination)
+		//last destination is the warehouse
+		drones[i].Destinations = append(drones[i].Destinations, warehouseDestination)
 	}
 	return drones
 }
 
 func (s *service) CalculateDistance(lat1, lng1, lat2, lng2 float64, unit ...string) float64 {
-	const PI float64 = float64(math.Pi) //3.141592653589793
+	const PI = float64(math.Pi) //3.141592653589793
 
-	radlat1 := float64(PI * lat1 / 180)
-	radlat2 := float64(PI * lat2 / 180)
+	radlat1 := PI * lat1 / 180
+	radlat2 := PI * lat2 / 180
 
-	theta := float64(lng1 - lng2)
-	radtheta := float64(PI * theta / 180)
+	theta := lng1 - lng2
+	radtheta := PI * theta / 180
 
 	dist := math.Sin(radlat1)*math.Sin(radlat2) + math.Cos(radlat1)*math.Cos(radlat2)*math.Cos(radtheta)
 

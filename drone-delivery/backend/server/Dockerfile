@@ -1,8 +1,8 @@
-FROM golang:alpine AS builder
+FROM golang1.16 AS builder
 
-RUN apk --update add \
-	git openssl \
-	&& rm /var/cache/apk/*
+#RUN apk --update add \
+#	git openssl \
+#	&& rm /var/cache/apk/*
 
 RUN mkdir -p /go/src/drone-delivery/server
 WORKDIR /go/src/drone-delivery/server

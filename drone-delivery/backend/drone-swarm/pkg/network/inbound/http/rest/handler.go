@@ -7,31 +7,35 @@ import (
 	"net/http"
 )
 
+type ProvisionData struct {
+	Drone     models.Drone
+	Warehouse models.Warehouse
+}
+
 func Handler(w warehouse.Service) http.Handler {
 	router := echo.New()
-	router.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
 
 	router.POST("/provision", func(c echo.Context) error {
-		var payload models.Drone
+		var payload ProvisionData
 		err := c.Bind(&payload)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Bad json format")
 		}
-		err = w.ProvisionDrone(payload)
+		err = w.ProvisionDrone(payload.Warehouse, payload.Drone)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Could not provision drone")
 		}
-		return c.JSON(http.StatusOK, struct {Message string `json:"message"`}{"provision successful"})
+		return c.JSON(http.StatusOK, struct {
+			Message string `json:"message"`
+		}{"provision successful"})
 	})
 
-	router.POST("/route/add", func(c echo.Context) error {
-		//TODO: add a new destination to the drone's destinations
+	router.POST("/drone/destination/add", func(c echo.Context) error {
+		//TODO: add a new destination to the drone's destinations (before warehouse)
 		return nil
 	})
 
-	router.POST("/route/re-route", func(c echo.Context) error {
+	router.POST("/drone/route/re-route", func(c echo.Context) error {
 		//TODO: overwrite destinations, and add a new one
 		return nil
 	})
@@ -43,9 +47,9 @@ func Handler(w warehouse.Service) http.Handler {
 
 	router.POST("/emergency/withdraw", func(c echo.Context) error {
 		//TODO: call flying service to make emergency back to warehouse
+		//
 		return nil
 	})
 
-	
 	return router
 }

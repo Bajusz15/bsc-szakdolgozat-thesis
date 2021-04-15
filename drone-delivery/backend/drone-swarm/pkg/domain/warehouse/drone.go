@@ -3,10 +3,11 @@ package warehouse
 import "drone-delivery/server/pkg/domain/models"
 
 type Drone struct {
-	ID     int `json:"id" db:"id"`
-	Parcel models.Parcel `json:"parcel"`
+	ID            int           `json:"id" db:"id"`
+	Parcel        models.Parcel `json:"parcel"`
 	LastTelemetry models.Telemetry
-	Destinations []models.Destination
+	Destinations  []models.Destination
+	Consumption   float64 `json:"consumption" db:"consumption"`
 }
 
 //type Parcel struct {
@@ -16,8 +17,6 @@ type Drone struct {
 //	ToAddress   ShippingAddress `json:"to_address"`
 //	DropOffSite models.GPS
 //}
-
-
 
 type ShippingAddress struct {
 	Name    string  `json:"name" validate:"required"`

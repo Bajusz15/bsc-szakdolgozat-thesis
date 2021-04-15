@@ -3,6 +3,7 @@ package main
 import (
 	"drone-delivery/server/pkg/config"
 	"drone-delivery/server/pkg/domain/services/drone"
+	"drone-delivery/server/pkg/domain/services/routing"
 	"drone-delivery/server/pkg/domain/services/telemetry"
 	"drone-delivery/server/pkg/network/inbound/http/rest"
 	"drone-delivery/server/pkg/network/outbound"
@@ -37,8 +38,10 @@ func main() {
 	//services
 	var ts telemetry.Service
 	var ds drone.Service
+	var rs routing.Service
 	ts = telemetry.NewService(storage, logger)
-	ds = drone.NewService(storage, jsonAdapter, logger)
+	rs = routing.NewService(logger)
+	ds = drone.NewService(storage, jsonAdapter, logger, rs)
 
 	router := rest.Handler(ds, ts)
 	log.Fatal(http.ListenAndServe(":5000", router))

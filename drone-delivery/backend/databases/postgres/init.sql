@@ -6,6 +6,10 @@ CREATE TABLE drone
     state drone_state DEFAULT 'free'
 );
 
+CREATE TABLE warehouse (
+    id SERIAL PRIMARY KEY ,
+    gps jsonb DEFAULT '{}'::jsonb
+);
 
 CREATE TABLE shipping_address
 (
@@ -27,7 +31,7 @@ CREATE TABLE parcel
     name           VARCHAR(50) NOT NULL,
     tracking_id    VARCHAR(25)               default '',
     weight         FLOAT                     default 1,
-    location       jsonb                     DEFAULT '{}'::jsonb,
+    gps       jsonb                     DEFAULT '{}'::jsonb,
     assigned_drone INT REFERENCES drone (id) DEFAULT NULL,
     from_address   INT REFERENCES shipping_address (id),
     to_address     INT REFERENCES shipping_address (id)
@@ -39,9 +43,9 @@ CREATE TABLE telemetry
     id                  SERIAL PRIMARY KEY,
     drone_id            INT REFERENCES drone (id),
     speed               INT       DEFAULT 0,
-    location            jsonb     DEFAULT '{}'::jsonb,
+    gps            jsonb     DEFAULT '{}'::jsonb,
     altitude            FLOAT     default 1,
-    compass_direction   FLOAT     DEFAULT 0,
+    bearing   FLOAT     DEFAULT 0,
     acceleration        FLOAT     DEFAULT 0,
     battery_level       INT       DEFAULT NULL,
     battery_temperature INT       DEFAULT NULL,
@@ -49,6 +53,7 @@ CREATE TABLE telemetry
     errors  INTEGER[],
     time_stamp          timestamp DEFAULT NULL
 );
+
 
 
 

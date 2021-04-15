@@ -1,5 +1,6 @@
 package models
 
 type Warehouse struct {
-	Location GPS
+	ID       int `json:"id" db:"id"`
+	Location GPS `json:"location"`
 }

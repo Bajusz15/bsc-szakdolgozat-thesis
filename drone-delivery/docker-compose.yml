@@ -2,36 +2,38 @@ version: '3'
 services:
 #  redis:
 #    image: 'redis:latest'
-  postgres:
-    build:
-      dockerfile: Dockerfile
-      context: backend/databases/postgres
-    ports:
-    - '5432:5432'
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST_AUTH_METHOD=trust
+#  postgres:
+#    build:
+#      dockerfile: Dockerfile
+#      context: backend/databases/postgres
+#    ports:
+#    - '5432:5432'
+#    environment:
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_HOST_AUTH_METHOD=trust
   server:
     build:
       dockerfile: Dockerfile.dev
       context: backend/server
-    depends_on:
-      - postgres
-    links:
-      - postgres
+#    depends_on:
+#      - postgres
     ports:
     - '5000:5000'
     environment:
-      - PGUSER=postgres
-      - PGHOST=host.docker.internal
       - PGPORT=5432
-      - PGDATABASE=postgres
-      - PGPASSWORD=postgres
+      - PGDATABASE=dbdrone_delivery
+      - PGPASSWORD=P&|RgRopW3xY-u%v%q&m][5g-7igei>6
+      - PGUSER=dbmasteruser
+      - PGHOST=ls-292dbdaceb3df8fb20156df0e027d38a1456fd11.cy9by1o5bg1s.eu-central-1.rds.amazonaws.com
+#      - PGUSER=postgres
+#      - PGHOST=host.docker.internal
+#      - PGDATABASE=postgres
+#      - PGPASSWORD=postgres
 #      todo: itt majd lesz több adatbázis is, mert ugye össze kell hasonlítani
-  warehouse-drones:
+  drone-swarm:
     build:
-      dockerfile: Dockerfile
-      context: backend/drone-swarm
+      dockerfile: drone-swarm/Dockerfile
+      context: ./backend
     depends_on:
       - server
     ports:
@@ -41,5 +43,5 @@ services:
       dockerfile: Dockerfile
       context: backend/simulation
     depends_on:
-      - warehouse-drones
+      - drone-swarm
       - server
