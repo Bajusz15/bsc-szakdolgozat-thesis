@@ -34,29 +34,29 @@ func TestOptimizeRoutes(t *testing.T) {
 	}
 
 	p1, p2, p3, p4 := models.Parcel{
-		TrackingID: 1,
-		Weight:     0,
+		ID:     1,
+		Weight: 0,
 		DropOffSite: models.GPS{
 			Latitude:  48.0745806,
 			Longitude: 20.7696448,
 		},
 	}, models.Parcel{
-		TrackingID: 2,
-		Weight:     0,
+		ID:     2,
+		Weight: 0,
 		DropOffSite: models.GPS{
 			Latitude:  48.0736485,
 			Longitude: 20.7791302,
 		},
 	}, models.Parcel{
-		TrackingID: 3,
-		Weight:     0,
+		ID:     3,
+		Weight: 0,
 		DropOffSite: models.GPS{
 			Latitude:  48.0637455,
 			Longitude: 20.7497039,
 		},
 	}, models.Parcel{
-		TrackingID: 4,
-		Weight:     0,
+		ID:     4,
+		Weight: 0,
 		DropOffSite: models.GPS{
 			Latitude:  48.066926,
 			Longitude: 20.7528756,
@@ -83,7 +83,10 @@ func TestOptimizeRoutes(t *testing.T) {
 	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude))
 	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude))
 	//cost = distance * consumption
-	dronesWithRoutes := s.OptimizeRoutes(wh, drones, parcels)
+	dronesWithRoutes, err := s.OptimizeRoutes(wh, drones, parcels)
+	if err != nil {
+		s.logger.Log("desc", "failed to set routes for drones")
+	}
 	//after solving the assigment problem, these are the original costs, with the solution marked with \
 	//\373	 326	303		182
 	//623 	\545	506		304
@@ -92,10 +95,10 @@ func TestOptimizeRoutes(t *testing.T) {
 	//The optimal value equals 2213.
 	//http://www.hungarianalgorithm.com/solve.php?c=373-326-303-182--623-545-506-304--1128-987-916-550--916-802-745-447&random=1
 
-	assert.Equal(t, 1, dronesWithRoutes[0].Parcel.TrackingID)
-	assert.Equal(t, 2, drones[1].Parcel.TrackingID)
-	assert.Equal(t, 4, dronesWithRoutes[2].Parcel.TrackingID)
-	assert.Equal(t, 3, dronesWithRoutes[3].Parcel.TrackingID)
+	assert.Equal(t, 1, dronesWithRoutes[0].Parcel.ID)
+	assert.Equal(t, 2, drones[1].Parcel.ID)
+	assert.Equal(t, 4, dronesWithRoutes[2].Parcel.ID)
+	assert.Equal(t, 3, dronesWithRoutes[3].Parcel.ID)
 
 }
 

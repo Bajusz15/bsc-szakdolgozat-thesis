@@ -3,16 +3,16 @@ package models
 import "time"
 
 type Telemetry struct {
-	Speed              float64          // meter/sec
+	Speed              float64          `json:"speed"` // meter/sec js
 	Location           GPS              `json:"location"`
-	Altitude           float64          `json:"altitude"`          // meter
-	Bearing            float64          `json:"compass_direction"` //bearing
-	Acceleration       float64          `json:"acceleration"`      //TODO: utana nezni ezt mibe kell mérni
-	BatteryLevel       int              `json:"battery_level"`     // ez csak százalék, 1-100
+	Altitude           float64          `json:"altitude"`      // meter
+	Bearing            float64          `json:"bearing"`       //bearing
+	Acceleration       float64          `json:"acceleration"`  //TODO: utana nezni ezt mibe kell mérni
+	BatteryLevel       int              `json:"battery_level"` // ez csak százalék, 1-100
 	BatteryTemperature int              `json:"battery_temperature"`
 	MotorTemperatures  []int            `json:"motor_temperatures"`
 	Errors             []TelemetryError `json:"errors" db:"errors"`
-	TimeStamp          time.Time
+	TimeStamp          time.Time        `json:"time_stamp"`
 }
 
 type TelemetryError int

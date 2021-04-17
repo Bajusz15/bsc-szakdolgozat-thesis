@@ -11,7 +11,10 @@ func Handler(d drone.Service, t telemetry.Service) http.Handler {
 	router := echo.New()
 
 	router.POST("/api/delivery", func(c echo.Context) error {
-		d.DeliverParcels()
+		err := d.DeliverParcels()
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "failed to start delivery")
+		}
 		return c.JSON(http.StatusOK, "delivery started")
 	})
 	router.POST("/api/delivery/telemetry", SaveTelemetry(d, t))

@@ -26,6 +26,7 @@ func NewService(r Repository, l log.Logger) *service {
 
 func (s *service) SaveTelemetry(droneID int, t models.Telemetry) error {
 	var err error
+	//level.Info(s.logger).Log("desc", "saving telemetry", "telemetry", t)
 	err = s.repo.InsertTelemetry(droneID, t)
 	if err != nil {
 		s.logger.Log("err", err, "desc", "failed to save drone telemetry")

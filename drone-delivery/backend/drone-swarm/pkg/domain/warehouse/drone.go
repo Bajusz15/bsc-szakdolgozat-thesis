@@ -6,12 +6,12 @@ type Drone struct {
 	ID            int           `json:"id" db:"id"`
 	Parcel        models.Parcel `json:"parcel"`
 	LastTelemetry models.Telemetry
-	Destinations  []models.Destination
-	Consumption   float64 `json:"consumption" db:"consumption"`
+	Destinations  []models.Destination `json:"destinations"`
+	Consumption   float64              `json:"consumption" db:"consumption"`
 }
 
 //type Parcel struct {
-//	TrackingID  int             `json:"tracking_id"`
+//	ID  int             `json:"tracking_id"`
 //	Weight      float64         `json:"weight"`
 //	FromAddress ShippingAddress `json:"from_address"` //ez lehet nem is kell
 //	ToAddress   ShippingAddress `json:"to_address"`

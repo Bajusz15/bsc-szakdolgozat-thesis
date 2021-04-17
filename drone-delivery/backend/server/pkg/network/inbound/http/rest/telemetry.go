@@ -15,9 +15,18 @@ type TelemetryData struct {
 
 func SaveTelemetry(d drone.Service, t telemetry.Service) echo.HandlerFunc {
 	return func(context echo.Context) error {
+		var err error
 		var td TelemetryData
-		context.Bind(td)
-		err := t.SaveTelemetry(td.DroneID, td.Telemetry)
+		//b, err := ioutil.ReadAll(context.Request().Body)
+		//defer context.Request().Body.Close()
+		//
+		//err = json.Unmarshal(b, &td)
+		err = context.Bind(&td)
+		//log.Println(td)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusOK, "could not save telemetry")
+		}
+		err = t.SaveTelemetry(td.DroneID, td.Telemetry)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusOK, "could not save telemetry")
 		}

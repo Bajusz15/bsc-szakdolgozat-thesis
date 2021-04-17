@@ -1,12 +1,12 @@
 package models
 
 type Drone struct {
-	ID           int `json:"id" db:"id"`
+	ID           int `json:"id" db:"drone_id"`
 	Telemetry    `json:"telemetry"`
 	Parcel       `json:"parcel"`
-	Destinations []Destination
-	Consumption  float64 `json:"consumption" db:"consumption"` // electricity used for the drone to travel 1 km with X parcel weight with speed of 10 m/s
-	Weight       float64
+	Destinations []Destination `json:"destinations"`
+	Consumption  float64       `json:"consumption" db:"consumption"` // electricity used for the drone to travel 1 km with X parcel weight with speed of 10 m/s
+	Weight       float64       `json:"weight" db:"weight"`
 }
 
 func (d Drone) GetConsumption(p Parcel) float64 {

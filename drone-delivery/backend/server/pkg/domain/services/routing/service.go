@@ -9,7 +9,7 @@ import (
 
 type Service interface {
 	CalculateDistance(lat1 float64, lng1 float64, lat2 float64, lng2 float64, unit ...string) float64
-	OptimizeRoutes(warehouse models.Warehouse, drones []models.Drone, parcels []models.Parcel) []models.Drone
+	OptimizeRoutes(warehouse models.Warehouse, drones []models.Drone, parcels []models.Parcel) ([]models.Drone, error)
 }
 
 type service struct {
@@ -20,11 +20,12 @@ func NewService(l goKitLog.Logger) *service {
 	return &service{l}
 }
 
-func (s *service) OptimizeRoutes(warehouse models.Warehouse, drones []models.Drone, parcels []models.Parcel) []models.Drone {
+func (s *service) OptimizeRoutes(warehouse models.Warehouse, drones []models.Drone, parcels []models.Parcel) ([]models.Drone, error) {
 	size := len(drones)
+	size2 := len(parcels)
 	var b = make([][]int, size)
 	for i, d := range drones {
-		b[i] = make([]int, size)
+		b[i] = make([]int, size2)
 		for j, p := range parcels {
 			cost := d.GetConsumption(p) * s.CalculateDistance(
 				warehouse.Location.Latitude,
@@ -40,6 +41,7 @@ func (s *service) OptimizeRoutes(warehouse models.Warehouse, drones []models.Dro
 	solution, err := hungarianAlgorithm.Solve(b)
 	if err != nil {
 		s.logger.Log("err", err, "desc", "failed to optimize routes")
+		return nil, err
 	}
 
 	warehouseDestination := models.Destination{
@@ -60,7 +62,7 @@ func (s *service) OptimizeRoutes(warehouse models.Warehouse, drones []models.Dro
 		//last destination is the warehouse
 		drones[i].Destinations = append(drones[i].Destinations, warehouseDestination)
 	}
-	return drones
+	return drones, nil
 }
 
 func (s *service) CalculateDistance(lat1, lng1, lat2, lng2 float64, unit ...string) float64 {

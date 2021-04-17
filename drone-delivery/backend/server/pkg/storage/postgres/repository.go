@@ -3,7 +3,9 @@ package postgres
 import (
 	"database/sql"
 	"drone-delivery/server/pkg/domain/models"
+	"encoding/json"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 	"log"
 )
@@ -66,30 +68,39 @@ func (s *Storage) GetTelemetriesByDrone(droneID int) ([]models.Telemetry, error)
 }
 
 func (s *Storage) InsertTelemetry(droneID int, t models.Telemetry) error {
-	_, err := s.db.Exec(`INSERT INTO telemetry (drone_id, speed, gps, altitude, bearing, acceleration, battery_level,
-                       			battery_temperature, motor_temperatures, time_stamp) VALUES ($1, $2, $3,$4,$5,$6,$7) `,
-		droneID, t.Speed, t.Location, t.Altitude, t.Bearing, t.Acceleration, t.BatteryLevel,
-		t.BatteryTemperature, t.MotorTemperatures, t.TimeStamp)
+	gps, err := json.Marshal(t.Location)
+	motorTemps := pq.Array(t.MotorTemperatures)
+	if err != nil {
+		return err
+	}
+	_, err = s.db.Exec(`INSERT INTO telemetry (drone_id, speed, gps, altitude, bearing, acceleration, battery_level,
+                       			battery_temperature, motor_temperatures, time_stamp) VALUES ($1, $2, $3,$4,$5,$6,$7, $8, $9, $10) `,
+		droneID, t.Speed, gps, t.Altitude, t.Bearing, t.Acceleration, t.BatteryLevel,
+		t.BatteryTemperature, motorTemps, t.TimeStamp)
 	return err
 }
 
 func (s *Storage) GetFreeDrones() ([]models.Drone, error) {
 	var drones []models.Drone
-	tx, err := s.db.Beginx()
-	if err != nil {
-		return nil, err
-	}
+	var err error
+	//tx, err := s.db.Beginx()
+	//if err != nil {
+	//	return nil, err
+	//}
 	//this is needed so there is no dirty read, repeatable read or phantom read
-	_, err = tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+	//_, err = tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+	//if err != nil {
+	//	return nil, err
+	//}
+	err = s.db.Select(&drones, `SELECT consumption, weight, id "drone_id" FROM drone WHERE state='free'`)
 	if err != nil {
+		//tx.Rollback()
 		return nil, err
 	}
-	err = tx.Get(&drones, "SELECT id FROM drone WHERE state='free' ")
-	if err != nil {
-		tx.Rollback()
-		return nil, err
+	for _, d := range drones {
+		log.Println(d)
 	}
-	tx.Commit()
+	//tx.Commit()
 	return drones, nil
 }
 
@@ -114,7 +125,23 @@ func (s *Storage) SetDroneStateIfFree(id int, state string) error {
 }
 
 func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
-	return nil, nil
+	var parcels []models.Parcel
+	tx, err := s.db.Beginx()
+	if err != nil {
+		return nil, err
+	}
+	//this is needed so there is no dirty read, repeatable read or phantom read
+	_, err = tx.Exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+	if err != nil {
+		return nil, err
+	}
+	err = tx.Select(&parcels, `SELECT id, name, tracking_id, weight, drop_off_gps->'latitude' "drop_off_site.latitude", drop_off_gps->'longitude' "drop_off_site.longitude" FROM parcel`)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	tx.Commit()
+	return parcels, nil
 }
 
 func (s *Storage) GetDronesDelivering() ([]models.Drone, error) {

@@ -10,7 +10,7 @@ import (
 
 type Service interface {
 	DeliverParcels() error
-	ProvisionDrone(d models.Drone) error
+	ProvisionDrone(wh models.Warehouse, d models.Drone) error
 	GetFreeDrones() ([]models.Drone, error)
 	GetDronesDelivering() ([]models.Drone, error)
 }
@@ -23,7 +23,7 @@ type Repository interface {
 }
 
 type OutboundAdapter interface {
-	FetchProvisionDroneEndpoint(d models.Drone) (success bool, err error)
+	FetchProvisionDroneEndpoint(wh models.Warehouse, d models.Drone) (success bool, err error)
 	//GetDrones() ([]models.Drone, error)
 }
 
@@ -59,22 +59,26 @@ func (s *service) DeliverParcels() error {
 		return err
 	}
 
-	drones := s.routingService.OptimizeRoutes(wh, freeDrones, parcels)
+	drones, err := s.routingService.OptimizeRoutes(wh, freeDrones, parcels)
+	if err != nil {
+		return errors.New("failed to set routes for drones, aborting delivery")
+	}
 
 	for _, d := range drones {
-		err = s.ProvisionDrone(d)
+		err = s.ProvisionDrone(wh, d)
 		if err != nil {
 			s.logger.Log("desc", "could not provision drone")
 			continue
 		}
+
 	}
 
 	return err
 }
 
-func (s *service) ProvisionDrone(d models.Drone) error {
+func (s *service) ProvisionDrone(wh models.Warehouse, d models.Drone) error {
 	logger := log.With(s.logger, "method", "ProvisionDrone")
-	success, err := s.adapter.FetchProvisionDroneEndpoint(d)
+	success, err := s.adapter.FetchProvisionDroneEndpoint(wh, d)
 	if err != nil {
 		level.Warn(logger).Log(
 			"description", "could not provision drone, outbound adapter returned an error",
@@ -93,7 +97,7 @@ func (s *service) GetFreeDrones() ([]models.Drone, error) {
 	drones, err := s.repo.GetFreeDrones()
 	if err != nil {
 		level.Error(logger).Log(
-			"desc", "could not get drones, outbound adapter returned an error",
+			"desc", "could not get drones, repository returned an error",
 			"err", err,
 		)
 	}

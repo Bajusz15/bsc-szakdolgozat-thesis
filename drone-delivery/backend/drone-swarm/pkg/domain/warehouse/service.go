@@ -45,7 +45,7 @@ func (s *service) ProvisionDrone(wh models.Warehouse, d models.Drone) error {
 	if err != nil {
 		s.logger.Log("err", err, "desc", "failed to set drone state")
 	}
-	err = s.repo.SetDroneStateIfFree(drone.ID, "flying")
+	err = s.repo.SetDroneStateIfFree(drone.ID, "in-flight")
 	if err != nil {
 		s.logger.Log("err", err, "desc", "failed to set drone state")
 	}

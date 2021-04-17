@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"drone-delivery/drone-swarm/pkg/config"
 	"drone-delivery/server/pkg/domain/models"
+	"drone-delivery/server/pkg/network/inbound/http/rest"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -11,7 +12,7 @@ import (
 )
 
 type Adapter interface {
-	SendTelemetryDataToServer() error
+	SendTelemetryDataToServer(droneID int, t models.Telemetry) error
 }
 
 type Repository interface {
@@ -24,11 +25,15 @@ func NewOutBoundAdapter() *adapter {
 	return &adapter{}
 }
 
-func (a *adapter) SendTelemetryDataToServer(t models.Telemetry) error {
-	postBody, _ := json.Marshal(t)
+func (a *adapter) SendTelemetryDataToServer(droneID int, t models.Telemetry) error {
+	td := rest.TelemetryData{
+		DroneID:   droneID,
+		Telemetry: t,
+	}
+	postBody, _ := json.Marshal(td)
 	responseBody := bytes.NewBuffer(postBody)
 	//Leverage Go's HTTP Post function to make request
-	resp, err := http.Post(config.ServerDomain+":"+config.ServerPort, "application/json", responseBody)
+	resp, err := http.Post(config.ServerDomain+":"+config.ServerPort+"/api/delivery/telemetry", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		return err

@@ -31,7 +31,7 @@ CREATE TABLE parcel
     name           VARCHAR(50) NOT NULL,
     tracking_id    VARCHAR(25)               default '',
     weight         FLOAT                     default 1,
-    gps       jsonb                     DEFAULT '{}'::jsonb,
+    drop_off_gps       jsonb                     DEFAULT '{}'::jsonb,
     assigned_drone INT REFERENCES drone (id) DEFAULT NULL,
     from_address   INT REFERENCES shipping_address (id),
     to_address     INT REFERENCES shipping_address (id)
@@ -41,7 +41,7 @@ CREATE TABLE parcel
 CREATE TABLE telemetry
 (
     id                  SERIAL PRIMARY KEY,
-    drone_id            INT REFERENCES drone (id),
+    drone_id            INT REFERENCES drone(id),
     speed               INT       DEFAULT 0,
     gps            jsonb     DEFAULT '{}'::jsonb,
     altitude            FLOAT     default 1,
@@ -54,6 +54,10 @@ CREATE TABLE telemetry
     time_stamp          timestamp DEFAULT NULL
 );
 
+ALTER TABLE drone ADD COLUMN weight DOUBLE PRECISION default 4;
+ALTER TABLE drone ADD COLUMN consumption DOUBLE PRECISION;
+ALTER TABLE parcel RENAME COLUMN gps TO drop_off_gps;
+ALTER TABLE telemetry ALTER COLUMN speed TYPE DOUBLE PRECISION;
 
 
 

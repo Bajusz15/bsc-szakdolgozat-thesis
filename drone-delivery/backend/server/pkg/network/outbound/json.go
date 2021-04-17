@@ -17,10 +17,18 @@ func NewJSONAdapter() *JSONAdapter {
 
 }
 
-func (a *JSONAdapter) FetchProvisionDroneEndpoint(d models.Drone) (success bool, err error) {
+type ProvisionData struct {
+	Drone     models.Drone
+	Warehouse models.Warehouse
+}
 
+func (a *JSONAdapter) FetchProvisionDroneEndpoint(wh models.Warehouse, d models.Drone) (success bool, err error) {
+	payload := ProvisionData{
+		Drone:     d,
+		Warehouse: wh,
+	}
 	buf := new(bytes.Buffer)
-	_ = json.NewEncoder(buf).Encode(d)
+	_ = json.NewEncoder(buf).Encode(payload)
 	resp, err := http.Post(config.DroneSwarmURL+"/provision", "application/json", buf)
 	if err != nil {
 		return false, err
