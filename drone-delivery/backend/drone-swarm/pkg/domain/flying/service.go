@@ -9,7 +9,6 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"log"
 	"math/rand"
-	"sync"
 	"time"
 )
 
@@ -39,10 +38,11 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 	//TODO: ezt szakdolgozatba esetleg bele lehet irni mint erdekesseg
 	period := time.Duration(200) * time.Millisecond
 	ticker := time.NewTicker(period)
-	var wg sync.WaitGroup
-
-	go func(drone *warehouse.Drone, group *sync.WaitGroup, logger goKitLog.Logger) {
-		defer wg.Done()
+	//var wg sync.WaitGroup
+	//wg.Add(1)
+	//in parameter: group *sync.WaitGroup,
+	go func(drone *warehouse.Drone, logger goKitLog.Logger) {
+		//defer wg.Done()
 		for range ticker.C {
 			var err error
 			i := 0
@@ -54,7 +54,8 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 					destination.Coordinates.Longitude,
 				)
 
-				distanceTravelled := drone.LastTelemetry.Speed * float64(period/(time.Duration(1)*time.Second)) //get meters travelled in a second)
+				//distanceTravelled := drone.LastTelemetry.Speed * float64(period/(time.Duration(1)*time.Second)) //get meters travelled in a second)
+				distanceTravelled := drone.LastTelemetry.Speed * 0.2 //get meters travelled in a second)
 				currentLat, currentLon := s.rs.CalculateDroneNextCoordinates(
 					drone.LastTelemetry.Location.Latitude,
 					drone.LastTelemetry.Location.Longitude,
@@ -63,7 +64,7 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 				)
 
 				t := models.Telemetry{
-					Speed: 0,
+					Speed: drone.LastTelemetry.Speed,
 					Location: models.GPS{
 						Latitude:  currentLat,
 						Longitude: currentLon,
@@ -71,7 +72,7 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 					Altitude:           50,
 					Bearing:            bearing,
 					Acceleration:       0,
-					BatteryLevel:       0,
+					BatteryLevel:       drone.LastTelemetry.BatteryLevel,
 					BatteryTemperature: 0,
 					MotorTemperatures:  nil,
 					Errors:             nil,
@@ -96,12 +97,12 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 							t.Errors = append(t.Errors, models.FailedToEjectPackage)
 						}
 					}
-				} else if distance > 150 && t.Speed < 15 {
-					t.Speed += 0.5
+				} else if distance > 150 && t.Speed < 12 {
+					t.Speed += 1
 				}
 
 				drone.LastTelemetry = t
-				logger.Log("telemetry", t)
+				log.Println(drone.LastTelemetry)
 				err = s.ts.SendTelemetry(d.ID, t)
 				if err != nil {
 					level.Warn(logger).Log("err", err, "desc", "failed to send telemetry data")
@@ -113,8 +114,8 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 			//if done, call ticker.Stop()
 		}
 		level.Info(logger).Log("drone_id", drone.ID, "desc", "drone stopped")
-	}(&d, &wg, s.logger)
-	wg.Wait()
+	}(&d, s.logger) // &wg,
+	//wg.Wait()
 	//main logic of flying return
 	return nil
 }
