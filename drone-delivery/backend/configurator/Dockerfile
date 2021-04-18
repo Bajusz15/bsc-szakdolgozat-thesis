@@ -21,5 +21,5 @@ RUN mkdir -p /go/src/drone-delivery/configurator
 WORKDIR /go/src/drone-delivery/configurator
 COPY --from=builder /go/src/drone-delivery/configurator /go/src/drone-delivery/configurator
 COPY --from=builder /go/bin/drone-delivery-configurator /go/bin/drone-delivery-configurator
-ENTRYPOINT ["/go/bin/drone-delivery-simulation"]
+ENTRYPOINT ["/go/bin/drone-delivery-configurator"]
 EXPOSE 3000
