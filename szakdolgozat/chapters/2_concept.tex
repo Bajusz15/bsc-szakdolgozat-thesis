@@ -73,7 +73,11 @@ A \textit{BeeCluster}\cite{beecluster} egy nyílt forráskódú, Golang-ban írt
 Tehát a feladatok előtt egy eszimulációt futtat, ami alapján optimalizálja, azaz hatékonyabbá és gyorsabbá teszi a valós folyamatot.
 Olyan feladaotkra használják mint a földrajzi térképezés, wifi lefedettség térkép, új utak feltérképezése.
 
-
+Jelenleg nincs a piacon olyan szállításra gyártott drón ami hatékonyan szállít csomagot. Egyelőre csak a szállításban
+érdekelt cégek használnak ilyen drónokat, de sajnos nem osztják meg a pontos paramétereket. Annyi használható
+információ érhető el, hogy az Amazon teszt drónjai átlag 70 km/h sebességgel 12 kilométeres körzetben tudnak szállítani
+2,3 kg-tól könnyebb csomagokat.
+De nem tudjuk a drón súlyát és azt se, hogy mennyi üzemanyagot fogyaszt.
 
 \Section{A szállítási probléma absztrakt modellje}
 
@@ -81,12 +85,14 @@ A szállítási modellünk alapvetően úgy nézne ki, hogy a raktár és a kisz
 A teherautók a kiszállítási hely közelében használnák a drónokat hogy kézbesítsék a csomagokat.
 
 Feltételezzük, hogy a drón és a csomag ugyanazon a raktárba vagy tehergépkocsiba található, de a szimuláció szemszögéből nem fontos hogy raktár vagy tehergépkocsi, az a lényeges, hogy egy helyen található, és a drón automatikusan fel tudja venni az adott csomagot
-valamilyen rendszeren keresztül, kevesebb mint 5 perc alatt.
+valamilyen rendszeren keresztül.
 
 A drónok 3G, 4G vagy 5G hálózaton kommunikálnának az adatközpontokkal.
 Az adott hálózaton elérhető sávszélesség függvényében a drónok változtathatják az elküldött adatok mennyiségét és a küldés ütemezését, gyakoriságát.
 
-A drónok repülése előre megtervezett. Minél hatékonyabb kell hogy legyen de valós időben kell reagálniuk a helyzetekre, problémákra.
+A drónok repülése előre megtervezett. A szállítási feladat egy speciális esetét feltételezzük, a hozzárendelési feladatot.
+Tehát hogy egy drónhoz 1 csomagot rendelünk. A kis hatótáv és erőforrások hiánya miatt a drónok egyébként sem tudnának egynél több csomagot szállítani csak nagyon ritka esetben.
+Azt, hogy melyik drónhoz melyik csomag tartozik a hozzárendelési feladat optimalizálásával kapjuk meg.
 A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben, hibamentesen
 és hatékonyan kell tudnia kezelni anomáliák nélkül.
 Ehhez nagyon fontos a terhelés megfelelő elosztása.
@@ -94,94 +100,87 @@ Ehhez nagyon fontos a terhelés megfelelő elosztása.
 A drónok csomag szállítási folyamatáról a következőket feltételezzük:
 \begin{itemize}
     \item Egy drón  véges akkumulátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
-    \item A csomag kézbesítés a csomag átvételére vonatkozó ideje elhanyagolható.
-    \item Minden drón fel van szerelve megfelelő kommunikácós és helymeghatározó eszközökkel, valamint az kommunikál az adatközpontokkal.
+    \item A csomag kézbesítésnek a csomag átvételére vonatkozó ideje elhanyagolható.
+    \item Minden drón fel van szerelve megfelelő kommunikácós és helymeghatározó eszközökkel, valamint kommunikál az adatközpontokkal.
     \item Feltételezzük hogy a drónok el vannak látva szenzorokkal hogy felismerjék az akadályokat és erről értesítsék az adatközpontokat.
+    \item Egy drón csak 1 csomagot képes szállítani.
 \end{itemize}
 
-A mi esetünkben csak akkumlátorral üzemelő drónok lesznek.
+A mi esetünkben csak akkumlátorral üzemelő drónok lesznek, és a drónok fogyasztása előre ismert.
 Minden drón küld telemetria adatokat.
-Ebbe benne lesz az akkumulátor töltöttség százalékban, valamint az akkumulátor hőmérséklete is.
 A drónok a telemetria adatok részeként küldenek helymeghatérozásra alkalmas földrajzi szélesség, hosszúság koordinátákat és magasságot.
-Továbbá, kapunk még információkat a drón sebességéről,
-gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről, mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
-Hogy el tudjuk dönteni melyik drón hova tud a leghatékonyabban szállítani, a következő mennyiségeket jelölni kell. Hány km-re van a felszállási ponttól a csomag leadási helye (távolság km-ben),
-mekkora akkumlátor töltöttséggel rendelkezik a drón (töltöttség százalékban), és a csomag súlya.
-Ezekből a jelölésekből, ha tudjuk hány csomag rendelés és hány drón van, már fel tudjuk írni az optimalizálási feladatot \ref{tab:optim}.
-Persze ezeket lehet még bonyolítani, tiltási tényezőket használni, például hogy nem melegedhet túl a motor.
+Továbbá, kapunk még információkat a drón sebességéről,gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről,
+akkumulátor(ok) töltöttségről és hőmérsékléről, mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
+Hogy el tudjuk dönteni melyik drón hova tud a leghatékonyabban szállítani, a következő mennyiségeket jelölni kell. Hány km-re van a felszállási ponttól a csomag leadási helye (távolság km-ben), mekkora a drón fogyasztása egy adott csomag súlyával együtt.
+Mivel minden drónhoz csak 1 csomagot rendelünk, ez a szállítási feladat egy speciális fajtája, úgynevezett hozzárendelési feladat amit a \textit{magyar módszer algoritmussal}\cite{magyar-modszer} meg lehet oldani.
+Tehát ha ismerjük a drónokat és a csomagokat, minden drónhoz rendelhetünk egy képletet ami megmutatja a fogyasztási költséget az adott csomaggal. Mivel ismerjük a drónok felszállási helyét és a csomagok címzett helyét is, jelölni tudjuk a távolságot is.
+A távolság és fogyasztásból kijön egy adott szállítás költsége. Értelemszerűen az adott szállításhoz azt a drónt keressük amelyik minimális költséggel szállítja el a csomagot. Tehát a fogyasztást szeretnénk minimalizálni.
+Persze ezeket lehetne még bonyolítani, tiltási tényezőket használni, például hogy egy drón maximum milyen súlyú csomagot vihet.
+
+\paragraph{Konkrét példa}
+Egy optimalizálási feladat a következőképp nézhet ki. Az egyszerűség kedvéért tegyük fel, hogy 4 drón és 4 csomag kapcsolatát vizsgáljuk. Jelölje $d_{i}$ a drónokat és $c_{j}$ a csomagokat, $i, j = 1, 2, 3.$
+A feladat modellje a következő:
+
+A drónok fogyasztása távolság egységenként rendre:
+$d_{1}$ fogyasztása = 800
+$d_{2}$ fogyasztása = 700
+$d_{3}$ fogyasztása = 650
+$d_{4}$ fogyasztása = 390
+
+A csomagok súlyával most az egyszerűség kedvéért nem számolunk, csak a távolságot vesszük figyelembe.
+$c_{1}$ távolsága = 749
+$c_{2}$ távolsága = 1255
+$c_{3}$ távolsága = 2269
+$c_{4}$ távolsága = 1844
+
+A kapott költségek a következő táblázatban\ref{tab:optim} figyelhetőek meg.
 
 \begin{table}[h]
     \centering
-    \caption{Optimalizálási feladat táblázat.}
+    \caption{Optimalizálási feladat táblázat. Az adott csomag szállításának költsége az adott drónnal.}
     \label{tab:optim}
-    \begin{tabular}{l|c|c|c|}
-        költségek &  &  & \\
+    \begin{tabular}{c|c|c|c|c|}
+        \diagbox[width=10em]{Csomag}{Drón}& d1 & d2 & d3 & d4\\
         \hline
-        távolság (km)  & 2 & 0.5 & 1 \\
-        töltöttség & 75 & 25 & 40 \\
-        súly & 1.2 & 0.5 & 0.9 \\
+        c1 & 599.92 & 524.93 & 487.43 & 292.46 \\
+        c2 & 1004.19 & 878.67 & 815.9 & 489.54 \\
+        c3 & 1815.68 & 1588.72 & 1475.24 & 885.14 \\
+        c4 & 1475.76 & 1291.29 & 1199.1 & 719.43 \\
         \hline
     \end{tabular}
 \end{table}
-A szállítási költségeket leíró  mátrix a következő:
-\[
-\begin{bmatrix}
-    2 & 0.5 & 1 \\
-    75 & 25 & 40\\
-    1.2 & 0.5 & 0.9
-\end{bmatrix}
-\]
-Az egyszerűség kedvéért tegyük fel, hogy három termelő és három fogyasztó kapcsolatát vizsgáljuk. A termelők készletei
-rendre 20, 15, 10; a fogyasztók igényei pedig 5, 20 és 20. Így a kereslet és kínálat egyensúlyban van.
-Jelölje $x_{ij}$ a $T_{i}$ termelőtől az $F_{j}$ fogyasztóhoz szállítandó árumennyiséget, $i, j = 1, 2, 3.$ A feladat modellje a következő:
+
+
 \begin{gather*}
-    2x_{11} +0.5x_{12} +1x_{13} +75x_{21} +25x_{22} +40x_{23} +1.2x_{31} +0.5x_{32} +0.9x_{33} \rightarrow min \\
-    x_{11} +x_{12} +x_{13} =20 \\
-    x_{21} +x_{22} +x_{24} =15 \\
-    x_{31} +_{32} +x_{33} =10 \\
-    x_{11} +x_{21} +x_{31} =5 \\
-    x_{12} +x_{22} +x_{32} =20 \\
-    x_{13} +x_{23} +x_{33} =20 \\
-    x_{ij} \geq0,  i,j = 1,2,3.
+    599.92x_{11} +524.93x_{12} +487.43x_{13} +292.46x_{14} +1004.19x_{21} +878.67x_{22} +{}\\
+    815.9x_{23} +489.54x_{24} +1815.68x_{31} +1588.72x_{32} +1475.24x_{33} +885.14x_{34} +{}\\
+    1475.76x_{41} +1291.29x_{42} +1199.1x_{43} +719.43x_{44} \rightarrow min \\
 \end{gather*}
-A feladat megoldását a fenti modell felírása helyett a feladat adatait tartalmazó táblázat megadásával kezdjük, feltüntetve a termelők készleteit, a fogyasztók igényeit és a szállítási költségeket:
+
+A feladat megoldását kezdjük a költségmátrix felírásával, ami lényegében megegyezik az előző táblázattal.
+
 \[
     \begin{matrix}
-         & F1 & F2 & F3 \\
-      T1 & 2 & 0.5 & 1 &  20 \\
-      T2 & 75 & 25 & 40 & 15\\
-      T3 & 1.2 & 0.5 & 0.9 & 10 \\
-         & 5 & 20 & 20
+        & D1 & D2 & D3 & D4 \\
+        C1 & 599.92 & 524.93 & 487.43 & 292.46  \\
+        C2 & 1004.19 & 878.67 & 815.9 & 489.54\\
+        C3 & 1815.68 & 1588.72 & 1475.24 & 885.14 \\
+        C4 & 1475.76 & 1291.29 & 1199.1 & 719.43 \\
     \end{matrix}
 \]
-A lineáris egyenletrendszer megoldását levezetni hosszú folyamat, erre nem tér ki a szakdolgozat. Egy programmal ellenőriztem hogy a végeredmény, azaz a minimális szállítási költség pontosan 41.
-%A megoldás menete: kiindulunk egy kezdeti megoldásból, amelyet fokozatosan javítunk, míg optimális megoldáshoz nem jutunk. A kezdeti megoldás felírásához az északnyugat sarok módszert használjuk. Tehát elinduun a táblázat bal felső cellájából, és olyan nagyságú szállítást kötünk le, amekkora csak lehetséges az adott viszonylatban, azaz az adott sor illetve oszlop végén álló számok közül a kisebbet.
-%Esetünkben ez 5 egységnyi áru, amivel az F1 fogyasztó igényeit teljesítjük, a T1 termelő készleteit 20-ról 15-re csökkentjük. Az első oszlopot elhagyhatjuk a táblázatból mivel az F1 fogyasztó igényeit teljesítettük.
-%Az első sor második cellája lesz az új északnyugat sarok. A T1 termelő maradék 15 áruját ide leköthetjük. Az F2 fogyasztónak így már csak 5 az igénye, a T1 termelőtől pedig mindent elszállítottunk.
-%Így haladva tovább a következő eredményt kapjuk:
-%
-%\[
-%    \begin{matrix}
-%        & F1 & F2 & F3 \\
-%        T1 & 5 & 15 & 0 &  20 \\
-%        T2 & 0 & 5 & 10 & 15\\
-%        T3 & 0 & 0 & 10 & 10 \\
-%        & 5 & 20 & 20
-%    \end{matrix}
-%\]
 
-%Azok a cellák, ahol szállítás valósul meg, a kiinduló megoldás bázisváltozóit jelzik. A kiinduló megoldás optimalitását a feladatban szereplő változók segítségével vizsgáljuk.
-%Minden sorhoz rendeljünk egy $u_{i}$ változót, minden oszlophoz pedig egy $v_{j}$ változót, majd a táblázatban szereplő bázismegoldás elemeire írjuk fel az egyenlőségeket (vagyis azon cellák esetén, ahol szállítás történik):
-%$u_{1} + v_{1}=2; u_{1} + v_{2} =0.5; u_{2} + v_{2}=25;u_{2} + v_{3}=40;u_{3} + v_{3}=0.9$
-%Az egyenletrendszert megoldhatjuk, ha az egyik változó értékét rögzítjük. Legyen $u_{1} = 0$! Így $v_{1}=2; v_{2}=0.5; u_{2}=24.5; v_{3}=15.5; u_{3}=-14.6$.
-%Azokra a cellákra ahol nem volt szállítás, képezzük ezt a különbséget: $\bar{c_{kl}} = c_{kl} - u_{k} - v_{l}$. Ezek az értékek mutatják meg mennyivel változna a célfüggvény,
-%ha az adott cellán 1 egységnyi szállítást kötünk le.
-%\begin{align}
-%    \bar{c_{13}} = c_{13} - u_{1} - v_{3} = 1 - 0 - 15.5 =  -14.5
-%    \bar{c_{21}} = c_{21} - u_{2} - v_{1} = 0.5 - 24.5 - 2 =  -26
-%    \bar{c_{31}} = c_{31} - u_{3} - v_{1} = 1 - 14.6 - 2 =  -15.6
-%\end{align}
+Mivel a feladatban a kereslet és kínálat egyensúlyban van, alkalmazhatjuk a magyar módszer algoritmus következő lépéseit. A kapott végeredmény az, hogy a minimális költség 3562.83.
+A következő mátrix már csak a megoldást tartalmazza:
 
+\[
+    \begin{matrix}
+        & D1 & D2 & D3 & D4 \\
+        C1 & 599.92 &  &  &  \\
+        C2 &  & 878.67 & & \\
+        C3 &  &  &  & 885.14 \\
+        C4 &  &  & 1199.1 &  \\
+    \end{matrix}
+\]
 
 
 \Section{A szállítási probléma egy konkrét példája}
@@ -217,13 +216,14 @@ hogy egy Java vagy C++ program a Google-nél 1 hét alatt fordult le, csak hogy 
 A nyelvek bonyolultságával is baj volt, ahogy fejlődtek a nyelvek egyre nehezebb volt egy régi programot tovább fejleszteni,
 illetve új programozóknak megtanulni a nyelvet.
 
-Hogy ezeket a problémákat orvosolják, a Google a legjobb tervezőket hívta össze, hogy megalkossák a Go nyelvet.
+Hogy ezeket a problémákat orvosolják, a Google a legjobb tervezőket hívta össze, hogy együtt alkossanak egy új nyelvet.
+Így született meg a Golang.
 A fejlesztést olyan szakemberek vezették, akik korábban a Unix operációs rendszer, a Java HotSpot JVM
 vagy az UTF-8 karakterkódolás fejlesztésében is kulcsszerepet játszottak.
 Például Ken Thompson, Rob Pike és Robert Griesemer.
 
-A cél az volt, hogy régebbi általános célú nyelvek hiányosságait kiküszöböljék, és csökkentsék a bonyolultságot, hiszen a megváltozott üzleti és technológiai körülmények
-között ezek a nyelvek nem bizonyultak elég hatékonynak.
+A cél az volt, hogy régebbi általános célú nyelvek hiányosságait kiküszöböljék, és csökkentsék a bonyolultságot,
+hiszen a megváltozott üzleti és technológiai körülmények között ezek a nyelvek nem bizonyultak elég hatékonynak.
 Nem várhatták el hogy egy friss diplomás hatékonyan kezeljen egy olyan ''felpuffadt'' nyelvet mint a Java.
 
 A felhőben való futtatásra olyan alkalmazások készítésére volt igény, amelyek nagy hatékonysággal futnak és kiválóan skálázódnak.
@@ -232,7 +232,7 @@ A végeredmény egy olyan nyelv amely általános célú, könnyen tanulható, k
 akár időben és földrajzi elhelyezkedésben is megosztva.
 
 Szintaktikailag a C-hez hasonlít de nagyon könnyen tanulható nyelv.
-A legnagyobb újítás a konkurrencia mechanizmus (főleg a saját ütemező) és hibakezelés volt.
+A legnagyobb újítás a konkurrencia mechanizmus (főleg a saját ütemező) és hibakezelés körül volt.
 A Go konkurrencia mechanizmusa megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
 Gyorsan lefordul gépi kódra de rendelkezik garbage collection-el és runtime reflection is van beépítve.
 Gyors, statikus nyelv de úgy érezzük mintha egy dinamikus futás időben fordított nyelv lenne.
