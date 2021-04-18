@@ -6,6 +6,7 @@ import (
 	goKitLog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"os"
 	"testing"
 )
@@ -78,25 +79,48 @@ func TestOptimizeRoutes(t *testing.T) {
 	logger = level.NewFilter(logger, level.AllowInfo()) // <--
 	logger = goKitLog.With(logger, "ts", goKitLog.DefaultTimestampUTC)
 	s := NewService(logger)
-	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude))
-	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude))
-	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude))
-	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude))
-	//cost = distance * consumption
+	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude, "K"))
+	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude,"K"))
+	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude,"K"))
+	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude,"K"))
+	log.Println("costs of parcels with drone 1")
+	cost11 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude, "K") * d1.Consumption
+	cost12 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude, "K") * d1.Consumption
+	cost13 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude, "K") * d1.Consumption
+	cost14 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude, "K") * d1.Consumption
+	log.Println(cost11, cost12, cost13, cost14)
+	log.Println("costs of parcels with drone 2")
+	cost21 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude, "K") * d2.Consumption
+	cost22 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude, "K") * d2.Consumption
+	cost23 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude, "K") * d2.Consumption
+	cost24 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude, "K") * d2.Consumption
+	log.Println(cost21, cost22, cost23, cost24)
+	log.Println("costs of parcels with drone 3")
+	cost31 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude, "K") * d3.Consumption
+	cost32 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude, "K") * d3.Consumption
+	cost33 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude, "K") * d3.Consumption
+	cost34 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude, "K") * d3.Consumption
+	log.Println(cost31, cost32, cost33, cost34)
+	log.Println("costs of parcels with drone 4")
+	cost41 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude, "K") * d4.Consumption
+	cost42 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude, "K") * d4.Consumption
+	cost43 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude, "K") * d4.Consumption
+	cost44 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude, "K") * d4.Consumption
+	log.Println(cost41, cost42, cost43, cost44)
 	dronesWithRoutes, err := s.OptimizeRoutes(wh, drones, parcels)
 	if err != nil {
 		s.logger.Log("desc", "failed to set routes for drones")
 	}
 	//after solving the assigment problem, these are the original costs, with the solution marked with \
-	//\373	 326	303		182
-	//623 	\545	506		304
-	//1,128	987		916		\550
-	//916   802		\745	447
-	//The optimal value equals 2213.
-	//http://www.hungarianalgorithm.com/solve.php?c=373-326-303-182--623-545-506-304--1128-987-916-550--916-802-745-447&random=1
+	//\599.92	 524.93		487.43  	292.46
+	//1004.19 	\878.67		815.9		489.54
+	//1815.68	1588.72		1475.24		\885.14
+	//1475.76   1291.29		\1199.1		719.43
+	//The optimal value equals 3562.83
+	//https://www.hungarianalgorithm.com/solve.php?c=599.92-524.93-487.43-292.46--1004.19-878.67-815.9-489.54--1815.68-1588.72-1475.24-885.14--1475.76-1291.29-1199.1-719.43&random=1
 
 	assert.Equal(t, 1, dronesWithRoutes[0].Parcel.ID)
-	assert.Equal(t, 2, drones[1].Parcel.ID)
+	assert.Equal(t, 2, dronesWithRoutes[1].Parcel.ID)
 	assert.Equal(t, 4, dronesWithRoutes[2].Parcel.ID)
 	assert.Equal(t, 3, dronesWithRoutes[3].Parcel.ID)
 

@@ -33,9 +33,7 @@ func NewService(ts telemetry.Service, rs routing.Service, l goKitLog.Logger) Ser
 
 func (s *service) StartFlight(d warehouse.Drone) error {
 	s.logger.Log("drone_id", d.ID, "desc", "drone started flying, ready to send telemetry")
-	log.Println(d.Destinations[0])
-	log.Println(d.Destinations[1])
-	//TODO: ezt szakdolgozatba esetleg bele lehet irni mint erdekesseg
+	//TODO: ezt szakdolgozatba esetleg bele lehet irni mint erdekesseg, ahogyan meg van oldva ez a szimulacio
 	period := time.Duration(200) * time.Millisecond
 	ticker := time.NewTicker(period)
 	//var wg sync.WaitGroup

@@ -15,5 +15,5 @@ func (d Drone) GetConsumption(p Parcel) float64 {
 		return d.Consumption
 	}
 	//TODO: ennek biztos van jobb képlete, utána kell nézni
-	return p.Weight*5 + d.Consumption
+	return p.Weight*120 + d.Consumption
 }

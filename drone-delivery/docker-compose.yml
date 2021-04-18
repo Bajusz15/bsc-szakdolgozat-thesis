@@ -30,6 +30,7 @@ services:
 #      - PGDATABASE=postgres
 #      - PGPASSWORD=postgres
 #      todo: itt majd lesz több adatbázis is, mert ugye össze kell hasonlítani
+      - DRONE_SWARM_URL=http://drone-swarm:2000
   drone-swarm:
     build:
       dockerfile: drone-swarm/Dockerfile
@@ -37,11 +38,19 @@ services:
     depends_on:
       - server
     ports:
-    - '8080'
-  simulation:
+    - '2000:2000'
+    environment:
+      - SERVER_DOMAIN=http://server
+      - SERVER_PORT=5000
+      - PGPORT=5432
+      - PGDATABASE=dbdrone_delivery
+      - PGPASSWORD=P&|RgRopW3xY-u%v%q&m][5g-7igei>6
+      - PGUSER=dbmasteruser
+      - PGHOST=ls-292dbdaceb3df8fb20156df0e027d38a1456fd11.cy9by1o5bg1s.eu-central-1.rds.amazonaws.com
+  configurator:
     build:
       dockerfile: Dockerfile
-      context: backend/simulation
+      context: backend/configurator
     depends_on:
       - drone-swarm
       - server
