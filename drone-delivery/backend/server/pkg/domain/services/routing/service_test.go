@@ -79,10 +79,10 @@ func TestOptimizeRoutes(t *testing.T) {
 	logger = level.NewFilter(logger, level.AllowInfo()) // <--
 	logger = goKitLog.With(logger, "ts", goKitLog.DefaultTimestampUTC)
 	s := NewService(logger)
-	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude, "K"))
-	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude,"K"))
-	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude,"K"))
-	//fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude,"K"))
+	fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude, "K"))
+	fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude, "K"))
+	fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p3.DropOffSite.Latitude, p3.DropOffSite.Longitude, "K"))
+	fmt.Printf("distance is %v km", s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p4.DropOffSite.Latitude, p4.DropOffSite.Longitude, "K"))
 	log.Println("costs of parcels with drone 1")
 	cost11 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p1.DropOffSite.Latitude, p1.DropOffSite.Longitude, "K") * d1.Consumption
 	cost12 := s.CalculateDistance(wh.Location.Latitude, wh.Location.Longitude, p2.DropOffSite.Latitude, p2.DropOffSite.Longitude, "K") * d1.Consumption

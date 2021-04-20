@@ -15,8 +15,6 @@ type Adapter interface {
 	SendTelemetryDataToServer(droneID int, t models.Telemetry) error
 }
 
-type Repository interface {
-}
 
 type adapter struct {
 }

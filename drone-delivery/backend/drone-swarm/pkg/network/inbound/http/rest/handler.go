@@ -11,6 +11,11 @@ type ProvisionData struct {
 	Drone     models.Drone
 	Warehouse models.Warehouse
 }
+//
+//func configurationHandler() http.Handler {
+//	router := echo.New()
+//	router.POST()
+//}
 
 func Handler(w warehouse.Service) http.Handler {
 	router := echo.New()

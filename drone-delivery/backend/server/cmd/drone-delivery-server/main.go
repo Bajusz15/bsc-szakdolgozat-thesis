@@ -5,13 +5,17 @@ import (
 	"drone-delivery/server/pkg/domain/services/drone"
 	"drone-delivery/server/pkg/domain/services/routing"
 	"drone-delivery/server/pkg/domain/services/telemetry"
+	grpcInbound "drone-delivery/server/pkg/network/inbound/http/grpc"
+	"drone-delivery/server/pkg/network/inbound/http/grpc/protobuf"
 	"drone-delivery/server/pkg/network/inbound/http/rest"
 	"drone-delivery/server/pkg/network/outbound"
 	"drone-delivery/server/pkg/storage/postgres"
 	"fmt"
 	goKitLog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 	"net/http"
 	"os"
 )
@@ -42,9 +46,23 @@ func main() {
 	ts = telemetry.NewService(storage, logger)
 	rs = routing.NewService(logger)
 	ds = drone.NewService(storage, jsonAdapter, logger, rs)
-
+	//REST API
 	router := rest.Handler(ds, ts)
-	log.Fatal(http.ListenAndServe(":5000", router))
+	go log.Fatal(http.ListenAndServe(":5000", router))
+
+	//gRPC
+	listener, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		log.Fatal("Error creating to tcp listener")
+	}
+	var options []grpc.ServerOption
+	grpcServer := grpc.NewServer(options...)
+	grpcAdapter := grpcInbound.NewAdapter(ts, grpcServer)
+	protobuf.RegisterTelemetryServiceServer(grpcServer, grpcAdapter)
+
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }
 
 // go-kit lesz használva, mint  mikro-szerviz strukturat tamogato könyvtár

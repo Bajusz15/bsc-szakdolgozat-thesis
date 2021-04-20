@@ -30,8 +30,11 @@ func main() {
 	logger = goKitLog.NewLogfmtLogger(os.Stderr)
 	logger = level.NewFilter(logger, level.AllowInfo()) // <--
 	logger = goKitLog.With(logger, "ts", goKitLog.DefaultTimestampUTC)
-	outboundAdapter := json.NewOutBoundAdapter()
-	telemetryService := telemetry.NewService(outboundAdapter, logger)
+	jsonOutboundAdapter := json.NewOutBoundAdapter()
+	//grpcOutboundAdapter := grpc.NewOutBoundAdapter()
+
+
+	telemetryService := telemetry.NewService(jsonOutboundAdapter, logger)
 
 	geo := ellipsoid.Init("WGS84", ellipsoid.Degrees, ellipsoid.Meter, ellipsoid.LongitudeIsSymmetric, ellipsoid.BearingIsSymmetric)
 	routingService := routing.NewService(geo)
