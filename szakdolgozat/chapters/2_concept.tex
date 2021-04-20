@@ -73,11 +73,30 @@ A \textit{BeeCluster}\cite{beecluster} egy nyílt forráskódú, Golang-ban írt
 Tehát a feladatok előtt egy eszimulációt futtat, ami alapján optimalizálja, azaz hatékonyabbá és gyorsabbá teszi a valós folyamatot.
 Olyan feladaotkra használják mint a földrajzi térképezés, wifi lefedettség térkép, új utak feltérképezése.
 
-Jelenleg nincs a piacon olyan szállításra gyártott drón ami hatékonyan szállít csomagot. Egyelőre csak a szállításban
+
+Jelenleg nincs a piacon olyan, \textbf{bárki számára elérhető} szállításra gyártott drón ami hatékonyan szállít csomagot. Egyelőre csak a szállításban
 érdekelt cégek használnak ilyen drónokat, de sajnos nem osztják meg a pontos paramétereket. Annyi használható
 információ érhető el, hogy az Amazon teszt drónjai átlag 70 km/h sebességgel 12 kilométeres körzetben tudnak szállítani
 2,3 kg-tól könnyebb csomagokat.
 De nem tudjuk a drón súlyát és azt se, hogy mennyi üzemanyagot fogyaszt.
+
+A Missouri Egyetemen végeztek egy \textit{a drónok fogyasztására irányuló kutatást}\cite{dron-szallitas-kutatas},
+amiből több érdekes dolog is kiderül. Mind a kis (1-3 kg) és nagy (5-15kg) drónok hatékony sebessége  12m/s körül van.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{images/fogyasztas-kis-dronok.png}
+    \caption{Kis drónok fogyasztása}
+    \label{fig:kis}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{images/fogyasztas-nagy-dronok.png}
+    \caption{Nagy drónok fogyasztása}
+    \label{fig:nagy}
+\end{figure}
 
 \Section{A szállítási probléma absztrakt modellje}
 
@@ -128,12 +147,14 @@ $d_{3}$ fogyasztása = 650
 $d_{4}$ fogyasztása = 390
 
 A csomagok súlyával most az egyszerűség kedvéért nem számolunk, csak a távolságot vesszük figyelembe.
-$c_{1}$ távolsága = 749
-$c_{2}$ távolsága = 1255
-$c_{3}$ távolsága = 2269
-$c_{4}$ távolsága = 1844
+$c_{1}$ távolsága = 0,749
+$c_{2}$ távolsága = 1,255
+$c_{3}$ távolsága = 2,269
+$c_{4}$ távolsága = 1,844 \\
 
-A kapott költségek a következő táblázatban\ref{tab:optim} figyelhetőek meg.
+A költségeket a következő képlettel számolhatjuk ki.
+$K\ddot olts\acute eg_{ij} = d_{i} * c_{j}$.
+A kapott költségek a következő táblázatban \ref{tab:optim} figyelhetőek meg.
 
 \begin{table}[h]
     \centering
@@ -170,7 +191,7 @@ A feladat megoldását kezdjük a költségmátrix felírásával, ami lényegé
 \]
 
 Mivel a feladatban a kereslet és kínálat egyensúlyban van, alkalmazhatjuk a magyar módszer algoritmus következő lépéseit. A kapott végeredmény az, hogy a minimális költség 3562.83.
-A következő mátrix már csak a megoldást tartalmazza:
+A következő mátrix már csak a megoldást tartalmazza az eredeti költségmátrixra vetítve:
 
 \[
     \begin{matrix}

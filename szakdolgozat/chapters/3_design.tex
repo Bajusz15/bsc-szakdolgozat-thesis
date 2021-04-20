@@ -19,7 +19,7 @@ feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.2]{images/szakdolgozat-3-program-abra.png}
-    \caption{Hexagonal architecture driver and driven actors}
+    \caption{A 3 program}
     \label{fig:3program}
 \end{figure}
 
@@ -79,7 +79,7 @@ A drón-raj program  olyan adatokat fog generálni, amelyet egy valós drónok g
 
 \section{Számítási problémák}
 
-\paragraph{Cartesian szerinti}
+\subsection{Cartesian szerinti}
 \begin{gather}
     P_1(5,6,3) \\
     P_2(7,4,9) \\
@@ -144,16 +144,31 @@ t idő múlva egy adott pillanatban koordináták meghatározása:
     z = z_0 + V_z * t = z_0 + \frac{z}{\sqrt{x^2 + y^2 + z^2}} * t = 6 + \frac{6}{\sqrt{44}} * 10 * t
 \end{gather}
 
-\paragraph{Az Ortodroma számítás, a föld alakját figyelembe véve}
-
+\subsection{Az Ortodroma számítás, a föld alakját figyelembe véve}
 
 Mivel gömbi geometria lényegesen eltér az euklideszi geometriától ezért a távolságszámításra használt matematikai képletek is eltérőek.
 Az euklideszi geometriában a legrövidebb távolságot a két pontot összekötő egyenes,
 a nem euklideszi geometriában a két pontot összekötő geodetikus vonal (gömb esetén főkör) mentén mérjük.
 
+\paragraph{A legrövidebb út kiszámítása}
 \begin{gather}
-    d = acos(sin(\phi_1) * sin(\phi_2) * cos(\phi_1) * cos(\phi_2) * cos(\triangle \lambda)) * R
+    d = arccos(sin\phi_1 * sin\phi_2 * cos\phi_1)* cos\phi_2 * cos\Delta \lambda) * R
 \end{gather}
+
+\paragraph{Irány kiszámítása}
+Ahogy az főkörön haladunk az irányunk folyamatosan változik. Tehát amikor megérkezünk a célhoz, nem ugyanabban az irányba nézünk mint amikor elindultunk.
+A drón szimulációban ez a telemetria adatokban is megfigyelhető.
+\begin{gather*}
+    \varphi = atan2(sin\Delta\lambda * cos\phi_{2}, cos\phi_{1} * sin\phi_{2} - sin\phi_{1} * cos\phi_{2} * cos\Delta\lambda)
+\end{gather*}
+ahol $\phi_{1}\lambda_{1}$ a kezdeti pont, és $\phi_{2}\lambda_{2}$ a vég pont és $\Delta\lambda$ pedig a különbség a hosszúsági fokokban.
+
+\paragraph{Cél koordináták kiszámítása, ha ismerjük a megtett távolságot, irányt, és kezdő koordinátákat}
+\begin{gather}
+    \phi_{2} = arcsin(sin \phi_{1} * cos \delta + cos \phi_{1} * sin \delta * cos \theta)\\
+    \lambda_{2} = \lambda_{1} + arctan2(sin\theta * sin\delta  * cos\phi_{1}, cos\delta - sin\phi_{1} * sin\phi_{2})
+\end{gather}
+ahol $\phi$ a szélességi fok, $\lambda$ a hosszúsági fok, $\theta$ az irány, $\delta$ a szögtávolság d/R és d a megtett távolság, R pedig a Föld sugara.
 
 \Section{Táblázatok}
 
