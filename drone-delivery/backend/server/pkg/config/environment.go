@@ -16,6 +16,14 @@ var PostgresConfig struct {
 	PW       string
 }
 
+var MongoConfig struct {
+	UserName string
+	Database string
+	Host     string
+	Port     string
+	PW       string
+}
+
 func SetConfig() {
 	flag.StringVar(&DroneSwarmURL, "drone swarm domain url", os.Getenv("DRONE_SWARM_URL"),
 		"An url for the drone swarm application, with protocol")

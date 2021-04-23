@@ -75,6 +75,7 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 					MotorTemperatures:  nil,
 					Errors:             nil,
 					TimeStamp:          time.Now(), // <- ticker.C
+					DroneID:            drone.ID,
 				}
 
 				if distance < 150 && t.Speed > 2 {
@@ -101,7 +102,7 @@ func (s *service) StartFlight(d warehouse.Drone) error {
 
 				drone.LastTelemetry = t
 				log.Println(drone.LastTelemetry)
-				err = s.ts.SendTelemetry(d.ID, t)
+				err = s.ts.SendTelemetry(t)
 				if err != nil {
 					level.Warn(logger).Log("err", err, "desc", "failed to send telemetry data")
 				}

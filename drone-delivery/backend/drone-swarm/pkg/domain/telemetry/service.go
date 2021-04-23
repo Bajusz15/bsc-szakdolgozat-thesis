@@ -6,11 +6,12 @@ import (
 )
 
 type Service interface {
-	SendTelemetry(droneID int, t models.Telemetry) error
+	SendTelemetry(t models.Telemetry) error
+	ChangeService(a OutboundAdapter)
 }
 
 type OutboundAdapter interface {
-	SendTelemetryDataToServer(droneID int, t models.Telemetry) error
+	SendTelemetryDataToServer(t models.Telemetry) error
 }
 
 type service struct {
@@ -18,8 +19,8 @@ type service struct {
 	logger  goKitLog.Logger
 }
 
-func (s service) SendTelemetry(droneID int, t models.Telemetry) error {
-	err := s.adapter.SendTelemetryDataToServer(droneID, t)
+func (s service) SendTelemetry(t models.Telemetry) error {
+	err := s.adapter.SendTelemetryDataToServer(t)
 	if err != nil {
 		s.logger.Log("err", err, "desc", "outbound adapter returned with error")
 		return err
@@ -29,4 +30,8 @@ func (s service) SendTelemetry(droneID int, t models.Telemetry) error {
 
 func NewService(a OutboundAdapter, l goKitLog.Logger) *service {
 	return &service{a, l}
+}
+
+func (s *service) ChangeService(a OutboundAdapter) {
+	s.adapter = a
 }

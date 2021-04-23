@@ -25,6 +25,15 @@ type service struct {
 	logger        goKitLog.Logger
 }
 
+func NewService(r Repository, fl FlyingService, l goKitLog.Logger) *service {
+	return &service{r, fl, l}
+}
+
+func (s *service) ChangeService(r Repository, fl FlyingService) {
+	s.repo = r
+	s.flyingService = fl
+}
+
 func (s *service) ProvisionDrone(wh models.Warehouse, d models.Drone) error {
 
 	drone := Drone{
@@ -56,8 +65,4 @@ func (s *service) StartDrone(d Drone) error {
 	err := s.flyingService.StartFlight(d)
 	//TODO: call flying service to start the flight, and set the LastTelemetry to the warehouse's coordinates
 	return err
-}
-
-func NewService(r Repository, fl FlyingService, l goKitLog.Logger) *service {
-	return &service{r, fl, l}
 }

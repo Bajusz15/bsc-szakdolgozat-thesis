@@ -13,6 +13,7 @@ type Service interface {
 	ProvisionDrone(wh models.Warehouse, d models.Drone) error
 	GetFreeDrones() ([]models.Drone, error)
 	GetDronesDelivering() ([]models.Drone, error)
+	ChangeService(r Repository)
 }
 
 type Repository interface {
@@ -40,6 +41,10 @@ func (s *service) GetDronesDelivering() ([]models.Drone, error) {
 
 func NewService(r Repository, ea OutboundAdapter, l log.Logger, rs routing.Service) *service {
 	return &service{r, ea, l, rs}
+}
+
+func (s *service) ChangeService(r Repository) {
+	s.repo = r
 }
 
 func (s *service) DeliverParcels() error {

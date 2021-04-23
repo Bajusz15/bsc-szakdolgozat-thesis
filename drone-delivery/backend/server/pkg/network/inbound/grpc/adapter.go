@@ -3,7 +3,7 @@ package grpc
 import (
 	"drone-delivery/server/pkg/domain/models"
 	"drone-delivery/server/pkg/domain/services/telemetry"
-	"drone-delivery/server/pkg/network/inbound/http/grpc/protobuf"
+	"drone-delivery/server/pkg/network/inbound/grpc/protobuf"
 	"fmt"
 	"google.golang.org/grpc"
 	"io"
@@ -33,7 +33,6 @@ func (a *adapter) TelemetryStream(stream protobuf.TelemetryService_TelemetryStre
 			log.Printf("Error while reading client stream: %v\n", err)
 			return err
 		}
-		droneID := req.GetDroneId()
 		t := req.GetTelemetry()
 		var motorTemps []int
 		var telemetryErrors []models.TelemetryError
@@ -58,8 +57,9 @@ func (a *adapter) TelemetryStream(stream protobuf.TelemetryService_TelemetryStre
 			MotorTemperatures:  motorTemps,
 			Errors:             telemetryErrors,
 			TimeStamp:          t.TimeStamp.AsTime(),
+			DroneID:            int(t.GetDroneId()),
 		}
-		err = a.telemetryService.SaveTelemetry(int(droneID), telemetryData)
+		err = a.telemetryService.SaveTelemetry(telemetryData)
 
 	}
 }

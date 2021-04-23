@@ -9,7 +9,6 @@ import (
 )
 
 type TelemetryData struct {
-	DroneID   int              `json:"drone_id"`
 	Telemetry models.Telemetry `json:"telemetry"`
 }
 
@@ -26,7 +25,7 @@ func SaveTelemetry(d drone.Service, t telemetry.Service) echo.HandlerFunc {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusOK, "could not save telemetry")
 		}
-		err = t.SaveTelemetry(td.DroneID, td.Telemetry)
+		err = t.SaveTelemetry(td.Telemetry)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusOK, "could not save telemetry")
 		}

@@ -1,9 +1,9 @@
 package models
 
 type Drone struct {
-	ID           int `json:"id" db:"drone_id"`
-	Telemetry    `json:"telemetry"`
-	Parcel       `json:"parcel"`
+	ID           int           `json:"id" db:"drone_id"`
+	Telemetry    Telemetry     `json:"telemetry"`
+	Parcel       Parcel        `json:"parcel"`
 	Destinations []Destination `json:"destinations"`
 	Consumption  float64       `json:"consumption" db:"consumption"` // electricity used for the drone to travel 1 km with X parcel weight with speed of 10 m/s
 	Weight       float64       `json:"weight" db:"weight"`

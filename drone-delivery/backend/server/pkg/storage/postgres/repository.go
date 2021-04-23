@@ -67,7 +67,7 @@ func (s *Storage) GetTelemetriesByDrone(droneID int) ([]models.Telemetry, error)
 	return nil, nil
 }
 
-func (s *Storage) InsertTelemetry(droneID int, t models.Telemetry) error {
+func (s *Storage) InsertTelemetry(t models.Telemetry) error {
 	gps, err := json.Marshal(t.Location)
 	motorTemps := pq.Array(t.MotorTemperatures)
 	if err != nil {
@@ -75,7 +75,7 @@ func (s *Storage) InsertTelemetry(droneID int, t models.Telemetry) error {
 	}
 	_, err = s.db.Exec(`INSERT INTO telemetry (drone_id, speed, gps, altitude, bearing, acceleration, battery_level,
                        			battery_temperature, motor_temperatures, time_stamp) VALUES ($1, $2, $3,$4,$5,$6,$7, $8, $9, $10) `,
-		droneID, t.Speed, gps, t.Altitude, t.Bearing, t.Acceleration, t.BatteryLevel,
+		t.DroneID, t.Speed, gps, t.Altitude, t.Bearing, t.Acceleration, t.BatteryLevel,
 		t.BatteryTemperature, motorTemps, t.TimeStamp)
 	return err
 }
@@ -92,7 +92,7 @@ func (s *Storage) GetFreeDrones() ([]models.Drone, error) {
 	//if err != nil {
 	//	return nil, err
 	//}
-	err = s.db.Select(&drones, `SELECT consumption, weight, id "drone_id" FROM drone WHERE state='free'`)
+	err = s.db.Select(&drones, `SELECT id "drone_id", consumption, weight FROM drone WHERE state='free'`)
 	if err != nil {
 		//tx.Rollback()
 		return nil, err

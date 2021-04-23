@@ -20,9 +20,9 @@ message Telemetry {
   repeated int32 motor_temperatures = 8;
   repeated int32 errors = 9;
   google.protobuf.Timestamp time_stamp = 10;
+  int32 drone_id = 11;
 }
 message TelemetryDataRequest {
-  int32 drone_id  = 1;
   Telemetry telemetry = 2;
 }
 

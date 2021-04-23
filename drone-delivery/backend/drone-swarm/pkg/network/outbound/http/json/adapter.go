@@ -12,9 +12,8 @@ import (
 )
 
 type Adapter interface {
-	SendTelemetryDataToServer(droneID int, t models.Telemetry) error
+	SendTelemetryDataToServer(t models.Telemetry) error
 }
-
 
 type adapter struct {
 }
@@ -23,15 +22,14 @@ func NewOutBoundAdapter() *adapter {
 	return &adapter{}
 }
 
-func (a *adapter) SendTelemetryDataToServer(droneID int, t models.Telemetry) error {
+func (a *adapter) SendTelemetryDataToServer(t models.Telemetry) error {
 	td := rest.TelemetryData{
-		DroneID:   droneID,
 		Telemetry: t,
 	}
 	postBody, _ := json.Marshal(td)
 	responseBody := bytes.NewBuffer(postBody)
 	//Leverage Go's HTTP Post function to make request
-	resp, err := http.Post(config.ServerDomain+":"+config.ServerPort+"/api/delivery/telemetry", "application/json", responseBody)
+	resp, err := http.Post(config.ServerHTTPDomain+":"+config.ServerHTTPPort+"/api/delivery/telemetry", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		return err
