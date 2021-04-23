@@ -5,10 +5,11 @@ import (
 	"drone-delivery/server/pkg/domain/services/drone"
 	"drone-delivery/server/pkg/domain/services/routing"
 	"drone-delivery/server/pkg/domain/services/telemetry"
-	grpcInbound "drone-delivery/server/pkg/network/inbound/http/grpc"
-	"drone-delivery/server/pkg/network/inbound/http/grpc/protobuf"
+	grpcInbound "drone-delivery/server/pkg/network/inbound/grpc"
+	"drone-delivery/server/pkg/network/inbound/grpc/protobuf"
 	"drone-delivery/server/pkg/network/inbound/http/rest"
 	"drone-delivery/server/pkg/network/outbound"
+	"drone-delivery/server/pkg/storage/mongodb"
 	"drone-delivery/server/pkg/storage/postgres"
 	"fmt"
 	goKitLog "github.com/go-kit/kit/log"
@@ -31,7 +32,12 @@ func main() {
 	logger = goKitLog.With(logger, "ts", goKitLog.DefaultTimestampUTC)
 
 	//storage
-	storage, err := postgres.NewStorage(config.PostgresConfig)
+	postgresStorage, err := postgres.NewStorage(config.PostgresConfig)
+	if err != nil {
+		log.Println("Error connecting to database")
+		panic(err)
+	}
+	mongoStorage, err := mongodb.NewStorage(config.MongoConfig)
 	if err != nil {
 		log.Println("Error connecting to database")
 		panic(err)
@@ -43,11 +49,11 @@ func main() {
 	var ts telemetry.Service
 	var ds drone.Service
 	var rs routing.Service
-	ts = telemetry.NewService(storage, logger)
+	ts = telemetry.NewService(postgresStorage, logger)
 	rs = routing.NewService(logger)
-	ds = drone.NewService(storage, jsonAdapter, logger, rs)
+	ds = drone.NewService(postgresStorage, jsonAdapter, logger, rs)
 	//REST API
-	router := rest.Handler(ds, ts)
+	router := rest.Handler(ds, ts, postgresStorage, mongoStorage)
 	go log.Fatal(http.ListenAndServe(":5000", router))
 
 	//gRPC

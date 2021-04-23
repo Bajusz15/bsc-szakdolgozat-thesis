@@ -1,7 +1,10 @@
 package rest
 
 import (
+	"drone-delivery/drone-swarm/pkg/domain/telemetry"
 	"drone-delivery/drone-swarm/pkg/domain/warehouse"
+	"drone-delivery/drone-swarm/pkg/network/outbound/http/grpc"
+	"drone-delivery/drone-swarm/pkg/network/outbound/http/json"
 	"drone-delivery/server/pkg/domain/models"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -11,13 +14,14 @@ type ProvisionData struct {
 	Drone     models.Drone
 	Warehouse models.Warehouse
 }
+
 //
-//func configurationHandler() http.Handler {
+//func ConfigurationHandler() http.Handler {
 //	router := echo.New()
 //	router.POST()
 //}
 
-func Handler(w warehouse.Service) http.Handler {
+func Handler(w warehouse.Service, t telemetry.Service) http.Handler {
 	router := echo.New()
 
 	router.POST("/provision", func(c echo.Context) error {
@@ -35,25 +39,19 @@ func Handler(w warehouse.Service) http.Handler {
 		}{"provision successful"})
 	})
 
-	router.POST("/drone/destination/add", func(c echo.Context) error {
-		//TODO: add a new destination to the drone's destinations (before warehouse)
-		return nil
-	})
+	router.PUT("/configure/protocol/:name", func(c echo.Context) error {
+		switch c.Param("name") {
+		case "grpc":
+			grpcOutboundAdapter := grpc.NewOutBoundAdapter()
+			t.ChangeService(grpcOutboundAdapter)
 
-	router.POST("/drone/route/re-route", func(c echo.Context) error {
-		//TODO: overwrite destinations, and add a new one
-		return nil
-	})
-
-	router.POST("/emergency/land", func(c echo.Context) error {
-		//TODO: call flying service to make emergency landing
-		return nil
-	})
-
-	router.POST("/emergency/withdraw", func(c echo.Context) error {
-		//TODO: call flying service to make emergency back to warehouse
-		//
-		return nil
+		case "http":
+			jsonOutboundAdapter := json.NewOutBoundAdapter()
+			t.ChangeService(jsonOutboundAdapter)
+		default:
+			return echo.NewHTTPError(http.StatusBadRequest, "no such protocol supported")
+		}
+		return c.JSON(http.StatusOK, "protocol configuration complete")
 	})
 
 	return router

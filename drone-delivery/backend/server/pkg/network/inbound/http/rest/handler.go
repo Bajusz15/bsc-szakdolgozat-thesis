@@ -3,11 +3,13 @@ package rest
 import (
 	"drone-delivery/server/pkg/domain/services/drone"
 	"drone-delivery/server/pkg/domain/services/telemetry"
+	"drone-delivery/server/pkg/storage/mongodb"
+	"drone-delivery/server/pkg/storage/postgres"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-func Handler(d drone.Service, t telemetry.Service) http.Handler {
+func Handler(d drone.Service, t telemetry.Service, p *postgres.Storage, m *mongodb.Storage) http.Handler {
 	router := echo.New()
 
 	router.POST("/api/delivery", func(c echo.Context) error {
@@ -19,6 +21,18 @@ func Handler(d drone.Service, t telemetry.Service) http.Handler {
 	})
 	router.POST("/api/delivery/telemetry", SaveTelemetry(d, t))
 	router.GET("/api/delivery/drones", GetDronesInDelivery(d, t))
-
+	router.PUT("/configure/database/:name", func(c echo.Context) error {
+		switch c.Param("name") {
+		case "mongodb":
+			t.ChangeService(m)
+			d.ChangeService(m)
+		case "postgres":
+			t.ChangeService(p)
+			d.ChangeService(p)
+		default:
+			return echo.NewHTTPError(http.StatusBadRequest, "no such protocol supported")
+		}
+		return c.JSON(http.StatusOK, "protocol configuration complete")
+	})
 	return router
 }

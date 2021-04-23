@@ -33,7 +33,6 @@ func main() {
 	jsonOutboundAdapter := json.NewOutBoundAdapter()
 	//grpcOutboundAdapter := grpc.NewOutBoundAdapter()
 
-
 	telemetryService := telemetry.NewService(jsonOutboundAdapter, logger)
 
 	geo := ellipsoid.Init("WGS84", ellipsoid.Degrees, ellipsoid.Meter, ellipsoid.LongitudeIsSymmetric, ellipsoid.BearingIsSymmetric)
@@ -41,7 +40,7 @@ func main() {
 
 	flyingService := flying.NewService(telemetryService, routingService, logger)
 	warehouseService := warehouse.NewService(storage, flyingService, logger)
-	log.Fatal(http.ListenAndServe(":2000", rest.Handler(warehouseService)))
+	log.Fatal(http.ListenAndServe(":2000", rest.Handler(warehouseService, telemetryService)))
 }
 
 //ez csak egy sima kliens (drón a szimulacioban), ami megkapja a celt es ez alapjan fog az utvonal alatt mindenfele adatokat generalni es kuldeni magarol.

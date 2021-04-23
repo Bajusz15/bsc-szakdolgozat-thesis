@@ -20,7 +20,6 @@ type StorageConfig struct {
 	Database string
 	Host     string
 	Port     string
-	SSSLMode string
 	PW       string
 }
 
