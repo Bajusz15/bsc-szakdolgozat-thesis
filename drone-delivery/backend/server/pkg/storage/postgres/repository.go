@@ -3,7 +3,6 @@ package postgres
 import (
 	"database/sql"
 	"drone-delivery/server/pkg/domain/models"
-	"encoding/json"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
@@ -50,14 +49,14 @@ func NewMockStorage(db *sql.DB) (*Storage, error) {
 }
 func (s *Storage) GetWarehouse() (models.Warehouse, error) {
 	var wh models.Warehouse
-	err := s.db.Get(&wh, `SELECT id, gps->'latitude' "location.latitude", gps->'longitude' "location.longitude" FROM warehouse LIMIT 1`)
+	err := s.db.Get(&wh, `SELECT id, location_latitude "location.latitude", location_longitude "location.longitude" FROM warehouse LIMIT 1`)
 	return wh, err
 }
 
 // todo: put these in seperate files
 func (s *Storage) GetTelemetriesByDrone(droneID int) ([]models.Telemetry, error) {
 	var t []models.Telemetry
-	err := s.db.Select(&t, `SELECT id, drone_id, speed, gps->'longtitude' "location.longitude", gps->'latitude' "location.latitude", altitude, bearing,
+	err := s.db.Select(&t, `SELECT id, drone_id, speed, longitude "location.longitude",latitude "location.latitude", altitude, bearing,
        								acceleration, battery_level, battery_temperature, motor_temperatures,time_stamp 
 									FROM telemetry 
 									WHERE drone_id=$1`, droneID)
@@ -68,14 +67,10 @@ func (s *Storage) GetTelemetriesByDrone(droneID int) ([]models.Telemetry, error)
 }
 
 func (s *Storage) InsertTelemetry(t models.Telemetry) error {
-	gps, err := json.Marshal(t.Location)
 	motorTemps := pq.Array(t.MotorTemperatures)
-	if err != nil {
-		return err
-	}
-	_, err = s.db.Exec(`INSERT INTO telemetry (drone_id, speed, gps, altitude, bearing, acceleration, battery_level,
-                       			battery_temperature, motor_temperatures, time_stamp) VALUES ($1, $2, $3,$4,$5,$6,$7, $8, $9, $10) `,
-		t.DroneID, t.Speed, gps, t.Altitude, t.Bearing, t.Acceleration, t.BatteryLevel,
+	_, err := s.db.Exec(`INSERT INTO telemetry (drone_id, speed, latitude, longitude, altitude, bearing, acceleration, battery_level,
+                       			battery_temperature, motor_temperatures, time_stamp) VALUES ($1, $2, $3,$4,$5,$6,$7, $8, $9, $10, $11) `,
+		t.DroneID, t.Speed, t.Location.Latitude, t.Location.Longitude, t.Altitude, t.Bearing, t.Acceleration, t.BatteryLevel,
 		t.BatteryTemperature, motorTemps, t.TimeStamp)
 	return err
 }
@@ -135,7 +130,7 @@ func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = tx.Select(&parcels, `SELECT id, name, tracking_id, weight, drop_off_gps->'latitude' "drop_off_site.latitude", drop_off_gps->'longitude' "drop_off_site.longitude" FROM parcel`)
+	err = tx.Select(&parcels, `SELECT id, name, tracking_id, weight, drop_off_latitude "drop_off_site.latitude", drop_off_longitude "drop_off_site.longitude" FROM parcel`)
 	if err != nil {
 		tx.Rollback()
 		return nil, err

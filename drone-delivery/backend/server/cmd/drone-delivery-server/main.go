@@ -103,21 +103,21 @@ func generateDeliveryData() error {
 	var drones = make([]models.Drone, deliveries)
 	var parcels = make([]models.Parcel, deliveries)
 	for i := 0; i < deliveries; i++ {
-		drones = append(drones, models.Drone{
-			ID:          i,
+		drones[i] = models.Drone{
+			ID:          i + 1,
 			Consumption: consumptions[i],
 			Weight:      droneWeights[i],
-		})
+		}
 
-		parcels = append(parcels, models.Parcel{
-			ID:     i,
+		parcels[i] = models.Parcel{
+			ID:     i + 1,
 			Name:   "egy csomag",
 			Weight: parcelWeights[i],
 			DropOffSite: models.GPS{
 				Latitude:  latitudes[i],
 				Longitude: longitudes[i],
 			},
-		})
+		}
 	}
 
 	err := insertIntoPostgres(drones, parcels)
@@ -151,6 +151,20 @@ func insertIntoPostgres(drones []models.Drone, parcels []models.Parcel) error {
 	}
 
 	log.Println("You are connected to your database")
+	log.Println(drones)
+	_, err = db.Exec(`TRUNCATE drone RESTART IDENTITY CASCADE`)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(`TRUNCATE parcel RESTART IDENTITY CASCADE`)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(`TRUNCATE telemetry RESTART IDENTITY CASCADE`)
+	if err != nil {
+		return err
+	}
+
 	for _, d := range drones {
 		_, err = db.Exec(`INSERT INTO drone (id, state, weight, consumption) VALUES ($1, 'free', $2, $3)`, d.ID, d.Weight, d.Consumption)
 		if err != nil {
@@ -159,12 +173,11 @@ func insertIntoPostgres(drones []models.Drone, parcels []models.Parcel) error {
 	}
 
 	for _, p := range parcels {
-		_, err = db.Exec(`INSERT INTO parcel (id, name, weight, drop_off_gps, assigned_drone, from_address, to_address) VALUES ($1, 'free', $2, $3)`, p.ID, p.Name, p.Weight)
+		_, err = db.Exec(`INSERT INTO parcel (id, name, weight, drop_off_latitude, drop_off_longitude ) VALUES ($1, $2, $3, $4, $5)`, p.ID, p.Name, p.Weight, p.DropOffSite.Latitude, p.DropOffSite.Longitude)
 		if err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
