@@ -11,11 +11,25 @@ services:
 #    environment:
 #      - POSTGRES_PASSWORD=postgres
 #      - POSTGRES_HOST_AUTH_METHOD=trust
+#  mongodb:
+#    build:
+#      context: backend/databases/mongodb
+#      dockerfile: Dockerfile
+#    container_name: 'mongo-database'
+#    environment:
+#      - MONGO_INITDB_DATABASE=admin
+#      - MONGO_INITDB_ROOT_USERNAME=admin-user
+#      - MONGO_INITDB_ROOT_PASSWORD=admin-password
+##    volumes:
+##    - './backend/databases/mongodb/db:/data/db'
+#    ports:
+#    - '27017-27019:27017-27019'
   server:
     build:
       dockerfile: Dockerfile.dev
       context: backend/server
 #    depends_on:
+#      - mongodb
 #      - postgres
     ports:
     - '5000:5000'
@@ -31,6 +45,11 @@ services:
 #      - PGPASSWORD=postgres
 #      todo: itt majd lesz több adatbázis is, mert ugye össze kell hasonlítani
       - DRONE_SWARM_URL=http://drone-swarm:2000
+      - MONGO_USER=drone-user
+      - MONGO_DB=drone_delivery
+      - MONGO_HOST=host.docker.internal
+      - MONGO_PORT=27017
+      - MONGO_PWD=drone-pwd
   drone-swarm:
     build:
       dockerfile: drone-swarm/Dockerfile

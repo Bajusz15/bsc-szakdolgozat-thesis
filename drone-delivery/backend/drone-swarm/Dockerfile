@@ -10,9 +10,9 @@ WORKDIR /go/src/drone-delivery/drone-swarm
 COPY drone-swarm/go.mod /go/src/drone-delivery/drone-swarm
 COPY drone-swarm/go.sum /go/src/drone-delivery/drone-swarm
 COPY ./server/ /go/src/drone-delivery/server
-RUN go mod download
 COPY ./ /go/src/drone-delivery/
 WORKDIR /go/src/drone-delivery/drone-swarm/cmd/drone-delivery-swarm
+RUN go mod download
 RUN go install
 
 #Second stage

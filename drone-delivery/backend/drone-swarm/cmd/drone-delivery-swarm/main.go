@@ -8,7 +8,6 @@ import (
 	"drone-delivery/drone-swarm/pkg/domain/warehouse"
 	"drone-delivery/drone-swarm/pkg/network/inbound/http/rest"
 	"drone-delivery/drone-swarm/pkg/network/outbound/http/json"
-	"drone-delivery/server/pkg/storage/postgres"
 	"fmt"
 	"github.com/StefanSchroeder/Golang-Ellipsoid/ellipsoid"
 	goKitLog "github.com/go-kit/kit/log"
@@ -21,11 +20,6 @@ import (
 func main() {
 	fmt.Println("ez a raktár a szimulacioban, a raktár és drónok példányait szimulálja.")
 	config.SetConfig()
-	storage, err := postgres.NewStorage(config.PostgresConfig)
-	if err != nil {
-		log.Println("Error connecting to database")
-		panic(err)
-	}
 	var logger goKitLog.Logger
 	logger = goKitLog.NewLogfmtLogger(os.Stderr)
 	logger = level.NewFilter(logger, level.AllowInfo()) // <--
@@ -39,7 +33,7 @@ func main() {
 	routingService := routing.NewService(geo)
 
 	flyingService := flying.NewService(telemetryService, routingService, logger)
-	warehouseService := warehouse.NewService(storage, flyingService, logger)
+	warehouseService := warehouse.NewService(flyingService, logger)
 	log.Fatal(http.ListenAndServe(":2000", rest.Handler(warehouseService, telemetryService)))
 }
 

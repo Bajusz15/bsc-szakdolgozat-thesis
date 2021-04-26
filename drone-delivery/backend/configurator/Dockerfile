@@ -1,8 +1,8 @@
 FROM golang:1.16 AS builder
-
-RUN apk --update add \
-	git openssl \
-	&& rm /var/cache/apk/*
+#
+#RUN apk --update add \
+#	git openssl \
+#	&& rm /var/cache/apk/*
 
 RUN mkdir -p /go/src/drone-delivery/configurator
 WORKDIR /go/src/drone-delivery/configurator

@@ -21,6 +21,7 @@ type Repository interface {
 	GetParcelsInWarehouse() ([]models.Parcel, error)
 	GetWarehouse() (models.Warehouse, error)
 	GetDronesDelivering() ([]models.Drone, error)
+	SetDroneStateIfFree(droneID int, state string) error
 }
 
 type OutboundAdapter interface {
@@ -73,6 +74,11 @@ func (s *service) DeliverParcels() error {
 		err = s.ProvisionDrone(wh, d)
 		if err != nil {
 			s.logger.Log("desc", "could not provision drone")
+			continue
+		}
+		err = s.repo.SetDroneStateIfFree(d.ID, "in-flight")
+		if err != nil {
+			s.logger.Log("err", err, "desc", "failed to set drone state")
 			continue
 		}
 

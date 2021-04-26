@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
 	"time"
 )
@@ -28,14 +29,24 @@ func NewStorage(sc StorageConfig) (*Storage, error) {
 	var err error
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(sc.Host))
+	log.Println("mongodb://" + sc.UserName + ":" + sc.PW + "@" + sc.Host + ":" + sc.Port + "/" + sc.Database)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+sc.UserName+":"+sc.PW+"@"+sc.Host+":"+sc.Port+"/"+sc.Database))
+	//client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+sc.Host+":"+sc.Port+"/"+sc.Database))
 	if err != nil {
 		return nil, err
 	}
 	s.client = client
-	defer client.Disconnect(ctx)
+	//defer client.Disconnect(ctx)
+	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
+		// Can't connect to Mongo server
+		return nil, err
+	}
 	log.Println("You are connected to your database")
-	s.db = s.client.Database("drone_delivery")
+	s.db = s.client.Database(sc.Database)
+	err = s.db.CreateCollection(ctx, "warehouse")
+	err = s.db.CreateCollection(ctx, "telemetry")
+	err = s.db.CreateCollection(ctx, "drone")
+	err = s.db.CreateCollection(ctx, "parcel")
 	return s, nil
 }
 

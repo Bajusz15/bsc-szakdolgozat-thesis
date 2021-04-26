@@ -34,4 +34,10 @@ func SetConfig() {
 	PostgresConfig.Port = os.Getenv("PGPORT")
 	PostgresConfig.SSSLMode = os.Getenv("PGSSL")
 	PostgresConfig.PW = os.Getenv("PGPASSWORD")
+
+	MongoConfig.UserName = os.Getenv("MONGO_USER")
+	MongoConfig.Database = os.Getenv("MONGO_DB")
+	MongoConfig.Host = os.Getenv("MONGO_HOST")
+	MongoConfig.Port = os.Getenv("MONGO_PORT")
+	MongoConfig.PW = os.Getenv("MONGO_PWD")
 }

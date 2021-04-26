@@ -11,26 +11,21 @@ type Service interface {
 	StartDrone(d Drone) error
 }
 
-type Repository interface {
-	SetDroneStateIfFree(droneID int, state string) error
-}
 
 type FlyingService interface {
 	StartFlight(d Drone) error
 }
 
 type service struct {
-	repo          Repository
 	flyingService FlyingService
 	logger        goKitLog.Logger
 }
 
-func NewService(r Repository, fl FlyingService, l goKitLog.Logger) *service {
-	return &service{r, fl, l}
+func NewService(fl FlyingService, l goKitLog.Logger) *service {
+	return &service{fl, l}
 }
 
-func (s *service) ChangeService(r Repository, fl FlyingService) {
-	s.repo = r
+func (s *service) ChangeService(fl FlyingService) {
 	s.flyingService = fl
 }
 
@@ -51,10 +46,6 @@ func (s *service) ProvisionDrone(wh models.Warehouse, d models.Drone) error {
 	}
 	//TODO: start the drone, with (route, parcel, etc) already defined by backend, then send back error or something
 	err := s.StartDrone(drone)
-	if err != nil {
-		s.logger.Log("err", err, "desc", "failed to set drone state")
-	}
-	err = s.repo.SetDroneStateIfFree(drone.ID, "in-flight")
 	if err != nil {
 		s.logger.Log("err", err, "desc", "failed to set drone state")
 	}
