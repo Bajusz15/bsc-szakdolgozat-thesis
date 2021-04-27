@@ -18,16 +18,19 @@ func SaveTelemetry(d drone.Service, t telemetry.Service) echo.HandlerFunc {
 		var td TelemetryData
 		//b, err := ioutil.ReadAll(context.Request().Body)
 		//defer context.Request().Body.Close()
+		//fmt.Println(string(b))
+		//log.Fatal("allj meg")
 		//
 		//err = json.Unmarshal(b, &td)
 		err = context.Bind(&td)
+
 		//log.Println(td)
 		if err != nil {
-			return echo.NewHTTPError(http.StatusOK, "could not save telemetry")
+			return echo.NewHTTPError(http.StatusInternalServerError, "could not save telemetry, ")
 		}
 		err = t.SaveTelemetry(td.Telemetry)
 		if err != nil {
-			return echo.NewHTTPError(http.StatusOK, "could not save telemetry")
+			return echo.NewHTTPError(http.StatusInternalServerError, "could not save telemetry")
 		}
 		return context.JSON(http.StatusOK, "succesfully saved telemetry")
 	}

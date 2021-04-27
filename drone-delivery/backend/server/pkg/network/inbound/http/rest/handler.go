@@ -30,9 +30,9 @@ func Handler(d drone.Service, t telemetry.Service, p *postgres.Storage, m *mongo
 			t.ChangeService(p)
 			d.ChangeService(p)
 		default:
-			return echo.NewHTTPError(http.StatusBadRequest, "no such protocol supported")
+			return echo.NewHTTPError(http.StatusBadRequest, "no such database supported")
 		}
-		return c.JSON(http.StatusOK, "protocol configuration complete")
+		return c.JSON(http.StatusOK, "configuration complete")
 	})
 	return router
 }

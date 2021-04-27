@@ -21,8 +21,21 @@ type ProvisionData struct {
 //	router.POST()
 //}
 
-func Handler(w warehouse.Service, t telemetry.Service) http.Handler {
+func Handler(w warehouse.Service, t telemetry.Service, grpcAdapter *grpc.Adapter, jsonAdapter *json.Adapter) http.Handler {
 	router := echo.New()
+	router.PUT("/configure/protocol/:name", func(c echo.Context) error {
+		switch c.Param("name") {
+		case "grpc":
+			//grpcOutboundAdapter := grpc.NewOutBoundAdapter()
+			t.ChangeService(grpcAdapter)
+		case "http":
+			//jsonOutboundAdapter := json.NewOutBoundAdapter()
+			t.ChangeService(jsonAdapter)
+		default:
+			return echo.NewHTTPError(http.StatusBadRequest, "no such protocol supported")
+		}
+		return c.JSON(http.StatusOK, "protocol configuration complete")
+	})
 
 	router.POST("/provision", func(c echo.Context) error {
 		var payload ProvisionData
@@ -37,21 +50,6 @@ func Handler(w warehouse.Service, t telemetry.Service) http.Handler {
 		return c.JSON(http.StatusOK, struct {
 			Message string `json:"message"`
 		}{"provision successful"})
-	})
-
-	router.PUT("/configure/protocol/:name", func(c echo.Context) error {
-		switch c.Param("name") {
-		case "grpc":
-			grpcOutboundAdapter := grpc.NewOutBoundAdapter()
-			t.ChangeService(grpcOutboundAdapter)
-
-		case "http":
-			jsonOutboundAdapter := json.NewOutBoundAdapter()
-			t.ChangeService(jsonOutboundAdapter)
-		default:
-			return echo.NewHTTPError(http.StatusBadRequest, "no such protocol supported")
-		}
-		return c.JSON(http.StatusOK, "protocol configuration complete")
 	})
 
 	return router

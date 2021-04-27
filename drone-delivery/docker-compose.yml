@@ -26,13 +26,14 @@ services:
 #    - '27017-27019:27017-27019'
   server:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: backend/server
 #    depends_on:
 #      - mongodb
 #      - postgres
     ports:
     - '5000:5000'
+    - '50051:50051'
     environment:
       - PGPORT=5432
       - PGDATABASE=dbdrone_delivery
@@ -50,6 +51,9 @@ services:
       - MONGO_HOST=host.docker.internal
       - MONGO_PORT=27017
       - MONGO_PWD=drone-pwd
+      - GRPC_GO_REQUIRE_HANDSHAKE=off
+      - GRPC_GO_LOG_VERBOSITY_LEVEL=99
+      - GRPC_GO_LOG_SEVERITY_LEVEL=info
   drone-swarm:
     build:
       dockerfile: drone-swarm/Dockerfile
@@ -68,6 +72,11 @@ services:
       - PGPASSWORD=P&|RgRopW3xY-u%v%q&m][5g-7igei>6
       - PGUSER=dbmasteruser
       - PGHOST=ls-292dbdaceb3df8fb20156df0e027d38a1456fd11.cy9by1o5bg1s.eu-central-1.rds.amazonaws.com
+      - GRPC_GO_LOG_VERBOSITY_LEVEL=99
+      - GRPC_GO_LOG_SEVERITY_LEVEL=info
+      - GRPC_GO_REQUIRE_HANDSHAKE=off
+    restart: on-failure
+#    dns_search: .
   configurator:
     build:
       dockerfile: Dockerfile

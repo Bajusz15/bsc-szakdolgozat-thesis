@@ -60,6 +60,5 @@ func (a *adapter) TelemetryStream(stream protobuf.TelemetryService_TelemetryStre
 			DroneID:            int(t.GetDroneId()),
 		}
 		err = a.telemetryService.SaveTelemetry(telemetryData)
-
 	}
 }

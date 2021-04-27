@@ -11,18 +11,14 @@ import (
 	"strconv"
 )
 
-type Adapter interface {
-	SendTelemetryDataToServer(t models.Telemetry) error
+type Adapter struct {
 }
 
-type adapter struct {
+func NewOutBoundAdapter() *Adapter {
+	return &Adapter{}
 }
 
-func NewOutBoundAdapter() *adapter {
-	return &adapter{}
-}
-
-func (a *adapter) SendTelemetryDataToServer(t models.Telemetry) error {
+func (a *Adapter) SendTelemetryDataToServer(t models.Telemetry) error {
 	td := rest.TelemetryData{
 		Telemetry: t,
 	}

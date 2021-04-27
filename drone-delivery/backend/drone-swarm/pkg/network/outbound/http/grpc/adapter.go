@@ -13,36 +13,64 @@ import (
 //	SendTelemetryDataToServer(droneID int, t models.Telemetry) error
 //}
 
-type adapter struct {
-	cc     *grpc.ClientConn
-	tsc    protobuf.TelemetryServiceClient
-	stream protobuf.TelemetryService_TelemetryStreamClient
+type StreamClient struct {
+	Tsc    protobuf.TelemetryServiceClient
+	Stream protobuf.TelemetryService_TelemetryStreamClient
+}
+type Adapter struct {
+	cc  *grpc.ClientConn
+	tsc protobuf.TelemetryServiceClient
+	//Stream protobuf.TelemetryService_TelemetryStreamClient
+	streams map[int]StreamClient
 }
 
-func NewOutBoundAdapter() *adapter {
+func NewOutBoundAdapter() *Adapter {
+
 	var err error
-	opts := grpc.WithInsecure()
-	a := &adapter{}
-	a.cc, err = grpc.Dial(config.ServerGRPCDomain+":"+config.ServerGRPCPort, opts)
+	var opts []grpc.DialOption
+	opts = append(opts, grpc.WithInsecure())
+	opts = append(opts, grpc.WithBlock())
+	a := &Adapter{}
+	a.streams = make(map[int]StreamClient)
+
+	a.cc, err = grpc.Dial(config.ServerGRPCDomain+":"+config.ServerGRPCPort, opts...)
 	if err != nil {
 		panic(err)
 	}
-	defer a.cc.Close()
+	//defer a.cc.Close()
 	a.tsc = protobuf.NewTelemetryServiceClient(a.cc)
-	a.stream, err = a.tsc.TelemetryStream(context.Background())
+	//a.Stream, err = a.Tsc.TelemetryStream(context.TODO())
+	//if err != nil {
+	//	panic(err)
+	//}
 	return a
 }
 
-func (a *adapter) SendTelemetryDataToServer(t models.Telemetry) error {
-	temps := make([]int32, len(t.MotorTemperatures))
+func (a *Adapter) SendTelemetryDataToServer(t models.Telemetry) error {
+	var err error
+	var streamer protobuf.TelemetryService_TelemetryStreamClient
+	if sc, ok := a.streams[t.DroneID]; ok {
+		//do something here
+		streamer = sc.Stream
+	} else {
+		var tempStream = StreamClient{}
+		tempStream.Tsc = protobuf.NewTelemetryServiceClient(a.cc)
+		tempStream.Stream, err = tempStream.Tsc.TelemetryStream(context.TODO())
+		if err != nil {
+			return err
+		}
+		a.streams[t.DroneID] = tempStream
+		streamer = a.streams[t.DroneID].Stream
+	}
+
+	temperatures := make([]int32, len(t.MotorTemperatures))
 	telemetryErrors := make([]int32, len(t.Errors))
 	for i, val := range t.MotorTemperatures {
-		temps[i] = int32(val)
+		temperatures[i] = int32(val)
 	}
 	for i, val := range t.Errors {
 		telemetryErrors[i] = int32(val)
 	}
-
 	telemetryDataRequest := protobuf.TelemetryDataRequest{
 		Telemetry: &protobuf.Telemetry{
 			Speed: t.Speed,
@@ -55,12 +83,12 @@ func (a *adapter) SendTelemetryDataToServer(t models.Telemetry) error {
 			Acceleration:       t.Acceleration,
 			BatteryLevel:       int32(t.BatteryLevel),
 			BatteryTemperature: int32(t.BatteryTemperature),
-			MotorTemperatures:  temps,
+			MotorTemperatures:  temperatures,
 			Errors:             telemetryErrors,
 			TimeStamp:          timestamppb.New(t.TimeStamp),
 			DroneId:            int32(t.DroneID),
 		},
 	}
-	err := a.stream.Send(&telemetryDataRequest)
+	err = streamer.Send(&telemetryDataRequest)
 	return err
 }

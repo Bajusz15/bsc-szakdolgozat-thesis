@@ -26,6 +26,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -68,21 +69,34 @@ func main() {
 	ds = drone.NewService(postgresStorage, jsonAdapter, logger, rs)
 	//REST API
 	router := rest.Handler(ds, ts, postgresStorage, mongoStorage)
-	go log.Fatal(http.ListenAndServe(":5000", router))
+
+	wg := new(sync.WaitGroup)
+	wg.Add(2)
+
+	//http
+	go func(router http.Handler) {
+		log.Println("serving http on port: 5000...")
+		log.Fatal(http.ListenAndServe(":5000", router))
+		wg.Done()
+	}(router)
 
 	//gRPC
-	listener, err := net.Listen("tcp", ":50051")
-	if err != nil {
-		log.Fatal("Error creating to tcp listener")
-	}
-	var options []grpc.ServerOption
-	grpcServer := grpc.NewServer(options...)
-	grpcAdapter := grpcInbound.NewAdapter(ts, grpcServer)
-	protobuf.RegisterTelemetryServiceServer(grpcServer, grpcAdapter)
+	go func(service *telemetry.Service) {
+		listener, err := net.Listen("tcp", ":50051")
+		if err != nil {
+			log.Fatal("Error creating to tcp listener")
+		}
+		var opts []grpc.ServerOption
+		grpcServer := grpc.NewServer(opts...)
+		grpcAdapter := grpcInbound.NewAdapter(ts, grpcServer)
+		protobuf.RegisterTelemetryServiceServer(grpcServer, grpcAdapter)
+		log.Println("serving grpc on port 50051")
+		log.Fatal(grpcServer.Serve(listener))
+		wg.Done()
+	}(&ts)
 
-	if err := grpcServer.Serve(listener); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	wg.Wait()
+
 }
 
 // go-kit lesz használva, mint  mikro-szerviz strukturat tamogato könyvtár
