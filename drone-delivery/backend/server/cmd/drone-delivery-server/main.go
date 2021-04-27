@@ -107,6 +107,7 @@ func generateDeliveryData() error {
 			ID:          i + 1,
 			Consumption: consumptions[i],
 			Weight:      droneWeights[i],
+			State:       models.DroneFree,
 		}
 
 		parcels[i] = models.Parcel{
@@ -151,7 +152,6 @@ func insertIntoPostgres(drones []models.Drone, parcels []models.Parcel) error {
 	}
 
 	log.Println("You are connected to your database")
-	log.Println(drones)
 	_, err = db.Exec(`TRUNCATE drone RESTART IDENTITY CASCADE`)
 	if err != nil {
 		return err
@@ -166,7 +166,7 @@ func insertIntoPostgres(drones []models.Drone, parcels []models.Parcel) error {
 	}
 
 	for _, d := range drones {
-		_, err = db.Exec(`INSERT INTO drone (id, state, weight, consumption) VALUES ($1, 'free', $2, $3)`, d.ID, d.Weight, d.Consumption)
+		_, err = db.Exec(`INSERT INTO drone (id, state, weight, consumption) VALUES ($1, $2, $3, $4)`, d.ID, d.State, d.Weight, d.Consumption)
 		if err != nil {
 			return err
 		}
@@ -198,10 +198,15 @@ func insertIntoMongo(drones []models.Drone, parcels []models.Parcel) error {
 	}
 	log.Println("You are connected to your database")
 	db := client.Database(os.Getenv("MONGO_DB"))
-	err = db.CreateCollection(ctx, "warehouse")
-	err = db.CreateCollection(ctx, "telemetry")
-	err = db.CreateCollection(ctx, "drone")
-	err = db.CreateCollection(ctx, "parcel")
+	//db.warehouse.insertOne(     { id: 1,  location: { latitude: 48.080922, longitude: 20.766208} } )
+	//_ = db.Collection("warehouse").Drop(context.TODO())
+	_ = db.Collection("telemetry").Drop(context.TODO())
+	_ = db.Collection("drone").Drop(context.TODO())
+	_ = db.Collection("parcel").Drop(context.TODO())
+	err = db.CreateCollection(context.TODO(), "warehouse")
+	err = db.CreateCollection(context.TODO(), "telemetry")
+	err = db.CreateCollection(context.TODO(), "drone")
+	err = db.CreateCollection(context.TODO(), "parcel")
 	for _, d := range drones {
 		_, err = db.Collection("drone").InsertOne(context.TODO(), d)
 		if err != nil {

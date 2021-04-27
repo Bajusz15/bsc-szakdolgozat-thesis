@@ -60,7 +60,7 @@ func (s *Storage) GetWarehouse() (models.Warehouse, error) {
 	var err error
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	err = s.db.Collection("Warehouse").FindOne(ctx, bson.D{}).Decode(&wh)
+	err = s.db.Collection("warehouse").FindOne(ctx, bson.D{}).Decode(&wh)
 	return wh, err
 }
 
@@ -122,7 +122,7 @@ func (s *Storage) GetFreeDrones() ([]models.Drone, error) {
 	return drones, nil
 }
 
-func (s *Storage) SetDroneStateIfFree(id int, state string) error {
+func (s *Storage) SetDroneState(id int, state string) error {
 	var err error
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -132,7 +132,7 @@ func (s *Storage) SetDroneStateIfFree(id int, state string) error {
 	filter := bson.D{{"id", id}}
 	_, err = s.db.Collection("telemetry").UpdateOne(ctx, filter, bson.M{
 		"$set": bson.M{
-			"state": "free",
+			"state": state,
 		},
 	})
 	return err
@@ -158,7 +158,7 @@ func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
 	if err := cur.Err(); err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return parcels, nil
 }
 
 func (s *Storage) GetDronesDelivering() ([]models.Drone, error) {

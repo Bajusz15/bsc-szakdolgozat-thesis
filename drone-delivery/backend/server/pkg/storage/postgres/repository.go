@@ -99,7 +99,7 @@ func (s *Storage) GetFreeDrones() ([]models.Drone, error) {
 	return drones, nil
 }
 
-func (s *Storage) SetDroneStateIfFree(id int, state string) error {
+func (s *Storage) SetDroneState(id int, state string) error {
 	tx, err := s.db.Beginx()
 	if err != nil {
 		return err

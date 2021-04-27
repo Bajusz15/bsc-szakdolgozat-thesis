@@ -1,15 +1,15 @@
 package models
 
 type Parcel struct {
-	ID            int             `json:"id" db:"id"`
-	TrackingID    string          `json:"tracking_id" db:"tracking_id"`
-	Name          string          `json:"name" db:"name"`
-	Weight        float64         `json:"weight" db:"weight"`
-	Location      GPS             `json:"location"`
+	ID            int             `json:"id" db:"id" bson:"id"`
+	TrackingID    string          `json:"tracking_id" db:"tracking_id" bson:"tracking_id"`
+	Name          string          `json:"name" db:"name" bson:"name"`
+	Weight        float64         `json:"weight" db:"weight"  bson:"weight"`
+	Location      GPS             `json:"location" bson:"location"`
 	FromAddress   ShippingAddress `json:"from_address"` //ez lehet nem is kell
 	ToAddress     ShippingAddress `json:"to_address"`
-	DropOffSite   GPS             `json:"drop_off_site" db:"drop_off_site"`
-	AssignedDrone int             `json:"assigned_drone" db:"assigned_drone"`
+	DropOffSite   GPS             `bson:"drop_o§ff_site" json:"drop_off_site" db:"drop_off_site"`
+	AssignedDrone int             `json:"assigned_drone" db:"assigned_drone" db:"assigned_drone"`
 }
 
 type ShippingAddress struct {

@@ -4,8 +4,9 @@ import (
 	"drone-delivery/server/pkg/domain/models"
 	"drone-delivery/server/pkg/domain/services/routing"
 	"errors"
-	"github.com/go-kit/kit/log"
+	gokitlog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"log"
 )
 
 type Service interface {
@@ -21,7 +22,7 @@ type Repository interface {
 	GetParcelsInWarehouse() ([]models.Parcel, error)
 	GetWarehouse() (models.Warehouse, error)
 	GetDronesDelivering() ([]models.Drone, error)
-	SetDroneStateIfFree(droneID int, state string) error
+	SetDroneState(droneID int, state string) error
 }
 
 type OutboundAdapter interface {
@@ -32,7 +33,7 @@ type OutboundAdapter interface {
 type service struct {
 	repo           Repository
 	adapter        OutboundAdapter
-	logger         log.Logger
+	logger         gokitlog.Logger
 	routingService routing.Service
 }
 
@@ -40,7 +41,7 @@ func (s *service) GetDronesDelivering() ([]models.Drone, error) {
 	panic("implement me")
 }
 
-func NewService(r Repository, ea OutboundAdapter, l log.Logger, rs routing.Service) *service {
+func NewService(r Repository, ea OutboundAdapter, l gokitlog.Logger, rs routing.Service) *service {
 	return &service{r, ea, l, rs}
 }
 
@@ -51,7 +52,7 @@ func (s *service) ChangeService(r Repository) {
 func (s *service) DeliverParcels() error {
 	wh, err := s.repo.GetWarehouse()
 	if err != nil {
-		s.logger.Log("desc", "could not get warehouse s from repository", "err", err)
+		s.logger.Log("desc", "could not get warehouse from repository", "err", err)
 		return err
 	}
 
@@ -64,7 +65,8 @@ func (s *service) DeliverParcels() error {
 		s.logger.Log("desc", "could not get free drones from repository", "err", err)
 		return err
 	}
-
+	log.Println(parcels)
+	log.Println(freeDrones)
 	drones, err := s.routingService.OptimizeRoutes(wh, freeDrones, parcels)
 	if err != nil {
 		return errors.New("failed to set routes for drones, aborting delivery")
@@ -76,7 +78,7 @@ func (s *service) DeliverParcels() error {
 			s.logger.Log("desc", "could not provision drone")
 			continue
 		}
-		err = s.repo.SetDroneStateIfFree(d.ID, "in-flight")
+		err = s.repo.SetDroneState(d.ID, "in-flight")
 		if err != nil {
 			s.logger.Log("err", err, "desc", "failed to set drone state")
 			continue
@@ -88,7 +90,7 @@ func (s *service) DeliverParcels() error {
 }
 
 func (s *service) ProvisionDrone(wh models.Warehouse, d models.Drone) error {
-	logger := log.With(s.logger, "method", "ProvisionDrone")
+	logger := gokitlog.With(s.logger, "method", "ProvisionDrone")
 	success, err := s.adapter.FetchProvisionDroneEndpoint(wh, d)
 	if err != nil {
 		level.Warn(logger).Log(
@@ -104,7 +106,7 @@ func (s *service) ProvisionDrone(wh models.Warehouse, d models.Drone) error {
 }
 
 func (s *service) GetFreeDrones() ([]models.Drone, error) {
-	logger := log.With(s.logger, "method", "GetFreeDrones")
+	logger := gokitlog.With(s.logger, "method", "GetFreeDrones")
 	drones, err := s.repo.GetFreeDrones()
 	if err != nil {
 		level.Error(logger).Log(
