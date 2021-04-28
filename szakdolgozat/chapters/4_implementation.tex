@@ -43,6 +43,7 @@ A relációs adatbázissal is működik a szimuláció.
 
 %TODO: ide táblázattal megcsinalni a relacios modellt
 
+
 \paragraph{Lost Update probléma} \mbox{} \\
 A legtöbb relációs adatbázis támogatja a tranzakciókat. A tranzakciók ACID tulajdonságokkal bírnak.
 Adatbázisok esetén az ACID az Atomicity (atomiság), Consistency (konzisztencia), Isolation (izoláció), és Durability (tartósság) rövidítése. Ezek nélkül az adatbázis integritása nem garantálható.
@@ -64,3 +65,25 @@ Serializable & Not possible & Not possible & Not Possible \\
     \end{tabular}
 \end{table}
 
+\subsection{Dokumentum alapú adatbázis, MongoDB}
+
+A telepítéshez
+\begin{python}
+    use drone_delivery
+\end{python}
+
+\begin{python}
+
+    db.createUser(
+        {
+        user: "drone-user",
+        pwd: "drone-pwd",
+        roles: [
+            {
+            role: "readWrite",
+            db: "drone_delivery"
+        }
+        ]
+    }
+    )
+\end{python}

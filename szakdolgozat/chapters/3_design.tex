@@ -1,3 +1,4 @@
+
 \Chapter{Tervezés}
 
 Itt kezdődik a dolgozat lényegi része, úgy értve, hogy a saját munka bemutatása.
@@ -11,29 +12,169 @@ Ez még csak a tervezési fázis.
 (Nyilván ha olyan a téma, hogy magának az implementációnak a módjával foglalkozik, adott formális nyelvet mutat be, úgy a kódpéldákat már innen sem lehet kihagyni.)
 
 \Section{Követelmények}
-A probléma szimulációja 3 programból \ref{fig:3program} áll. Egy program az adatközpont, egy program a drónok szerepét veszi fel, a harmadik program vezéreli a szimulációt,
-tehát igazából csak paraméterek alapján konfigurálja a másik 2 program működését. Az első két program mikroszervízes struktúrában használhatónak kell lennie, hogy a konkurrens működést megfelelően tudjuk tesztelni.\\
+A probléma szimulációja 3 programból \ref{fig:3program} áll. Egy program az adatközpont, egy program a drónok szerepét veszi fel, a harmadik program egy egyszerű kliens ami,
+paraméterek alapján konfigurálja a másik 2 program működését. Az első két program mikroszervízes struktúrában használhatónak kell lennie, hogy a valódi elosztott rendszeres működést megfelelően tudjuk tesztelni.\\
 Az adatközpontot szimuláló program lesz a legbonyolultabb. Ennek a programnak tudnia kell hibamentesen, adatvesztés nélkül
 feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni kell tudni a drónok indítását, logisztikai feladatait.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.2]{images/szakdolgozat-3-program-abra.png}
+    \includegraphics[scale=0.22]{images/szakdolgozat-3-program-abra.png}
     \caption{A 3 program}
     \label{fig:3program}
 \end{figure}
 
-
+\newpage
 A szimulációban több féle protokolt és adattovábbításra képes formátumot hasonlítunk össze, így a programot úgy kell felépíteni,
-hogy ki lehessen cserélni ezeket a végpontokat anélkül hogy a program üzleti logikájának működését befolyásolnánk. Az adatközpontok és drónok közötti kommunikációt és adatfeldolgozást összehasonlítjuk
-egy HTTP 1.1 -en műkodő JSON adatformátumot használó REST API-n, egy HTTP 2 -n futó gRPC API-n és egy MQTT protokollt használó végponton is.
+hogy ki lehessen cserélni ezeket a végpontokat anélkül hogy a program üzleti logikájának működését befolyásolnánk.
+Az adatközpontok és drónok közötti telemetria adat kommunikációt és annak feldolgozását összehasonlítjuk
+egy HTTP 1.1 -en műkodő JSON adatformátumot használó REST \cite{Wikipedia-REST} API-n, egy HTTP 2 -n futó gRPC-t használó végponton is.
 
+\subsection{REST architektúra}
+
+A REST (Representational State Transfer) egy szoftverarchitektúra típus internet alapú rendszerek számára.
+Egy REST architektúrának meg kell felelni a következő megszorításoknak:
+\begin{itemize}
+    \item Kliens-szerver architektúra
+    \item Állapotmentesség
+    \item Gyorsítótárazhatóság
+    \item Réteges felépítés
+    \item Egységes interfész
+\end{itemize}
+Ha ezeket a megkötéseket teljesíti a webes szolgáltatásunk, azt mondhatjuk hogy "RESTful".
+
+\paragraph{Működése}
+A kliensek kéréseket indítanak a szerverek felé, a szerverek pedig feldolgozzák a kéréseket és egy választ küldenek vissza.
+A kérések és a válaszok erőforrás reprezentációk köré épülnek.
+Ezek az erőforrás reprezentációk a mi esetünkben JSON dokumentumok.
+Az erőforrásokat az URL címével és a HTTP metódussal azonosítjuk.
+A következő példában láthatjuk ahogy egy PUT metódussal és az URL-ben megadott paraméterrel pontosan tudjuk azonosítani mit szeretnénk.
+A PUT requestet akkor használjuk ha egy már meglévő erőforrást szeretnénk felülírni, esetünkben az adatbázis konfigurációt kicseréljük.
+A :name paraméter pedig megnevezi az erőforrást amire a meglévőt ki szeretnénk cserélni.
+Válaszként egy JSON dokumentumot küldünk vissza válaszként a megfelelő státuszkóddal, hogy a kérés sikeres volt vagy sem.
+
+\begin{python}
+    router.PUT("/configure/database/:name", func(c echo.Context) error {
+        switch c.Param("name") {
+            case "mongodb":
+            t.ChangeService(m)
+            d.ChangeService(m)
+            case "postgres":
+            t.ChangeService(p)
+            d.ChangeService(p)
+            default:
+            return echo.NewHTTPError(
+                http.StatusBadRequest,
+                "no such database supported"
+            )
+        }
+        return c.JSON(http.StatusOK, "configuration complete")
+    })
+\end{python}
+
+
+\subsection{HTTP/2 gRPC összehasonlítása HTTP/1.1 JSON üzenetváltással}
+
+\paragraph{REST és HTTP 1.1, JSON üzenetváltás}
+A mikroszevízes infrastuktúra egy nagyon elterjedt módja az elosztott rendszerek tervezésének.
+Sok mikroszervíz a mai napig REST API-n kommunikál, HTTP 1.1-es protokollon keresztül és JSON dokumentumokat küldenek és fogadnak.
+Ez a megoldás a fejlesztőknek kedvez, nagyon egyszerű így fejleszteni manapság, rengeteg eszköz van hogy megyorsítsa és megkönnyítse a munkánkat.
+De ez a megoldás a teljesítmény rovására megy, ugyanis a következő problémák adódnak vele:
+\begin{itemize}
+    \item A HTTP/1.1  szöveg alapú és nagyon "nehéz". A kommunikáció hatalmas adatmennyiséget igényel, ez egy felesleges teher.
+    \item A HTTP/1.1  állapotmentes, ezért az állapotokat csak a fejlécben tudjuk jelezni, ami nem tömörített.
+    \item A HTTP/1.1  unáris - azaz - egy kérésre egy választ kapsz. Nem lehet egyszerre több kérdést küldeni, minden kérésre pontosan egy válasz jön.
+    \item Minden egyes HTTP/1.1 kéréshez 3 irányú üzenet váltáshoz van szükség, csak hogy létrehozzuk a TCP kapcsolatot, mivel a TCP kapcsolat full duplex, és mindkét fél szinkronizálja és nyugtázza egymást.
+\end{itemize}
+Ebből arra következtetünk, hogy olyan szerver és szerver közötti kommunikációra ahol viszonylag sok apró kérés van, vagy a fenti problémák
+akadályozzák a programunk működését, akkor érdemes más megoldások után néznünk.
+
+\subsection{RPC}
+Az RPC \cite{RPC} (Remote Procedure Call) egy szabvány, olyan távoli eljárás hívás amelynek segítségével használni lehet egy, ugyanabban a hálózatban található távoli gépen futó programot anélkül, hogy a hálózati részletekkel foglalkozni kellene.
+Az RPC a kliens/szerver modellt használja (a kérő a kliens, a programot futtató fél a szerver).
+
+\subsection{gRPC}
+A gRPC \cite{gRPC} egy Google által fejlesztett RPC keretrendszer, főleg mikroszervizek közötti kommunikációra.
+A gRPC HTTP/2-t használ és Protocol Buffert az üzenetváltáshoz JSON helyett. Ez szembemegy a megszokott mikroszervizes architektúra stílussal ami REST-re épül JSON üzenetváltásal HTTP/1.1-en.
+Triviális, hogy a legfontosabb előnye az, hogy HTTP/2-n fut és az üzenetváltás Protocol Bufferekkel történik így sokkal gyorsabb és hatékonyabb.
+
+
+\paragraph{HTTP/1.1 és HTTP/2 összehasonlítása}
+A HTTP/2 egy sokkal hatékonyabb protokoll, a streameléssel elérhetjük azt, hogy az egyik fél több üzenetet is küld, a másik fél viszont csak a kérések legvégén válaszol.
+\begin{table}[h]
+    \centering
+    \caption{HTTP/1.1 és HTTP/2}
+    \label{tab:http}
+    \begin{tabular}{|c|c|}
+        \hline
+        HTTP/1.1 & HTTP/2 \\
+        \hline
+        Szöveges formátum & Bináris formátum \\
+        \hline
+        Fejléc szöveg, nem tömörített & Tömörített fejléc \\
+        \hline
+        1 kérés, 1 válasz TCP kapcsolatonként & 1 TCP kapcsolatot újra felhasználunk,\\
+         & Unáris kérések,\\
+        & Szerver streamelés,\\
+        & Kliens streamelés,\\
+        & Két-irányú streamelés\\
+        \hline
+    \end{tabular}
+\end{table}
+
+\paragraph{Protocol Buffer és JSON összehasonlítása}
+
+Beláthatjuk, hogy a Protocol Buffer egy sokkal hatékonyabb eszköz üzenetek továbbítására.
+Mivel nem szöveges, lehet hogy nehezebb implementálni és debugolni a fejlesztőknek, viszont kevesebb adatforgalommal jár, és a számítógép erőforrásait is kíméli, nem úgy mint a JSON.
+
+\begin{table}[h]
+    \centering
+    \caption{JSON és Protocol Buffer}
+    \label{tab:message-exchange}
+    \begin{tabular}{|c|c|}
+        \hline
+        JSON & Protocol Buffer \\
+        \hline
+        Nincs szigorú séma definíció & Szigorú séma formátum \\
+          vagy típus & és típus biztonság \\
+        \hline
+        Szöveg alapú & Bináris \\
+        \hline
+        A szöveg formátum miatt lassú & Bináris formátum miatt gyors\\
+        szérializáció és deszérializáció & szérializáció és deszérializáció\\
+        CPU és memória intenzív & \\
+        \hline
+        Adatok manuális konvertálása & Generált kód a protokol buffer séma alapján\\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\subsection{Adatbázisok}
 Az adatok adatbázisba mentése, adatbázisból olvasása közben több probléma merülhet fel, a rendszer konkurrens felépítéséből kiindulva.
 Például amikor az épp szabad drónoknak adunk feladatot, lehet hogy 2 vagy több egyede az adatközpont programunknak kiolvassa azt az értéket hogy
 a drón nem csinál semmit, az állapota szabad, adhat neki feladatot ha van szállítsra váró csomag. De, az üzleti logika futtatása közben az egyik egyed módosíthatta
-az értéket arra hogy már repül, vagy épp csomagot vesz fel. Az ilyen Lost Update problémákkal szemben a program implementációjának ellenállónak kell lennie.
+az értéket arra hogy már repül, vagy épp csomagot vesz fel. Az ilyen Lost Update problémákkal szemben védelmet ad, ha az adatbázis rendelkezik ACID tulajdonságokkal.
+Az ACID tulajdonságok \ref{fig:acid} (atomiság, konzisztencia, izoláció, tartósság) felelősek az adatbázis integritásáért.
 
-A adatközpont programnak elosztott rendszerként kell működnie, tehát terheléselosztás és megfelelő vezérlés szükséges.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.15]{images/ACID-Properties.jpg}
+    \caption{ACID tulajdonságok}
+    \label{fig:acid}
+\end{figure}
+
+Tehát csak olyan adatbázisok jöhetnek szóba a program implementálásánál aminek az integritása garantálható.
+
+\subsection{Protokollok és adatbázisok szerepe a programban}
+
+A drón raj programot és az adatközpontot úgy tervezzük meg, hogy a telemetria adatokat küldéséhez használt rész kicserélhető legyen valamilyen módon (például dependency injekción keresztül).
+Így valósítjuk meg a több protokollon keresztüli kommunikációt.
+%TODO: ide még írni
+
+
+
+%A adatközpont programnak elosztott rendszerként kell működnie, tehát terheléselosztás és megfelelő vezérlés szükséges.
 \Section{Program struktúra}
 \subsection{Architektúra, program felépítés}
 Ahhoz hogy a programot a követelmányben megfogalmazott módon építsük fel, értem ezalatt azt hogy több protokollt és adatbázist hasonlítsunk össze egy olyan
