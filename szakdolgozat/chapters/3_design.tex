@@ -12,10 +12,36 @@ Ez még csak a tervezési fázis.
 (Nyilván ha olyan a téma, hogy magának az implementációnak a módjával foglalkozik, adott formális nyelvet mutat be, úgy a kódpéldákat már innen sem lehet kihagyni.)
 
 \Section{Követelmények}
-A probléma szimulációja 3 programból \ref{fig:3program} áll. Egy program az adatközpont, egy program a drónok szerepét veszi fel, a harmadik program egy egyszerű kliens ami,
-paraméterek alapján konfigurálja a másik 2 program működését. Az első két program mikroszervízes struktúrában használhatónak kell lennie, hogy a valódi elosztott rendszeres működést megfelelően tudjuk tesztelni.\\
-Az adatközpontot szimuláló program lesz a legbonyolultabb. Ennek a programnak tudnia kell hibamentesen, adatvesztés nélkül
-feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni kell tudni a drónok indítását, logisztikai feladatait.
+
+\subsection{Általános leírás}
+Egy olyan elosztott rendszer környezetben működő szoftver létrehozása a cél, ami képes a drónszállítás közben keletkező valóságnak megfelelő adatokat szimulálni és hatékonyan feldolgozni.
+Ezeknek az adatoknak a feldolgozását vizsgálom, több kontextusból.
+Egyrészt a hálózaton való kommunikaáció hatékonyságát vizsgálom, tehát hogy mennyi adatforgalommal jár a kommunikáció,
+és milyen hatékony ennek a kommunikációnak a feldolgozása, azaz a hálózaton használt formátum átalakítása a programban használt formátumra. Másrészt összehasonlítjuk az adatbázisba való mentés hatékonyságát.
+Mivel elosztott rendszerekről van szó, nem egy darab program lesz.
+Mikro-szervízként működnek majd a programok.
+Ez azt jelenti, hogy ha 100 adat feldolgozást végző program fut egy terhelést elosztó proxy mögött, akkor ugyanolyan viselkedés várható mint ha csak 1 program futna.
+A drón szenzorai által gyűjtött adatokat telemetria adatoknak nevezzük. A programok egy részének ezeket az adatokat kell tudnia generálni, egy másik részének feldolgoznia.
+
+\subsection{Hatékonyság}
+A hatékonyság alatt egyszerre értjük a teljesítményt, tehát hogy mennyire gyors a feldolgozás, és azt is hogy ez a feldolgozás mennyi erőforrást használ.
+Célunk hogy a lehető legkevesebb adatforgalommal, a minimális CPU és memóriahasználattal de minél gyorsabban dolgozzuk fel az adatokat.
+
+
+\subsection{Funkcionális követelmények}
+A szimulációban több féle protokolt és adattovábbításra képes formátumot hasonlítunk össze, így a programot úgy kell felépíteni, hogy ki lehessen cserélni ezeket a végpontokat anélkül hogy a program üzleti logikájának működését befolyásolnánk.
+Az adatközpontok és drónok közötti telemetria adat kommunikációt és annak feldolgozását összehasonlítjuk egy HTTP 1.1 -en műkodő JSON adatformátumot használó REST~\cite{Wikipedia-REST} API-n, egy HTTP 2 -n futó gRPC-t használó végponton is.
+Az adatok mentését is több adatbázison kell tesztelni, így az adatbázisnak is cserélhetőnek kell lennie.
+
+%TODO: ide még írni
+
+\Section{Program struktúra}
+\subsection{Architektúra, program felépítés}\label{subsec:architektúra-program-felépítés}
+A probléma szimulációja 2 programból~\ref{fig:3program} áll. Egy program az adatközpont, egy program a drónok szerepét veszi fel, és van még egy egyszerű kliens ami,
+paraméterek alapján konfigurálja a 2 program működését.
+Az két program mikroszervízes struktúrában használhatónak kell lennie, hogy a valódi elosztott rendszeres működést megfelelően tudjuk tesztelni.\\
+Az adatközpontot szimuláló program lesz a legbonyolultabb.
+Ennek a programnak tudnia kell hibamentesen, adatvesztés nélkül feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni kell tudni a drónok indítását, logisztikai feladatait.
 
 \begin{figure}[h]
     \centering
@@ -23,16 +49,55 @@ feldolgozni és tárolnia az adatokat amiket a drónok küldenek, és vezérelni
     \caption{A 3 program}
     \label{fig:3program}
 \end{figure}
+Ahhoz hogy a programot a követelmányben megfogalmazott módon építsük fel, értem ez alatt azt hogy több protokollt és adatbázist hasonlítsunk össze egy olyan program architektúrát, felépítést kell választani ami megendegi ezt.
+Erre a problémára megoldásként a Hexagonal architektúrát~\ref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.07]{images/hexa-inward.png}
+    \caption{Hexagonal architecture inward pointing dependencies}
+    \label{fig:hexagonal-inward}
+\end{figure}
+Így a program belülről kifelé rétegesen epül fel, interfaceket alkalmazva, úgy hogy a pontos implemetáció absztraktálva van, azaz csak az üzleti logikát ismerjük biztosan, minden ráépülő réteg implementációja cserélhető marad.
+Minden réteg csak befelé mutat \ref{fig:hexagonal-inward}, így az üzleti logikánk megmaradhat, miközben az alkalmazás teljes infrastuktúráját kicserélhetnénk.
+Így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.
+Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \ref{fig:hexagonal-inward} tökéletesen bemutatja.
+Az alkalmazást fel lehet osztani verérlő és vezérelt részre. Ez nagyon jól igazodik az üzleti logikához, egy inputra szinte mindig valamiféle vezérlést várunk el,
+tehát ahogz az alkalmazásunkat használjuk, vezéreljük akkor az adatok hatására valamit csináljon. Ezután az alkalmazásunk beszélhet más, külső forrásokkal, amiket az alkalmazás használ, azaz vezéreli őket.
+Ilyen lehet egy adatbázis implementációja, vagy egy üzenet sor, amibe adatokat rakunk be, hogy valami más később kiolvassa.
+Azért jó ez a felépítés, mert így például mindegy hogy a terminálból valamilyen konzolos applikáción keresztül hívjuk meg az alkalmazásunkat,
+vagy egy webes felületről. A vezérelt egységeket is ki lehet cserélni, nem vagyunk röghöz kötve mert egyszer így lett megírva az alkalmazésunk, csak a megfelelő réteget kicseréljük, feltéve hogy megírtuk hozzá az implementációnkat és az implementációnk
+az intefészen keresztül teljesít minden feltételt. Így például könnyen átállhatunk relációs adatbázisról egy dokumentum alapúra, vagy egy API-t is kicserélhetünk például JSON REST API-t gRPC-re ha valami miatt szükség van rá.
+A Netflix is ezt az architektúrát használja \cite{netflix}, ugyanis a gyors növekedésük közben több skálázhatósággal összefüggő problémába ütköztek, amit úgy oldottak meg hogy
+ebben az architektúrában\ref{fig:hexagonal-actor} szétosztották a feladatokat több, az adott kis feladatra megfelelő adatbázisra, mikroszervízre.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/hexa-actor.png}
+    \caption{Hexagonal architecture ports and adapters}
+    \label{fig:hexagonal-actor}
+\end{figure}
 
-\newpage
-A szimulációban több féle protokolt és adattovábbításra képes formátumot hasonlítunk össze, így a programot úgy kell felépíteni,
-hogy ki lehessen cserélni ezeket a végpontokat anélkül hogy a program üzleti logikájának működését befolyásolnánk.
-Az adatközpontok és drónok közötti telemetria adat kommunikációt és annak feldolgozását összehasonlítjuk
-egy HTTP 1.1 -en műkodő JSON adatformátumot használó REST \cite{Wikipedia-REST} API-n, egy HTTP 2 -n futó gRPC-t használó végponton is.
+\subsection{A Hexagonal architektúráról bővebben}\label{subsec:a-hexagonal-architektúráról-bővebben}
+A hexagonal architektúra~\cite{hexagonal}, vagy másnéven portok és adapterek architektúra a szoftver tervezés során használt design.
+Célja lazán összekapcsolt alkalmazás komponensek létrehozása, amelyek portok és adapterek segítségével könnyen összekapcsolhatóak.
+Ez cserélhetővé teszi a program komponenseket bármilyen szinten, és megkönnyíti a teszteket.
 
-\subsection{REST architektúra}
+Minden komponens nyitott egy "porton".
+A komponensek közti kommunikáció ezeken a portokon történik egy adott protokoll alapján.
+Ezt a protokollt a célnak megfelelően választjuk meg.
+A portok és protokollok egy absztrak API-t definiálnak ami a megfelelő eszközzel implementálható\cite{hexagonal}.
+A implementációt az adapterek valósítják meg, az objektum orientált nyelvekben interfész metódusokkal vannak összekötve a program magjával.
+Ilyen lehet egy RPC hívás, webes szervíz, REST API, SQL lekérdezés.
 
-A REST (Representational State Transfer) egy szoftverarchitektúra típus internet alapú rendszerek számára.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/ports-adapters}
+    \caption{Hexagonal architecture driver and driven actors}
+    \label{fig:hexagonal-ports-adapters}
+\end{figure}
+
+\subsection{REST architektúra}\label{subsec:rest-architektúra}
+
+A REST (Representational State Transfer) \cite{Wikipedia-REST} egy szoftverarchitektúra típus internet alapú rendszerek számára.
 Egy REST architektúrának meg kell felelni a következő megszorításoknak:
 \begin{itemize}
     \item Kliens-szerver architektúra
@@ -41,9 +106,23 @@ Egy REST architektúrának meg kell felelni a következő megszorításoknak:
     \item Réteges felépítés
     \item Egységes interfész
 \end{itemize}
+
+\subsubsection{Kliens-szerver architektúra}
+A kliensek el vannak különítve a szerverektől egy egységes interfész által. Az érdekeltségek ilyen nemű szétválasztása azt jelenti, például, hogy a kliensek nem foglalkoznak adattárolással, ami a szerver belső ügye marad, és így a kliens kód hordozhatósága megnő. A szerverek nem foglalkoznak a felhasználói felülettel vagy a kliens állapotával, így a szerverek egyszerűbbek és még skálázhatóbbak lehetnek. A szerverek és kliensek áthelyezhetőek és fejleszthetőek külön-külön is, egészen addig amíg az interfész nem változik meg.
+\subsubsection{Állapotmentesség}
+A kliens-szerver kommunikáció tovább korlátozott az által, hogy a szerveren nem tárolják a kliens állapotát a kérések között. Minden egyes kérés bármelyik klienstől tartalmazza az összes szükséges információt a kérés kiszolgálásához, és minden állapotot a kliens tárol. A szerver lehet állapottartó; ez a korlátozás csupán azt követeli meg, hogy a szerver oldali erőforrás-állapotok URL által címezhetőek legyenek. Ez nem csak a szerver felügyeletét teszi lehetővé, de megbízhatóbbá teszi őket a hálózati meghibásodásokkal szemben, valamint tovább fokozza a skálázhatóságot.
+\subsubsection{Gyorsítótárazhatóság}
+Mint ahogy a világhálón, a kliensek itt is képesek gyorsító-tárazni a válaszokat. A válaszoknak ezért impliciten vagy expliciten tartalmazniuk kell, hogy gyorsítótárazhatóak-e vagy sem. Így elkerülhető, hogy a kliens téves vagy elavult adatokat használjon fel újra. Egy jól menedzselt gyorsítótár lehetővé teszi, hogy teljesen megkerüljünk egyes kliens-szerver interakciókat, továbbá megnöveli a rendszer skálázhatóságát és a teljesítményét.
+\subsubsection{Réteges felépítés}
+Egy kliens általában nem tudja megmondani, hogy direkt csatlakozott-e a végpont szerverhez, vagy közvetítő segítségével. A közvetítő szerverek megnövelhetik a rendszer skálázhatóságát terheléseloszlás kiegyenlítéssel és megosztott gyorsítótárak használatával.
+\subsubsection{Egységes interfész}
+Az egységes interfész kliens és szerver között egyszerűsíti és kettéválasztja az architektúrát, és lehetővé teszi, hogy egymástól függetlenül fejlődjenek az egyes részek. Az interfész négy irányadó elve alább kerül részletezésre.
+
+
 Ha ezeket a megkötéseket teljesíti a webes szolgáltatásunk, azt mondhatjuk hogy "RESTful".
 
-\paragraph{Működése}
+
+\subsubsection{A REST működése}
 A kliensek kéréseket indítanak a szerverek felé, a szerverek pedig feldolgozzák a kéréseket és egy választ küldenek vissza.
 A kérések és a válaszok erőforrás reprezentációk köré épülnek.
 Ezek az erőforrás reprezentációk a mi esetünkben JSON dokumentumok.
@@ -64,8 +143,8 @@ Válaszként egy JSON dokumentumot küldünk vissza válaszként a megfelelő st
             d.ChangeService(p)
             default:
             return echo.NewHTTPError(
-                http.StatusBadRequest,
-                "no such database supported"
+            http.StatusBadRequest,
+            "no such database supported"
             )
         }
         return c.JSON(http.StatusOK, "configuration complete")
@@ -111,10 +190,10 @@ A HTTP/2 egy sokkal hatékonyabb protokoll, a streameléssel elérhetjük azt, h
         \hline
         Szöveges formátum & Bináris formátum \\
         \hline
-        Fejléc szöveg, nem tömörített & Tömörített fejléc \\
+        Szöveges, nem tömörített fejléc & Tömörített fejléc \\
         \hline
         1 kérés, 1 válasz TCP kapcsolatonként & 1 TCP kapcsolatot újra felhasználunk,\\
-         & Unáris kérések,\\
+        & Unáris kérések,\\
         & Szerver streamelés,\\
         & Kliens streamelés,\\
         & Két-irányú streamelés\\
@@ -124,7 +203,7 @@ A HTTP/2 egy sokkal hatékonyabb protokoll, a streameléssel elérhetjük azt, h
 
 \paragraph{Protocol Buffer és JSON összehasonlítása}
 
-Beláthatjuk, hogy a Protocol Buffer egy sokkal hatékonyabb eszköz üzenetek továbbítására.
+Beláthatjuk, hogy a Protocol Buffer adatforgalom kontextusban és hardveres erőforrás kontextusban is egy sokkal hatékonyabb eszköz üzenetek továbbítására mint a JSON, XML, stb hagyományos formátumok.
 Mivel nem szöveges, lehet hogy nehezebb implementálni és debugolni a fejlesztőknek, viszont kevesebb adatforgalommal jár, és a számítógép erőforrásait is kíméli, nem úgy mint a JSON.
 
 \begin{table}[h]
@@ -136,7 +215,7 @@ Mivel nem szöveges, lehet hogy nehezebb implementálni és debugolni a fejleszt
         JSON & Protocol Buffer \\
         \hline
         Nincs szigorú séma definíció & Szigorú séma formátum \\
-          vagy típus & és típus biztonság \\
+        vagy típus & és típus biztonság \\
         \hline
         Szöveg alapú & Bináris \\
         \hline
@@ -165,156 +244,81 @@ Az ACID tulajdonságok \ref{fig:acid} (atomiság, konzisztencia, izoláció, tar
 \end{figure}
 
 Tehát csak olyan adatbázisok jöhetnek szóba a program implementálásánál aminek az integritása garantálható.
+Hogy 2 eltérő adatbázist hasonlítsunk össze, egy SQL és egy NoSQL adatbázis ami teljesíti az ACID integritást megfelelő lesz.
+A PostgreSQL adatbázis kíváló relációs adatbázis, nem véletlen, hogy az egyik legelterjedtebb. Teljesíti az ACID tulajdonságokat, és már 35 éve használják így biztosan megfelelően tesztelt.
+A MongoDB dokumentum alapú adatbázis ACID, de csak dokumentum szintent. A mi szimulációnkhoz viszont így is megfelel a követelményeknek.
+Érdekességként, a legtöbb dokumentum alapú adatbázis nem ACID, ezért nem annyira népszerűek.
 
 \subsection{Protokollok és adatbázisok szerepe a programban}
+A drón raj programot és az adatközpontot úgy tervezzük meg, hogy a telemetria adatok küldéséhez használt rész kicserélhető legyen valamilyen módon (például dependency injekción keresztül).
+Így valósítjuk meg a több protokollon keresztüli kommunikációt. Az adatbázis végpontot is hasonlóan ki kell tudnunk cserélni, hogy ne kelljen módosítani a programon a különböző szimulációkhoz.
+A következő kód példában láthatjuk, hogy működhet a dependency injekció. Itt a postgreSQL adatbázissal hoztuk létre a szervízt, de a mongoDB adatbázissal is létrehozhatjuk, ha teljesíti az interfész követelményeit.
+\begin{python}
+    postgresStorage, err := postgres.NewStorage(config.PostgresConfig)
+    if err != nil {
+        log.Println("Error connecting to database")
+        panic(err)
+    }
+    mongoStorage, err := mongodb.NewStorage(config.MongoConfig)
+    if err != nil {
+        log.Println("Error connecting to database")
+        panic(err)
+    }
+    var ts telemetry.Service
+    var ds drone.Service
+    var rs routing.Service
+    ts = telemetry.NewService(postgresStorage, logger)
+    rs = routing.NewService(logger)
+    ds = drone.NewService(postgresStorage, jsonAdapter, logger, rs)
+\end{python}
 
-A drón raj programot és az adatközpontot úgy tervezzük meg, hogy a telemetria adatokat küldéséhez használt rész kicserélhető legyen valamilyen módon (például dependency injekción keresztül).
-Így valósítjuk meg a több protokollon keresztüli kommunikációt.
-%TODO: ide még írni
-
-
-
-%A adatközpont programnak elosztott rendszerként kell működnie, tehát terheléselosztás és megfelelő vezérlés szükséges.
-\Section{Program struktúra}
-\subsection{Architektúra, program felépítés}
-Ahhoz hogy a programot a követelmányben megfogalmazott módon építsük fel, értem ezalatt azt hogy több protokollt és adatbázist hasonlítsunk össze egy olyan
-program architektúrát, felépítést kell választani ami megendegi ezt.
-Erre a problémára megoldásként a Hexagonal architektúrát \ref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.07]{images/hexa-inward.png}
-    \caption{Hexagonal architecture inward pointing dependencies}
-    \label{fig:hexagonal-inward}
-\end{figure}
-Így a program belülről kifelé rétegesen epül fel, interfaceket alkalmazva, úgy hogy a pontos implemetáció absztraktálva van, az csak az üzleti logikát ismerjük biztosan, minden ráépülő réteg implementációja cserélhető marad.
-Minden réteg csak befelé mutat \ref{fig:hexagonal-inward}, így az üzleti logikánk megmaradhat, miközben az alkalmazás teljes infrastuktúráját kicserélhetnénk.
-így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.
-Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \ref{fig:hexagonal-inward} tökéletesen bemutatja.
-Az alkalmazást fel lehet osztani verérlő és vezérelt részre. Ez nagyon jól igazodik az üzleti logikához, egy inputra szinte mindig valamiféle vezérlést várunk el,
-tehát hogyha az alkalmazásunkat használjuk, vezéreljük akkor az az adatok hatására valamit csináljon. Ezután az alkalmazásunk beszélhet más, külső forrásokkal, amiket az alkalmazás használ, azaz vezéreli őket.
-Ilyen lehet egy adatbázis implementációja, vagy egy üzenet sor, amibe adatokat rakunk be, hogy valami más később kiolvassa.
-Azért jó ez a felépítés, mert így például mindegy hogy a terminálból valamilyen konzolos applikáción keresztül hívjuk meg az alkalmazásunkat,
-vagy egy webes felületről, esetleg mobil applikációból. A vezérelt egységeket is ki lehet cserélni, nem vagyunk röghöz kötve
-mert egyszer így lett megírva az alkalmazésunk, csak a megfelelő réteget kicseréljük, feltéve hogy megírtuk hozzá az implementációnkat és az implementációnk
-az intefészen keresztül teljesít minden feltételt. Így például könnyen átállhatunk r1elációs adatbázisról egy dokumentum alapúra, ha valami miatt úgy kívánjuk.
-A Netflix is ezt az architektúrát használja \cite{netflix}, ugyanis a gyors növekedésük közben több skálázhatósággal összefüggő problémába ütköztek, amit úgy oldottak meg hogy
-ebben az architektúrában\ref{fig:hexagonal-actor} szétosztották a feladatokat több, az adott kis feladatra megfelelő adatbázisra, mikroszervízre.
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.3]{images/hexa-actor.png}
-    \caption{Hexagonal architecture driver and driven actors}
-    \label{fig:hexagonal-actor}
-\end{figure}
-\\
-A drón-raj program  olyan adatokat fog generálni, amelyet egy valós drónok generálnának és ezeket az adatokat tovább fogja küldeni az adatközpontnak.
 %TODO: ide még írni és a program struktúráját jobban megmutatni, a konkrét jegyzék struktúra is akár, hogy mi tartozik infrastruktúrához, mi a program magja stb. Interfacek kapcsolata,
 %TODO: Új section ami a program folyamatával foglalkozik, nem a struktúrával
+\Section{Szimuláció működésének folyamata}
 
+A szimuláció működése azzal kezdődik, hogy elindítjuk az adatközpont programot.
+Felcsatlakozik az adatbázisokra, majd létrehozza a szervizeket, és a REST API-n várja a bejövő kéréseket.
+Ez lehet például egy konfigurációs kérés, a drónok lekérdezése, vagy a szállítás indítása.
 
+Közben a drón-raj program is elindul, ez a program is egy REST API-n várja a kéréseket.
+A drón raj program az API-n megkapja a drónokat és a hozzájuk rendelt csomagokat, majd megkezdódik a szimuláció, a drón-raj program telemetria adatokat küld az adatközpont programnak.
+A drón-raj program olyan telemetria adatokat fog generálni, amelyek minél jobban a valsóságot tükrözik és ezeket az adatokat tovább fogja küldeni az adatközpontnak.
+\begin{python}
+{
+    "telemetry": {
+    "speed": 2,
+    "location": {
+    "latitude": 48.08092020178216,
+    "longitude": 20.766208061642047
+    },
+    "altitude": 50,
+    "bearing": 178.68412647009515,
+    "acceleration": 0,
+    "battery_level": 98,
+    "motor_temperatures": [
+    41,
+    43
+    ],
+    "time_stamp": "2021-04-01T15:04:05.630Z",
+    "drone_id": 2
+    }
+}
+\end{python}
 
-%TODO: Még a struktúrához kell a Go-kit, azért lett ez választva mert nem framework, hanem egy library/ecosystem, így több szabadságot kap a program,
-%hogy hogyan is lesz mikroszerviz. Go kit ben van service discovery,  beepitett Observability (Prometheus), többszintes logger, és A hexagonal architektúrát támogatja
-%Pl más hasonló mikroszervizeket kezelő framework (pl. Micro) nem elég rugalmas, sok mindent nem enged meg, egy féleképpen lehet használni.
+Ezeket a telemetria adatokat az adatközpont program fogadja a megadott porton és és lementi az adott adatbázisba. \ref{fig:adatkozpont-flow}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/adatkozpont-flow.png}
+    \caption{Adatközpont program működésének folyamata}
+    \label{fig:adatkozpont-flow}
+\end{figure}
 
-
-\section{Számítási problémák}
-
-\subsection{Cartesian szerinti}
-\begin{gather}
-    P_1(5,6,3) \\
-    P_2(7,4,9) \\
-    V = 10 \frac{m}{s}
-\end{gather}
-
-
-Kiszamitas:
-
-\begin{gather}
-    x = r * cos(\phi) * sin(\theta) \\
-    y = r * sin(\phi) * sin(\theta) \\
-    z = r * cos(\theta)
-\end{gather}
-
-
-X, Y, Z, r
-
-\begin{gather}
-    x = X_2 - X_1 = 7 - 5 = 2 \\
-    y = Y_2 - Y_1 = 4 - 6 = -2 \\
-    z = Z_2 - 7_1 = 9 - 3 = 6 \\
-    r = \sqrt{2^2 + (-2)^2 + 6^2} = \sqrt{44}
-\end{gather}
-
-$
-cos(\phi) sin(\phi) cos(\theta) sin(\theta)
-$
-
-\begin{gather}
-    cos(\phi) = \frac{x}{\sqrt{x^2 + y^2}} \\
-    sin(\phi) = \frac{y}{\sqrt{x^2 + y^2}} \\
-    cos(\theta) = \frac{\sqrt(x^2 + y^2)}{\sqrt{x^2 + y^2 + z^2}} \\
-    sin(\theta) = \frac{z}{\sqrt{x^2 + y^2 + z^2}}
-\end{gather}
-
-\newpage
-
-További számítás segédvektorok kiszámítása:
-
-\begin{gather}
-    V_x = \frac{x}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{2}{\sqrt{44}} * 10 = \frac{10\sqrt{11}}{11} = 3.0151\\
-    V_y = \frac{y}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{-2}{\sqrt{44}} * 10 = -\frac{10\sqrt{11}}{11} = -3.0151\\\\
-    V_z = \frac{z}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{6}{\sqrt{44}} * 10 = \frac{30\sqrt{11}}{11} = 9.0453\\
-\end{gather}
-
-Összesen eltelt idő:
-
-\begin{gather}
-    t = \frac{s}{v}
-\end{gather}
-
-\begin{gather}
-    t_osszes = \frac{\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2 + (z_2 - z_1)^2}}{v} = \frac{\sqrt{(7 - 5)^2 + (4 - 6)^2 + (9 - 3)^2}}{10} = \frac{\sqrt{44}}{10}{}
-\end{gather}
-
-t idő múlva egy adott pillanatban koordináták meghatározása:
-
-\begin{gather}
-    x = X_0 + V_x * t = X_0 + \frac{X}{\sqrt{x^2 + y^2 + z^2}} * t = 5 + \frac{2}{\sqrt{44}} * 10 * t \\
-    Y = y_0 + V_y * t = y_0 + \frac{y}{\sqrt{x^2 + y^2 + z^2}} * t = 4 - \frac{2}{\sqrt{44}} * 10 * t \\
-    z = z_0 + V_z * t = z_0 + \frac{z}{\sqrt{x^2 + y^2 + z^2}} * t = 6 + \frac{6}{\sqrt{44}} * 10 * t
-\end{gather}
-
-\subsection{Az Ortodroma számítás, a föld alakját figyelembe véve}
-
-Mivel gömbi geometria lényegesen eltér az euklideszi geometriától ezért a távolságszámításra használt matematikai képletek is eltérőek.
-Az euklideszi geometriában a legrövidebb távolságot a két pontot összekötő egyenes,
-a nem euklideszi geometriában a két pontot összekötő geodetikus vonal (gömb esetén főkör) mentén mérjük.
-
-\paragraph{A legrövidebb út kiszámítása}
-\begin{gather}
-    d = arccos(sin\phi_1 * sin\phi_2 * cos\phi_1)* cos\phi_2 * cos\Delta \lambda) * R
-\end{gather}
-
-\paragraph{Irány kiszámítása}
-Ahogy az főkörön haladunk az irányunk folyamatosan változik. Tehát amikor megérkezünk a célhoz, nem ugyanabban az irányba nézünk mint amikor elindultunk.
-A drón szimulációban ez a telemetria adatokban is megfigyelhető.
-\begin{gather*}
-    \varphi = atan2(sin\Delta\lambda * cos\phi_{2}, cos\phi_{1} * sin\phi_{2} - sin\phi_{1} * cos\phi_{2} * cos\Delta\lambda)
-\end{gather*}
-ahol $\phi_{1}\lambda_{1}$ a kezdeti pont, és $\phi_{2}\lambda_{2}$ a vég pont és $\Delta\lambda$ pedig a különbség a hosszúsági fokokban.
-
-\paragraph{Cél koordináták kiszámítása, ha ismerjük a megtett távolságot, irányt, és kezdő koordinátákat}
-\begin{gather}
-    \phi_{2} = arcsin(sin \phi_{1} * cos \delta + cos \phi_{1} * sin \delta * cos \theta)\\
-    \lambda_{2} = \lambda_{1} + arctan2(sin\theta * sin\delta  * cos\phi_{1}, cos\delta - sin\phi_{1} * sin\phi_{2})
-\end{gather}
-ahol $\phi$ a szélességi fok, $\lambda$ a hosszúsági fok, $\theta$ az irány, $\delta$ a szögtávolság d/R és d a megtett távolság, R pedig a Föld sugara.
 
 \Section{Táblázatok}
 
 Táblázatokhoz a \texttt{table} környezetet ajánlott használni.
-Erre egy minta \aref{tab:minta}. táblázat.
+Erre egy minta \aref{tab:minta} táblázat.
 A hivatkozáshoz az egyedi \texttt{label} értéke konvenció szerint \texttt{tab:} prefixszel kezdődik.
 
 \begin{table}[h]
