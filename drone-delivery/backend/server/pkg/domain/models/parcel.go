@@ -8,7 +8,7 @@ type Parcel struct {
 	Location      GPS             `json:"location" bson:"location"`
 	FromAddress   ShippingAddress `json:"from_address"` //ez lehet nem is kell
 	ToAddress     ShippingAddress `json:"to_address"`
-	DropOffSite   GPS             `bson:"drop_o§ff_site" json:"drop_off_site" db:"drop_off_site"`
+	DropOffSite   GPS             `bson:"drop_off_site" json:"drop_off_site" db:"drop_off_site"`
 	AssignedDrone int             `json:"assigned_drone" db:"assigned_drone" db:"assigned_drone"`
 }
 
