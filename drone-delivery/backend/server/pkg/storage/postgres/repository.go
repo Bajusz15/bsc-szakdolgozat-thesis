@@ -142,3 +142,34 @@ func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
 func (s *Storage) GetDronesDelivering() ([]models.Drone, error) {
 	return nil, nil
 }
+
+func (s *Storage) ReInitializeDeliveryData(drones []models.Drone, parcels []models.Parcel) error {
+	var err error
+	_, err = s.db.Exec(`TRUNCATE drone RESTART IDENTITY CASCADE`)
+	if err != nil {
+		return err
+	}
+	_, err = s.db.Exec(`TRUNCATE parcel RESTART IDENTITY CASCADE`)
+	if err != nil {
+		return err
+	}
+	_, err = s.db.Exec(`TRUNCATE telemetry RESTART IDENTITY CASCADE`)
+	if err != nil {
+		return err
+	}
+
+	for _, d := range drones {
+		_, err = s.db.Exec(`INSERT INTO drone (id, state, weight, consumption) VALUES ($1, $2, $3, $4)`, d.ID, d.State, d.Weight, d.Consumption)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, p := range parcels {
+		_, err = s.db.Exec(`INSERT INTO parcel (id, name, weight, drop_off_latitude, drop_off_longitude ) VALUES ($1, $2, $3, $4, $5)`, p.ID, p.Name, p.Weight, p.DropOffSite.Latitude, p.DropOffSite.Longitude)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

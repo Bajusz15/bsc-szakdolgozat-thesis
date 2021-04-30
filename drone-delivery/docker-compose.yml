@@ -77,10 +77,10 @@ services:
       - GRPC_GO_REQUIRE_HANDSHAKE=off
     restart: on-failure
 #    dns_search: .
-  configurator:
-    build:
-      dockerfile: Dockerfile
-      context: backend/configurator
-    depends_on:
-      - drone-swarm
-      - server
+#  configurator:
+#    build:
+#      dockerfile: Dockerfile
+#      context: backend/configurator
+#    depends_on:
+#      - drone-swarm
+#      - server

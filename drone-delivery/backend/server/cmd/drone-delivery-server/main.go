@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"drone-delivery/server/pkg/config"
-	"drone-delivery/server/pkg/domain/models"
 	"drone-delivery/server/pkg/domain/services/drone"
 	"drone-delivery/server/pkg/domain/services/routing"
 	"drone-delivery/server/pkg/domain/services/telemetry"
@@ -16,18 +14,12 @@ import (
 	"fmt"
 	goKitLog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"github.com/jmoiron/sqlx"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"google.golang.org/grpc"
 	"log"
-	"math/rand"
 	"net"
 	"net/http"
 	"os"
 	"sync"
-	"time"
 )
 
 func main() {
@@ -52,11 +44,11 @@ func main() {
 		panic(err)
 	}
 
-	err = generateDeliveryData()
-	if err != nil {
-		logger.Log("err", err, "desc", "failed to generate delivery data")
-		panic(err)
-	}
+	//err = generateDeliveryData()
+	//if err != nil {
+	//	logger.Log("err", err, "desc", "failed to generate delivery data")
+	//	panic(err)
+	//}
 	//outbound adapters
 	jsonAdapter := outbound.NewJSONAdapter()
 
@@ -101,138 +93,130 @@ func main() {
 
 // go-kit lesz használva, mint  mikro-szerviz strukturat tamogato könyvtár
 // a szerveren futo appliakcio hexagonal architekturaba lesz irva, illetve a DDD eleimei is megjelennek. Ezzel  a go-kit tokeletesen hasznalhato
+//
+//func generateDeliveryData() error {
+//	rand.Seed(time.Now().UnixNano())
+//	min := 10
+//	max := 30
+//	deliveries := rand.Intn(max-min+1) + min
+//	//generate latitudes and longitudes for the parcels
+//	latitudes := randFloats(48.05, 48.08, deliveries)
+//	longitudes := randFloats(20.75, 20.78, deliveries)
+//	parcelWeights := randFloats(0.2, 2, deliveries)
+//	consumptions := randFloats(300, 800, deliveries)
+//	droneWeights := randFloats(3, 15, deliveries)
+//
+//	var drones = make([]models.Drone, deliveries)
+//	var parcels = make([]models.Parcel, deliveries)
+//	for i := 0; i < deliveries; i++ {
+//		drones[i] = models.Drone{
+//			ID:          i + 1,
+//			Consumption: consumptions[i],
+//			Weight:      droneWeights[i],
+//			State:       models.DroneFree,
+//		}
+//
+//		parcels[i] = models.Parcel{
+//			ID:     i + 1,
+//			Name:   "egy csomag",
+//			Weight: parcelWeights[i],
+//			DropOffSite: models.GPS{
+//				Latitude:  latitudes[i],
+//				Longitude: longitudes[i],
+//			},
+//		}
+//	}
+//
+//	err := insertIntoPostgres(drones, parcels)
+//	if err != nil {
+//		return err
+//	}
+//	err = insertIntoMongo(drones, parcels)
+//	if err != nil {
+//		return err
+//	}
+//
+//	return nil
+//}
 
-func generateDeliveryData() error {
-	rand.Seed(time.Now().UnixNano())
-	min := 10
-	max := 30
-	deliveries := rand.Intn(max-min+1) + min
-	//generate latitudes and longitudes for the parcels
-	latitudes := randFloats(48.05, 48.08, deliveries)
-	longitudes := randFloats(20.75, 20.78, deliveries)
-	parcelWeights := randFloats(0.2, 2, deliveries)
-	consumptions := randFloats(300, 800, deliveries)
-	droneWeights := randFloats(3, 15, deliveries)
+//func insertIntoPostgres(drones []models.Drone, parcels []models.Parcel) error {
+//	connStr := "user=" + os.Getenv("PGUSER") + " dbname=" + os.Getenv("PGDATABASE") + " password=" + os.Getenv("PGPASSWORD") + " host=" + os.Getenv("PGHOST") + " sslmode=disable TimeZone=Europe/Budapest"
+//	db, err := sqlx.Open("postgres", connStr)
+//	if err != nil {
+//		return err
+//	}
+//	if err = db.Ping(); err != nil {
+//		return err
+//	}
+//
+//	log.Println("You are connected to your database")
+//	_, err = db.Exec(`TRUNCATE drone RESTART IDENTITY CASCADE`)
+//	if err != nil {
+//		return err
+//	}
+//	_, err = db.Exec(`TRUNCATE parcel RESTART IDENTITY CASCADE`)
+//	if err != nil {
+//		return err
+//	}
+//	_, err = db.Exec(`TRUNCATE telemetry RESTART IDENTITY CASCADE`)
+//	if err != nil {
+//		return err
+//	}
+//
+//	for _, d := range drones {
+//		_, err = db.Exec(`INSERT INTO drone (id, state, weight, consumption) VALUES ($1, $2, $3, $4)`, d.ID, d.State, d.Weight, d.Consumption)
+//		if err != nil {
+//			return err
+//		}
+//	}
+//
+//	for _, p := range parcels {
+//		_, err = db.Exec(`INSERT INTO parcel (id, name, weight, drop_off_latitude, drop_off_longitude ) VALUES ($1, $2, $3, $4, $5)`, p.ID, p.Name, p.Weight, p.DropOffSite.Latitude, p.DropOffSite.Longitude)
+//		if err != nil {
+//			return err
+//		}
+//	}
+//	return nil
+//}
 
-	var drones = make([]models.Drone, deliveries)
-	var parcels = make([]models.Parcel, deliveries)
-	for i := 0; i < deliveries; i++ {
-		drones[i] = models.Drone{
-			ID:          i + 1,
-			Consumption: consumptions[i],
-			Weight:      droneWeights[i],
-			State:       models.DroneFree,
-		}
-
-		parcels[i] = models.Parcel{
-			ID:     i + 1,
-			Name:   "egy csomag",
-			Weight: parcelWeights[i],
-			DropOffSite: models.GPS{
-				Latitude:  latitudes[i],
-				Longitude: longitudes[i],
-			},
-		}
-	}
-
-	err := insertIntoPostgres(drones, parcels)
-	if err != nil {
-		return err
-	}
-	err = insertIntoMongo(drones, parcels)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func randFloats(min, max float64, n int) []float64 {
-	res := make([]float64, n)
-	for i := range res {
-		res[i] = min + rand.Float64()*(max-min)
-	}
-	return res
-}
-
-func insertIntoPostgres(drones []models.Drone, parcels []models.Parcel) error {
-	connStr := "user=" + os.Getenv("PGUSER") + " dbname=" + os.Getenv("PGDATABASE") + " password=" + os.Getenv("PGPASSWORD") + " host=" + os.Getenv("PGHOST") + " sslmode=disable TimeZone=Europe/Budapest"
-	db, err := sqlx.Open("postgres", connStr)
-	if err != nil {
-		return err
-	}
-	if err = db.Ping(); err != nil {
-		return err
-	}
-
-	log.Println("You are connected to your database")
-	_, err = db.Exec(`TRUNCATE drone RESTART IDENTITY CASCADE`)
-	if err != nil {
-		return err
-	}
-	_, err = db.Exec(`TRUNCATE parcel RESTART IDENTITY CASCADE`)
-	if err != nil {
-		return err
-	}
-	_, err = db.Exec(`TRUNCATE telemetry RESTART IDENTITY CASCADE`)
-	if err != nil {
-		return err
-	}
-
-	for _, d := range drones {
-		_, err = db.Exec(`INSERT INTO drone (id, state, weight, consumption) VALUES ($1, $2, $3, $4)`, d.ID, d.State, d.Weight, d.Consumption)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, p := range parcels {
-		_, err = db.Exec(`INSERT INTO parcel (id, name, weight, drop_off_latitude, drop_off_longitude ) VALUES ($1, $2, $3, $4, $5)`, p.ID, p.Name, p.Weight, p.DropOffSite.Latitude, p.DropOffSite.Longitude)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func insertIntoMongo(drones []models.Drone, parcels []models.Parcel) error {
-	var err error
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	//log.Println("mongodb://"+sc.UserName+":"+sc.PW+"@"+sc.Host+":"+sc.Port+"/"+sc.Database)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+os.Getenv("MONGO_USER")+":"+os.Getenv("MONGO_PWD")+"@"+os.Getenv("MONGO_HOST")+":"+os.Getenv("MONGO_PORT")+"/"+os.Getenv("MONGO_DB")))
-	//client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+sc.Host+":"+sc.Port+"/"+sc.Database))
-	if err != nil {
-		return err
-	}
-	//defer client.Disconnect(ctx)
-	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		// Can't connect to Mongo server
-		return err
-	}
-	log.Println("You are connected to your database")
-	db := client.Database(os.Getenv("MONGO_DB"))
-	//db.warehouse.insertOne(     { id: 1,  location: { latitude: 48.080922, longitude: 20.766208} } )
-	//_ = db.Collection("warehouse").Drop(context.TODO())
-	_ = db.Collection("telemetry").Drop(context.TODO())
-	_ = db.Collection("drone").Drop(context.TODO())
-	_ = db.Collection("parcel").Drop(context.TODO())
-	err = db.CreateCollection(context.TODO(), "warehouse")
-	err = db.CreateCollection(context.TODO(), "telemetry")
-	err = db.CreateCollection(context.TODO(), "drone")
-	err = db.CreateCollection(context.TODO(), "parcel")
-	for _, d := range drones {
-		_, err = db.Collection("drone").InsertOne(context.TODO(), d)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, p := range parcels {
-		_, err = db.Collection("parcel").InsertOne(context.TODO(), p)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
+//func insertIntoMongo(drones []models.Drone, parcels []models.Parcel) error {
+//	var err error
+//	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+//	defer cancel()
+//	//log.Println("mongodb://"+sc.UserName+":"+sc.PW+"@"+sc.Host+":"+sc.Port+"/"+sc.Database)
+//	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+os.Getenv("MONGO_USER")+":"+os.Getenv("MONGO_PWD")+"@"+os.Getenv("MONGO_HOST")+":"+os.Getenv("MONGO_PORT")+"/"+os.Getenv("MONGO_DB")))
+//	//client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+sc.Host+":"+sc.Port+"/"+sc.Database))
+//	if err != nil {
+//		return err
+//	}
+//	//defer client.Disconnect(ctx)
+//	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
+//		// Can't connect to Mongo server
+//		return err
+//	}
+//	log.Println("You are connected to your database")
+//	db := client.Database(os.Getenv("MONGO_DB"))
+//	//db.warehouse.insertOne(     { id: 1,  location: { latitude: 48.080922, longitude: 20.766208} } )
+//	//_ = db.Collection("warehouse").Drop(context.TODO())
+//	_ = db.Collection("telemetry").Drop(context.TODO())
+//	_ = db.Collection("drone").Drop(context.TODO())
+//	_ = db.Collection("parcel").Drop(context.TODO())
+//	err = db.CreateCollection(context.TODO(), "warehouse")
+//	err = db.CreateCollection(context.TODO(), "telemetry")
+//	err = db.CreateCollection(context.TODO(), "drone")
+//	err = db.CreateCollection(context.TODO(), "parcel")
+//	for _, d := range drones {
+//		_, err = db.Collection("drone").InsertOne(context.TODO(), d)
+//		if err != nil {
+//			return err
+//		}
+//	}
+//
+//	for _, p := range parcels {
+//		_, err = db.Collection("parcel").InsertOne(context.TODO(), p)
+//		if err != nil {
+//			return err
+//		}
+//	}
+//	return nil
+//}

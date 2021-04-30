@@ -164,3 +164,28 @@ func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
 func (s *Storage) GetDronesDelivering() ([]models.Drone, error) {
 	return nil, nil
 }
+
+func (s *Storage) ReInitializeDeliveryData(drones []models.Drone, parcels []models.Parcel) error {
+	var err error
+	_ = s.db.Collection("telemetry").Drop(context.TODO())
+	_ = s.db.Collection("drone").Drop(context.TODO())
+	_ = s.db.Collection("parcel").Drop(context.TODO())
+	err = s.db.CreateCollection(context.TODO(), "warehouse")
+	err = s.db.CreateCollection(context.TODO(), "telemetry")
+	err = s.db.CreateCollection(context.TODO(), "drone")
+	err = s.db.CreateCollection(context.TODO(), "parcel")
+	for _, d := range drones {
+		_, err = s.db.Collection("drone").InsertOne(context.TODO(), d)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, p := range parcels {
+		_, err = s.db.Collection("parcel").InsertOne(context.TODO(), p)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

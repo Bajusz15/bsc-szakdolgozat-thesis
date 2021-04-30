@@ -7,6 +7,8 @@ import (
 	gokitlog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"log"
+	"math/rand"
+	"time"
 )
 
 type Service interface {
@@ -15,6 +17,7 @@ type Service interface {
 	GetFreeDrones() ([]models.Drone, error)
 	GetDronesDelivering() ([]models.Drone, error)
 	ChangeService(r Repository)
+	ReinitializeDatabase(repos ...Repository) error
 }
 
 type Repository interface {
@@ -23,6 +26,7 @@ type Repository interface {
 	GetWarehouse() (models.Warehouse, error)
 	GetDronesDelivering() ([]models.Drone, error)
 	SetDroneState(droneID int, state string) error
+	ReInitializeDeliveryData(drones []models.Drone, parcels []models.Parcel) error
 }
 
 type OutboundAdapter interface {
@@ -115,4 +119,60 @@ func (s *service) GetFreeDrones() ([]models.Drone, error) {
 		)
 	}
 	return drones, nil
+}
+
+func (s *service) ReinitializeDatabase(repos ...Repository) error {
+	var err error
+	logger := gokitlog.With(s.logger, "method", "ReinitializeDatabase")
+	rand.Seed(time.Now().UnixNano())
+	min := 10
+	max := 30
+	deliveries := rand.Intn(max-min+1) + min
+	//generate latitudes and longitudes for the parcels
+	latitudes := randFloats(48.05, 48.08, deliveries)
+	longitudes := randFloats(20.75, 20.78, deliveries)
+	parcelWeights := randFloats(0.2, 2, deliveries)
+	consumptions := randFloats(300, 800, deliveries)
+	droneWeights := randFloats(3, 15, deliveries)
+
+	var drones = make([]models.Drone, deliveries)
+	var parcels = make([]models.Parcel, deliveries)
+	for i := 0; i < deliveries; i++ {
+		drones[i] = models.Drone{
+			ID:          i + 1,
+			Consumption: consumptions[i],
+			Weight:      droneWeights[i],
+			State:       models.DroneFree,
+		}
+
+		parcels[i] = models.Parcel{
+			ID:     i + 1,
+			Name:   "egy csomag",
+			Weight: parcelWeights[i],
+			DropOffSite: models.GPS{
+				Latitude:  latitudes[i],
+				Longitude: longitudes[i],
+			},
+		}
+	}
+	for _, r := range repos {
+		err = r.ReInitializeDeliveryData(drones, parcels)
+		if err != nil {
+			level.Error(logger).Log(
+				"desc", "could not reinitialize db",
+				"err", err,
+			)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func randFloats(min, max float64, n int) []float64 {
+	res := make([]float64, n)
+	for i := range res {
+		res[i] = min + rand.Float64()*(max-min)
+	}
+	return res
 }

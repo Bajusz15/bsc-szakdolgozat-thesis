@@ -34,5 +34,13 @@ func Handler(d drone.Service, t telemetry.Service, p *postgres.Storage, m *mongo
 		}
 		return c.JSON(http.StatusOK, "configuration complete")
 	})
+
+	router.POST("/api/delivery/reinitialize", func(c echo.Context) error {
+		err := d.ReinitializeDatabase(p, m)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "failed to start reinitialize db")
+		}
+		return c.JSON(http.StatusOK, "initialization finished, db is filled up with drones and parcels")
+	})
 	return router
 }
