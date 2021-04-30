@@ -162,7 +162,45 @@ func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
 }
 
 func (s *Storage) GetDronesDelivering() ([]models.Drone, error) {
-	return nil, nil
+	var err error
+	var drones []models.Drone
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	cur, err := s.db.Collection("drone").Find(ctx, bson.D{{"state", "in_flight"}})
+	defer cur.Close(ctx)
+	for cur.Next(ctx) {
+		var result models.Drone
+		err := cur.Decode(&result)
+		if err != nil {
+			return nil, err
+		}
+		drones = append(drones, result)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return drones, nil
+}
+
+func (s *Storage) GetAllTelemetry() ([]models.Telemetry, error) {
+	var err error
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	var telemetries []models.Telemetry
+	cur, err := s.db.Collection("telemetry").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{"time_stamp", -1}}))
+	defer cur.Close(ctx)
+	for cur.Next(ctx) {
+		var result models.Telemetry
+		err := cur.Decode(&result)
+		if err != nil {
+			return nil, err
+		}
+		telemetries = append(telemetries, result)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return telemetries, nil
 }
 
 func (s *Storage) ReInitializeDeliveryData(drones []models.Drone, parcels []models.Parcel) error {
@@ -174,6 +212,7 @@ func (s *Storage) ReInitializeDeliveryData(drones []models.Drone, parcels []mode
 	err = s.db.CreateCollection(context.TODO(), "telemetry")
 	err = s.db.CreateCollection(context.TODO(), "drone")
 	err = s.db.CreateCollection(context.TODO(), "parcel")
+	//db.warehouse.insertOne(     { id: 1,  location: { latitude: 48.080922, longitude: 20.766208} } )
 	for _, d := range drones {
 		_, err = s.db.Collection("drone").InsertOne(context.TODO(), d)
 		if err != nil {

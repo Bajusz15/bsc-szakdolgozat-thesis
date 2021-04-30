@@ -3,6 +3,7 @@ module drone-delivery/server
 go 1.16
 
 require (
+	github.com/StefanSchroeder/Golang-Ellipsoid v0.0.0-20200928074047-3758eb9e9574
 	github.com/go-kit/kit v0.10.0
 	github.com/golang/protobuf v1.5.2
 	github.com/jmoiron/sqlx v1.2.0

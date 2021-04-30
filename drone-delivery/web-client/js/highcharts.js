@@ -51,17 +51,17 @@ var chart = new Highcharts.Chart({
     },
     yAxis: {
         min: 0,
-        max: 10,
+        max: 50000,
         title: null
     },
     xAxis: {
         min: 0,
-        max: 10,
+        max: 50000,
         gridLineWidth: 1
     },
     zAxis: {
         min: 0,
-        max: 10,
+        max: 50000,
         showFirstLabel: false
     },
     legend: {

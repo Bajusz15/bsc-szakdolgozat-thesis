@@ -53,7 +53,6 @@ func (s *Storage) GetWarehouse() (models.Warehouse, error) {
 	return wh, err
 }
 
-// todo: put these in seperate files
 func (s *Storage) GetTelemetriesByDrone(droneID int) ([]models.Telemetry, error) {
 	var t []models.Telemetry
 	err := s.db.Select(&t, `SELECT id, drone_id, speed, longitude "location.longitude",latitude "location.latitude", altitude, bearing,
@@ -140,7 +139,25 @@ func (s *Storage) GetParcelsInWarehouse() ([]models.Parcel, error) {
 }
 
 func (s *Storage) GetDronesDelivering() ([]models.Drone, error) {
-	return nil, nil
+	var err error
+	var drones []models.Drone
+	err = s.db.Select(&drones, `SELECT id, state, weight, consumption FROM drone WHERE state=$1`, models.DroneInFlight)
+	if err != nil {
+		return nil, err
+	}
+	return drones, nil
+}
+
+func (s *Storage) GetAllTelemetry() ([]models.Telemetry, error) {
+	var err error
+	var telemetries []models.Telemetry
+	err = s.db.Select(&telemetries, `SELECT  drone_id, speed, latitude "location.latitude", longitude "location.longitude", altitude,
+       bearing, acceleration, battery_level, battery_temperature, time_stamp FROM telemetry 
+		ORDER BY time_stamp`)
+	if err != nil {
+		return nil, err
+	}
+	return telemetries, nil
 }
 
 func (s *Storage) ReInitializeDeliveryData(drones []models.Drone, parcels []models.Parcel) error {

@@ -147,9 +147,13 @@ A telepítéshez
     )
 \end{python}
 
-\section{A réteges felépítés}
-%TODO: ide irni
-dsdas
+\section{Mikroszervíz architektúra}
+%TODO: ide roviden mi a mikroszerviz, konténerek
+\subsubsection{Docker}
+%Dockerfilet is behuzni, meg elmagyarazni hogy mukodik
+
+\section{A programok réteges felépítése}
+%TODO: ide irni Hexagonalrol, es az implementaciorol
 
 
 \section{Számítási problémák}
@@ -252,7 +256,8 @@ ahol $\phi$ a szélességi fok, $\lambda$ a hosszúsági fok, $\theta$ az irány
 Az adatközpont program az Ortodroma számítást használja, hogy kiszámolj a távolságot a legoptimálisabb útvonal keresése közben.
 Ez a számítás nem tökéletes, nem ér fel egy nagyon pontos GPS rendszerrel de a problémát tökéletesen megoldja.
 \begin{python}
-    func (s *service) CalculateDistance(lat1, lng1, lat2, lng2 float64, unit ...string) float64 {
+    func (s *service) CalculateDistance(lat1, lng1, lat2,
+            lng2 float64, unit ...string) float64 {
         const PI = float64(math.Pi) //3.141592653589793
 
         radlat1 := PI * lat1 / 180
@@ -261,7 +266,8 @@ Ez a számítás nem tökéletes, nem ér fel egy nagyon pontos GPS rendszerrel 
         theta := lng1 - lng2
         radtheta := PI * theta / 180
 
-        dist := math.Sin(radlat1)*math.Sin(radlat2) + math.Cos(radlat1)*math.Cos(radlat2)*math.Cos(radtheta)
+        dist := math.Sin(radlat1)*math.Sin(radlat2) +
+        math.Cos(radlat1)*math.Cos(radlat2)*math.Cos(radtheta)
 
         if dist > 1 {
             dist = 1
@@ -290,8 +296,31 @@ Ezzel a könyvtárral pontos adatokat tudunk generálni a drón helyzetéről, i
 
 
 \begin{python}
-\end{python}
 
+    geo := ellipsoid.Init("WGS84", ellipsoid.Degrees, ellipsoid.Meter,
+    ellipsoid.LongitudeIsSymmetric, ellipsoid.BearingIsSymmetric)
+    routingService := routing.NewService(geo)
+
+\end{python}
+Ezután a útvonalakért felelős szervízben két metódussal számoljuk ki a szükséges értékeket.
+A \textit{CalculateDroneDistanceAndDirectionFromDestination} metódussal adott induló koordináták alapján megkapjuk a legrövidebb utat a célkoordinátákhoz, és az irányt is.
+A \textit{CalculateDroneNextCoordinates} metódus megmondja adott induló koordináták és távolság valamint irány alapján hogy hova érkezünk, azaz a célkoordinátákat.
+
+\begin{python}
+    func (s *service) CalculateDroneDistanceAndDirectionFromDestination(
+         currentLat, currentLon, destinationLat, destinationLon float64)
+    (distance, bearing float64) {
+        distance, bearing = s.geometry.To(currentLat,
+        currentLon, destinationLat, destinationLon)
+        return distance, bearing
+    }
+
+    func (s *service) CalculateDroneNextCoordinates(lat, lon,
+    dist, bearing float64) (nextLat,nextLon float64) {
+        nextLat, nextLon = s.geometry.At(lat, lon, dist, bearing)
+        return nextLat, nextLon
+    }
+\end{python}
 
 %TODO: Még ide kell a Go-kit, azért lett ez választva mert nem framework, hanem egy library/ecosystem, így több szabadságot kap a program,
 %hogy hogyan is lesz mikroszerviz. Go kit ben van service discovery,  beepitett Observability (Prometheus), többszintes logger, és A hexagonal architektúrát támogatja

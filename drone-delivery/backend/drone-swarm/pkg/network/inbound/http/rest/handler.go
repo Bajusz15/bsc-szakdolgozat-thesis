@@ -7,6 +7,7 @@ import (
 	"drone-delivery/drone-swarm/pkg/network/outbound/http/json"
 	"drone-delivery/server/pkg/domain/models"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 )
 
@@ -23,6 +24,7 @@ type ProvisionData struct {
 
 func Handler(w warehouse.Service, t telemetry.Service, grpcAdapter *grpc.Adapter, jsonAdapter *json.Adapter) http.Handler {
 	router := echo.New()
+	router.Use(middleware.CORS())
 	router.PUT("/configure/protocol/:name", func(c echo.Context) error {
 		switch c.Param("name") {
 		case "grpc":

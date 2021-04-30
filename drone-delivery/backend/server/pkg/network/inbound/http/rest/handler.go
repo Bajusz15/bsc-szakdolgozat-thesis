@@ -6,18 +6,27 @@ import (
 	"drone-delivery/server/pkg/storage/mongodb"
 	"drone-delivery/server/pkg/storage/postgres"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 )
 
 func Handler(d drone.Service, t telemetry.Service, p *postgres.Storage, m *mongodb.Storage) http.Handler {
 	router := echo.New()
-
+	router.Use(middleware.CORS())
 	router.POST("/api/delivery", func(c echo.Context) error {
 		err := d.DeliverParcels()
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "failed to start delivery")
 		}
 		return c.JSON(http.StatusOK, "delivery started")
+	})
+
+	router.GET("/api/delivery/telemetry", func(c echo.Context) error {
+		telemetries, err := t.GetAllTelemetryInECEF()
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "failed to get telemetry")
+		}
+		return c.JSON(http.StatusOK, telemetries)
 	})
 	router.POST("/api/delivery/telemetry", SaveTelemetry(d, t))
 	router.GET("/api/delivery/drones", GetDronesInDelivery(d, t))

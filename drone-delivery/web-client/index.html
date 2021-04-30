@@ -18,30 +18,30 @@
         <br>
         <div class="row">
             <div class=" col-md-3 display-4 align-self-center">
-                <button class="btn btn-info btn-lg">
+                <button class="btn btn-info btn-lg" type="button" onclick="reinitializeDeliveryData()">
                     Új Drónok és csomagok generálása
                 </button>
             </div>
             <div class="col-md-3 ">
                 <div class="form-group">
                     <label for="adatbazis">Adatbázis</label>
-                    <select class="form-control" id="adatbazis">
-                        <option>PostgreSQL</option>
-                        <option>MongoDB</option>
+                    <select class="form-control" id="adatbazis" onchange="configureDatabase(this.value)">
+                        <option value="postgres">PostgreSQL</option>
+                        <option value="mongodb">MongoDB</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="protocol">Protokoll</label>
-                    <select class="form-control" id="protocol">
-                        <option>JSON</option>
-                        <option>gRPC</option>
+                    <select class="form-control" id="protocol" onchange="configureProtocol(this.value)">
+                        <option value="http">HTTP/1.1 JSON</option>
+                        <option value="grpc">HTTP/2 gRPC</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-3 display-4 align-self-center">
-                <button class="btn btn-info btn-lg">
+                <button class="btn btn-info btn-lg" type="button" onclick="startDelivery()">
                     Szimuláció indítása
                 </button>
             </div>
@@ -64,15 +64,194 @@
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script src="js/highcharts.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
     //TODO: fetch data here
-    chart.series[0].update({
-        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    }, false);
+
+    //  chart.series[1].setData([[30, 4570, 2100], [50, 4500, 2200], [50, 4700, 2000]])
+    // chart.redraw();
+    // chart.series[0].update({
+    //     data: []
+    // }, false);
+    // chart.addSeries({data: [[3, 3, 3], [4, 4, 4], [6, 6, 6]]})
     chart.redraw();
+    function configureDatabase(db) {
+        fetch(`http://localhost:5000/configure/database/${db}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(null),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Response was not OK');
+                }
+                response.json()
+            })
+            .then(data => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `Adatbázis konfigurálva erre: ${db}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+            .catch((error) => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: `Sikertelen konfiguráció. Hiba: ${error}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            });
+
+    }
+
+    function configureProtocol(protocol) {
+        fetch(`http://localhost:2000/configure/protocol/${protocol}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(null),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Response was not OK');
+                }
+                response.json()
+            })
+            .then(data => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `Protokol konfigurálva erre: ${protocol}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+            .catch((error) => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: `Sikertelen konfiguráció. Hiba: ${error}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            });
+    }
+
+    function reinitializeDeliveryData() {
+        fetch(`http://localhost:5000/api/delivery/reinitialize`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(null),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Response was not OK');
+                }
+                response.json()
+            })
+            .then(data => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `Szállítási adatok újra generálva`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+            .catch((error) => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: `Sikertelen generálás. Hiba: ${error}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            });
+    }
+
+    function startDelivery() {
+        fetch(`http://localhost:5000/api/delivery`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(null),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Response was not OK');
+                }
+                response.json()
+            })
+            .then(data => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `Protokol konfigurálva erre: ${protocol}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+            .catch((error) => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: `Sikertelen konfiguráció. Hiba: ${error}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            });
+    }
+    //  chart.series[1].setData([[30, 4570, 2100], [50, 4500, 2200], [50, 4700, 2000]])
+    // chart.redraw();
+    chart.series[0].update({
+        data: []
+    }, false);
+    // chart.addSeries({data: [[3, 3, 3], [4, 4, 4], [6, 6, 6]]})
+    function updateChart() {
+        fetch('http://localhost:5000/api/delivery/telemetry')
+            .then(response => {return response.json()})
+            .then(telemetryMap => {
+                Object.entries(telemetryMap).map(([droneID, telemetries]) => {
+                    let id = droneID;
+                    let series = chart.get(id);
+                    if(series) {
+                        chart.series[0].update({
+                            data: telemetries.map(t => {
+                                return [ parseInt(t["location"]["latitude"]/100), parseInt(t["altitude"]/1000), parseInt(t["location"]["longitude"]/100)]
+                            })
+                        }, false);
+                    } else{
+                        chart.addSeries({
+                            id: id,
+                            data: telemetries.map(t => {
+                                return [parseInt(t["location"]["latitude"]/100), parseInt(t["altitude"]/1000), parseInt(t["location"]["longitude"]/100)]
+                            }),
+                            name: `Drón ${droneID}`,
+                            colorByPoint: true,
+                            accessibility: {
+                                exposeAsGroupOnly: true
+                            },
+                        });
+                    }
+                })
+                //Y is altitude
+            });
+        chart.redraw();
+    }
+    setInterval(updateChart, 3000)
 </script>
 </body>
 </html>

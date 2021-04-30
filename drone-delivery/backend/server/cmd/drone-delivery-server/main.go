@@ -12,6 +12,7 @@ import (
 	"drone-delivery/server/pkg/storage/mongodb"
 	"drone-delivery/server/pkg/storage/postgres"
 	"fmt"
+	"github.com/StefanSchroeder/Golang-Ellipsoid/ellipsoid"
 	goKitLog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"google.golang.org/grpc"
@@ -52,11 +53,12 @@ func main() {
 	//outbound adapters
 	jsonAdapter := outbound.NewJSONAdapter()
 
+	geo := ellipsoid.Init("WGS84", ellipsoid.Degrees, ellipsoid.Meter, ellipsoid.LongitudeIsSymmetric, ellipsoid.BearingIsSymmetric)
 	//services
 	var ts telemetry.Service
 	var ds drone.Service
 	var rs routing.Service
-	ts = telemetry.NewService(postgresStorage, logger)
+	ts = telemetry.NewService(postgresStorage, logger, geo)
 	rs = routing.NewService(logger)
 	ds = drone.NewService(postgresStorage, jsonAdapter, logger, rs)
 	//REST API
