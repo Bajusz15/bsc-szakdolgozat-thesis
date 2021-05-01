@@ -182,12 +182,45 @@ func (s *Storage) GetDronesDelivering() ([]models.Drone, error) {
 	return drones, nil
 }
 
+func (s *Storage) GetLatestTelemetryOfDrones() ([]models.Telemetry, error) {
+	var err error
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	var telemetries []models.Telemetry
+	//groupStage := bson.D{{"$group", bson.D{{"_id", "$drone_id"}}}}
+	//sortStage := bson.D{{"$sort", bson.D{{"time_stamp", -1}}}}
+	//sortStage := bson.D{bson.M{
+	//	"$sort": bson.M{
+	//		"time_stamp": -1,
+	//	}}}
+	//cur, err := s.db.Collection("telemetry").Aggregate(ctx, mongo.Pipeline{sortStage, groupStage})
+	droneIDs, err := s.db.Collection("telemetry").Distinct(ctx, "drone_id", bson.D{})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, id := range droneIDs {
+		var result models.Telemetry
+		cur := s.db.Collection("telemetry").FindOne(ctx, bson.D{{"drone_id", id}},
+			options.FindOne().SetSort(bson.D{{"time_stamp", -1}}))
+		err = cur.Decode(&result)
+		if err != nil {
+			return nil, err
+		}
+		telemetries = append(telemetries, result)
+	}
+	return telemetries, nil
+}
+
 func (s *Storage) GetAllTelemetry() ([]models.Telemetry, error) {
 	var err error
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	var telemetries []models.Telemetry
 	cur, err := s.db.Collection("telemetry").Find(ctx, bson.D{}, options.Find().SetSort(bson.D{{"time_stamp", -1}}))
+	if err != nil {
+		return nil, err
+	}
 	defer cur.Close(ctx)
 	for cur.Next(ctx) {
 		var result models.Telemetry

@@ -21,13 +21,7 @@ func Handler(d drone.Service, t telemetry.Service, p *postgres.Storage, m *mongo
 		return c.JSON(http.StatusOK, "delivery started")
 	})
 
-	router.GET("/api/delivery/telemetry", func(c echo.Context) error {
-		telemetries, err := t.GetAllTelemetryInECEF()
-		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, "failed to get telemetry")
-		}
-		return c.JSON(http.StatusOK, telemetries)
-	})
+	router.GET("/api/delivery/telemetry", GetTelemetry(t))
 	router.POST("/api/delivery/telemetry", SaveTelemetry(d, t))
 	router.GET("/api/delivery/drones", GetDronesInDelivery(d, t))
 	router.PUT("/configure/database/:name", func(c echo.Context) error {

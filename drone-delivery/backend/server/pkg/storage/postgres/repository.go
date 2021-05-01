@@ -160,6 +160,22 @@ func (s *Storage) GetAllTelemetry() ([]models.Telemetry, error) {
 	return telemetries, nil
 }
 
+func (s *Storage) GetLatestTelemetryOfDrones() ([]models.Telemetry, error) {
+	var err error
+	var telemetries []models.Telemetry
+	//var droneIDs []int
+	//for _, d := range drones {
+	//	droneIDs = append(droneIDs, d.ID)
+	//}
+
+	err = s.db.Select(&telemetries, `SELECT  DISTINCT ON (drone_id) drone_id, speed, latitude "location.latitude", longitude "location.longitude", altitude,
+       bearing, acceleration, battery_level, battery_temperature, time_stamp FROM telemetry  ORDER BY drone_id, time_stamp DESC`)
+	if err != nil {
+		return nil, err
+	}
+	return telemetries, nil
+}
+
 func (s *Storage) ReInitializeDeliveryData(drones []models.Drone, parcels []models.Parcel) error {
 	var err error
 	_, err = s.db.Exec(`TRUNCATE drone RESTART IDENTITY CASCADE`)

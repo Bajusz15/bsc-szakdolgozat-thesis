@@ -59,6 +59,7 @@ CREATE TABLE telemetry
     errors              INTEGER[],
     time_stamp          timestamp        DEFAULT NULL
 );
+INSERT INTO warehouse (id) VALUES (1);
 
 
 

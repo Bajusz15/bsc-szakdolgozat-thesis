@@ -199,7 +199,7 @@
                 Swal.fire({
                     position: 'top-end',
                     icon: 'success',
-                    title: `Protokol konfigurálva erre: ${protocol}`,
+                    title: `Szimulacio elindult`,
                     showConfirmButton: false,
                     timer: 1500
                 })
@@ -208,11 +208,12 @@
                 Swal.fire({
                     position: 'top-end',
                     icon: 'warning',
-                    title: `Sikertelen konfiguráció. Hiba: ${error}`,
+                    title: `Sikertelen inditas. Hiba: ${error}`,
                     showConfirmButton: false,
                     timer: 1500
                 })
             });
+        setInterval(updateChart, 1000)
     }
     //  chart.series[1].setData([[30, 4570, 2100], [50, 4500, 2200], [50, 4700, 2000]])
     // chart.redraw();
@@ -221,24 +222,27 @@
     }, false);
     // chart.addSeries({data: [[3, 3, 3], [4, 4, 4], [6, 6, 6]]})
     function updateChart() {
-        fetch('http://localhost:5000/api/delivery/telemetry')
+        fetch('http://localhost:5000/api/delivery/telemetry?from=latest')
             .then(response => {return response.json()})
             .then(telemetryMap => {
                 Object.entries(telemetryMap).map(([droneID, telemetries]) => {
                     let id = droneID;
                     let series = chart.get(id);
+                    // console.log(telemetries)
                     if(series) {
-                        chart.series[0].update({
-                            data: telemetries.map(t => {
-                                return [ parseInt(t["location"]["latitude"]/100), parseInt(t["altitude"]/1000), parseInt(t["location"]["longitude"]/100)]
-                            })
+                        series.update({
+                            // data: telemetries.map(t => {
+                            //     return [ (t["location"]["latitude"]), (t["altitude"]), (t["location"]["longitude"])]
+                            // })
+                            data: [ [(telemetries[0]["location"]["latitude"]), (telemetries[0]["altitude"]), (telemetries[0]["location"]["longitude"])]]
                         }, false);
                     } else{
                         chart.addSeries({
                             id: id,
-                            data: telemetries.map(t => {
-                                return [parseInt(t["location"]["latitude"]/100), parseInt(t["altitude"]/1000), parseInt(t["location"]["longitude"]/100)]
-                            }),
+                            // data: telemetries.map(t => {
+                            //     return [(t["location"]["latitude"]), (t["altitude"]), (t["location"]["longitude"])]
+                            // }),
+                            data: [[(telemetries[0]["location"]["latitude"]), (telemetries[0]["altitude"]), (telemetries[0]["location"]["longitude"])]],
                             name: `Drón ${droneID}`,
                             colorByPoint: true,
                             accessibility: {
@@ -246,12 +250,13 @@
                             },
                         });
                     }
+                    chart.redraw();
                 })
                 //Y is altitude
             });
         chart.redraw();
     }
-    setInterval(updateChart, 3000)
+
 </script>
 </body>
 </html>

@@ -37,9 +37,9 @@ services:
     environment:
       - PGPORT=5432
       - PGDATABASE=dbdrone_delivery
-      - PGPASSWORD=P&|RgRopW3xY-u%v%q&m][5g-7igei>6
-      - PGUSER=dbmasteruser
-      - PGHOST=ls-292dbdaceb3df8fb20156df0e027d38a1456fd11.cy9by1o5bg1s.eu-central-1.rds.amazonaws.com
+      - PGPASSWORD=postgres
+      - PGUSER=postgres
+      - PGHOST=host.docker.internal
 #      - PGUSER=postgres
 #      - PGHOST=host.docker.internal
 #      - PGDATABASE=postgres

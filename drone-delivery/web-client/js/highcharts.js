@@ -36,6 +36,11 @@ var chart = new Highcharts.Chart({
             }
         }
     },
+    tooltip: {
+        valueDecimals: 9,
+        valuePrefix: ' ',
+        valueSuffix: ' '
+    },
     title: {
         text: 'Draggable box'
     },
@@ -50,19 +55,21 @@ var chart = new Highcharts.Chart({
         }
     },
     yAxis: {
-        min: 0,
-        max: 50000,
-        title: null
+        min: 4720630,
+        max: 4724347,
+        title: 'Altitude'
     },
     xAxis: {
-        min: 0,
-        max: 50000,
-        gridLineWidth: 1
+        min: 3989881,
+        max: 3994539,
+        gridLineWidth: 1,
+        title: 'Latitude'
     },
     zAxis: {
-        min: 0,
-        max: 50000,
-        showFirstLabel: false
+        min: 1512999,
+        max: 1515999,
+        showFirstLabel: false,
+        title: 'Longitude'
     },
     legend: {
         enabled: false

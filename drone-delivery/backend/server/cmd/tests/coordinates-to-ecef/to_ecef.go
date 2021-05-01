@@ -17,4 +17,9 @@ func main() {
 	fmt.Printf("x = %v \ny = %v \nz = %v\n", x, y, z)
 	fmt.Printf("x = %f \ny = %f \nz = %f\n", x, y, z)
 
+	x, z, y = geo.ToECEF(48.05, 20.75, 50)
+	fmt.Printf("x = %f \ny = %f \nz = %f\n", x, y, z)
+	x, z, y = geo.ToECEF(48.10, 20.78, 50)
+	fmt.Printf("x = %f \ny = %f \nz = %f\n", x, y, z)
+
 }

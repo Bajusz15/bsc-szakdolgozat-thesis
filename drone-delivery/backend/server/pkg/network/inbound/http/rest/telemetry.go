@@ -35,3 +35,23 @@ func SaveTelemetry(d drone.Service, t telemetry.Service) echo.HandlerFunc {
 		return context.JSON(http.StatusOK, "succesfully saved telemetry")
 	}
 }
+
+func GetTelemetry(t telemetry.Service) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		option := c.QueryParams().Get("from")
+		switch option {
+		case "latest":
+			telemetries, err := t.GetLatestTelemetryInECEF()
+			if err != nil {
+				return echo.NewHTTPError(http.StatusInternalServerError, "failed to get telemetry")
+			}
+			return c.JSON(http.StatusOK, telemetries)
+		default:
+			telemetries, err := t.GetAllTelemetryInECEF()
+			if err != nil {
+				return echo.NewHTTPError(http.StatusInternalServerError, "failed to get telemetry")
+			}
+			return c.JSON(http.StatusOK, telemetries)
+		}
+	}
+}

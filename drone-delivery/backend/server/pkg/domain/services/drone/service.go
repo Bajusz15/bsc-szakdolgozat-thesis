@@ -129,8 +129,8 @@ func (s *service) ReinitializeDatabase(repos ...Repository) error {
 	max := 30
 	deliveries := rand.Intn(max-min+1) + min
 	//generate latitudes and longitudes for the parcels
-	latitudes := randFloats(48.05, 48.08, deliveries)
-	longitudes := randFloats(20.75, 20.78, deliveries)
+	latitudes := randFloats(48.05, 48.10, deliveries)
+	longitudes := randFloats(20.73, 20.78, deliveries)
 	parcelWeights := randFloats(0.2, 2, deliveries)
 	consumptions := randFloats(300, 800, deliveries)
 	droneWeights := randFloats(3, 15, deliveries)
