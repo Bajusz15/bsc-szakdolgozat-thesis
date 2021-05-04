@@ -97,7 +97,9 @@ amiből több érdekes dolog is kiderül. Mind a kis (1-3 kg) és nagy (5-15kg) 
     \caption{Nagy drónok fogyasztása}
     \label{fig:nagy}
 \end{figure}
+%TODO: Ide még irni, hogy mi alapjan lehetne optimalizalni, mennyisegeket hogy mennyi adat keletkezik.
 
+\Chapter{Szállítási probléma}
 \Section{A szállítási probléma absztrakt modellje}
 
 A szállítási modellünk alapvetően úgy nézne ki, hogy a raktár és a kiszállítási hely közti távolság függvényében a csomagokat a raktárból drónok, vagy drónokkal felszerelt teherautók viszik ki.
@@ -223,127 +225,99 @@ A drónnak a hiba miatt a legközelebbi repülés előtt több diagnosztikai tes
 %TODO
 % TODO: Készíteni kellene egy sematikus ábrát, amin egy szállítási állapot, gráfos formában megadott probléma látható.
 
-\Section{A Go nyelv áttekintése }
 
-A Go program nyelv, (sokszor Golangként emlegetik) egy nyílt forráskódú modern programozási nyelv melyet a Google fejlesztett ki.
-
-A Google-nél olyan problémák adódtak, hogy a konkurrenciát nem tudták megfelelően kezelni a még eredetileg
-1 processzoros számítógépekre kifejlesztett nyelvek, mint a Java, C++.
-
-Persze azóta sokat fejlődött ezen nyelvek konkurrenciakezelése de nem tudnak versenyezni a Go-val
-ha a gépi és fejlesztői hatékonyságot is figyelembe vesszük.
-Probléma volt az is, hogy ezeknek a nyelveknek nagyon nagy a fordítási idejük. A 2000-es évek végén ez azt jelentette
-hogy egy Java vagy C++ program a Google-nél 1 hét alatt fordult le, csak hogy ki tudják próbálni.
-A nyelvek bonyolultságával is baj volt, ahogy fejlődtek a nyelvek egyre nehezebb volt egy régi programot tovább fejleszteni,
-illetve új programozóknak megtanulni a nyelvet.
-
-Hogy ezeket a problémákat orvosolják, a Google a legjobb tervezőket hívta össze, hogy együtt alkossanak egy új nyelvet.
-Így született meg a Golang.
-A fejlesztést olyan szakemberek vezették, akik korábban a Unix operációs rendszer, a Java HotSpot JVM
-vagy az UTF-8 karakterkódolás fejlesztésében is kulcsszerepet játszottak.
-Például Ken Thompson, Rob Pike és Robert Griesemer.
-
-A cél az volt, hogy régebbi általános célú nyelvek hiányosságait kiküszöböljék, és csökkentsék a bonyolultságot,
-hiszen a megváltozott üzleti és technológiai körülmények között ezek a nyelvek nem bizonyultak elég hatékonynak.
-Nem várhatták el hogy egy friss diplomás hatékonyan kezeljen egy olyan ''felpuffadt'' nyelvet mint a Java.
-
-A felhőben való futtatásra olyan alkalmazások készítésére volt igény, amelyek nagy hatékonysággal futnak és kiválóan skálázódnak.
-A végeredmény egy olyan nyelv amely általános célú, könnyen tanulható, kifejező, tömör, letisztult és hatékony.
-Éppen ezért kiválóan alkalmazható ott, ahol a kódbázishoz nagyszámú, gyakran cserélődő, változó összetételű programozói gárda fér hozzá,
-akár időben és földrajzi elhelyezkedésben is megosztva.
-
-Szintaktikailag a C-hez hasonlít de nagyon könnyen tanulható nyelv.
-A legnagyobb újítás a konkurrencia mechanizmus (főleg a saját ütemező) és hibakezelés körül volt.
-A Go konkurrencia mechanizmusa megkönnyíti olyan programok írását amelyet a legtöbbet hozzák ki a többmagos és hálózaton összekötött gépekből.
-Gyorsan lefordul gépi kódra de rendelkezik garbage collection-el és runtime reflection is van beépítve.
-Gyors, statikus nyelv de úgy érezzük mintha egy dinamikus futás időben fordított nyelv lenne.
-Tartalmaz \textit{race detector}-t is ami nagyon fontos egy ilyen nyelvben, mert fel tudja ismerni a konkurrens/párhuzamos programozásnál felmerülő gyakori problémákat.
-Mivel nagyon jól kihasználja a gép erőforrásait és a hálózatot manapság a felhőben futó kódok nagyrésze Go.
-Beszédes, hogy a Linux Foundation által létrehozott Cloud Native Computing Foundation (CNCF) keretein
-belül támogatott projektek nagy része Go-ban íródott, többek között a Kubernetes, a Prometheus, az Istio, de ebben írták a Dockert is.
-
-% TODO: Ide kellene hivatkozás. ha jól emlékszem HWSW cikk volt de kikeresem majd.
-
-\paragraph{A Go konkurrencia mechanizmusa} \mbox{} \\
-A konkurrencia a nyelv alapjának része. A 3 legfontosab dolog ebből a szempontból az hogy a Go-nak saját ütemezője van,
-a gorutinok (''goroutine'') és csatornák (''channel'').\\
-A goroutin egy szójáték a hasonló coroutine-al. A lényege hogy ezek a folyamatok a Go runtime-on belül futnak, sokkal kisebbek mint egy processz, megabájtok helyett csak pár kilobájt,
-így pillekönnyűnek számítanak az Operációs rendszer processzeihez képest. \emph{Egy programban akár több millió gorutin is futhat egyszerre!}
-A saját ütemező (scheduler) sokkal hatékonyabb mintha csak létrehoznánk egy processzt és hagynánk hogy az Operációs rendszer ütemezze,
-mivel így az ütemező meg tudja határozni hogy az adott gorution milyen állapotban van (várakozik, futtatható, vagy fut) és hatékonyabban tudja
-kiosztani az erőforrásokat. Értelemszerűen például egy blokkoló, épp I/O műveletet végző gorutint nem fog futtatni hanem helyette más gorutinokat részesít
-előnyben. De fontos hogy az ütemező nem determinisztikus, így nem tudjuk előre megmondani melyik gorutin fog következni.\\
-4 féle esemény fordulhat elő a Go programokban ami miatt az ütemező döntéseket hozhat:
-\begin{itemize}
-    \item A \emph{go} kulcsszó használata
-    \item Garbage collection
-    \item Rendszer hívások
-    \item Szinkronizálás és orchesztráció, vezérelés
-\end{itemize}
-A \emph{go} kulcsszó használata: \par
-A go kulcsszó létrehoz egy új gorutint, így az ütemezőnek lehetősége van beavatkozni.\\
-Szinkronizálás és vezérlés: \par
-Ha egy atomi, mutex, vagy csatorna művelet, függvényhívás miatt egy Gorutin blokkolni fog, az ütemező kontextus cserével egy másik gorutinnak adhat erőforrást. Ha a blokkolt Gorutin újra futtathatóvá válik, sorba állítja az ütemező és végül visszakapja az erőforrást.\\
-A gorutinok ugyanabban a címtérben futnak, ezért a megosztott memóriához való hozzáférést szinkronizálni kell.
-
-A csatornák a típusos vezetékek amelyeken adatokat küldhetünk és fogadhatunk a csatorna operátorral, <-.
-Az adatok a nyíl irányába folynak. Ahhoz, hogy jobban megértsük a csatornák szükségességét meg kell értenünk a következő, a Golang tervezői szerint információmegosztásra megfelelő konkurrencia modellt:
-\emph{''Do not communicate by sharing memory; instead, share memory by communicating.''}
-Tehát arról van szó, hogy ha direkt megosztott memórián keresztül kommunikálunk abból csak baj lehet, a megosztott memória ilyen használata veszélyes, helyette egy olyan módszert
-kell alkalmazni ami védelmet biztosít a megosztott memória felett. A Golang csatornái pont ezt az elvet követik.
-\begin{python}
-    ch <- v    // Snd v to channel ch.
-    v := <-ch  // Receive from ch, and
-    // assign value to v.
-\end{python}
-Alapértelmezett beaállítás szerint a csatornák blokkolnak amíg az egyik oldal küld vagy fogad.
-Ez lehetővé teszi a szinkrinizációt anélkül hogy zárakat vagy feltétel változókat hoznánk létre.
-
-Bufferelt csatornák
-\begin{python}
-    ch := make(chan int, 100)
-\end{python}
+\Section{A szállításhoz kapcsolódó számítási problémák}
+A szállítás pontos szimulációjához a Föld alakját is figyelembe kell venni a repülésnél.
+Ugyanis itt a Cartesian féle geometria nem jól működik, mivel a Földnek gömb alakja van.
+Emiatt teljesen máshogy kell számolni távolságot, mint a Cartesian féle geometriában.
+\subsection{Cartesian szerinti}
+\begin{gather}
+    P_1(5,6,3) \\
+    P_2(7,4,9) \\
+    V = 10 \frac{m}{s}
+\end{gather}
 
 
-\paragraph{A Go hibakezelése} \mbox{} \\
-A hibakezelés nagyban megváltozott azzal hogy a Go-ban nem try és catch blokkba zárjuk a hibára futható programkódot
-hanem van egy beépített hiba típus, ami a függvények visszatérési értéke lehet. Fontos tudni, hogy a Go-ban egy függvény többféle
-visszatérési értékkel rendelkezhet. Ha nem egy nagyon egyszerű programot fejlesztünk, a legtöbb függvényünk utolsó visszatérési értéke egy hiba típus lesz.
-Csak az olyan atomi műveleteket végző függvényeknél nem szoktunk hiba típust használni ami biztos hogy nem fut hibára normális körülmények között.
-Például egy függvénynek ami összeadásokat, vagy egyéb egyszerű műveleteket végez értelemszerűen nincs értelme hogy hibával térjen vissza.
-De egy olyan függvénynek ami egy fájlt nyit meg, már van értelme hiba típussal visszatérnie, mert több hiba is előfordulhat az instrukciók futása közben, lehet nem létezik a fájl, vagy nincs jogosultságunk megnyitni.
-\begin{python}
-    func Open(name string) (file *File, err error)
-\end{python}
-A fenti függvény például egy Fájl típus pointerét és egy hiba típust ad vissza. Ha nem futott hibába a program, az err változó nil értéket kap.
+Kiszamitas:
 
-Tehát egy hiba kezelése például így nézhet ki:
-\begin{python}
-    file, err := Open(''fajlnev'')
-    if err != nil {
-        log.Println(err)
-        return nil, err
-    }
-\end{python}
+\begin{gather}
+    x = r * cos(\phi) * sin(\theta) \\
+    y = r * sin(\phi) * sin(\theta) \\
+    z = r * cos(\theta)
+\end{gather}
 
-Ennek a hibakezelésnek az előnye, hogy a hibák mint visszatérési értékek buborékként felpezsegnek a függvényhívásokon keresztül.
-De a programokban amiket fejlesztünk célszerű saját hiba típusokat létrehoznunk rétegenként, vagy legalább az üzleti logika rétegben. Ez jó a kód átláthatóságához,
-az esetleges hibakereséshez (debugging) elengedhetetlen. Ezen kívül fontos hogy az alkalmazásunk nyitott részén ne látszódjanak olyan hibák amik másra nem tartoznak. Például nem előnyös az, ha egy API hívás azzal tér vissza, hogy
-a relációs adatbázishoz használt driver milyen hibába ütközött. Így ugyanis eláruljuk az alkalmazásunkhoz használt infrastruktúrát vagy más akár bizalmas információt, megkönnyítve a lehetséges támadásokat.
 
-Pár vállalat aki használja:
-\begin{itemize}
-    \item Google
-    \item Uber
-    \item Netflix
-    \item Youtube
-    \item Dropbox
-    \item BBC
-\end{itemize}
+X, Y, Z, r
 
-Az előnyökhöz persze hátrányok is tartoznak, az egyszerűség mellé nem férnek el a generikus függvények.
-Maga a nyelv nem tartalmaz osztályokat, illetve nincs öröklődés.
-Viszont az objektum orientált paradigmákat használja és így is kell benne programozni.
-Tartalmaz interfészeket, a típusokhoz így a structhoz is tudunk hozzárendelni úgynevezett receiver függvényeket, amelyeket más nyelvekben metódusoknak nevezünk, mert a típus egy példányára tudjuk meghívni.
+\begin{gather}
+    x = X_2 - X_1 = 7 - 5 = 2 \\
+    y = Y_2 - Y_1 = 4 - 6 = -2 \\
+    z = Z_2 - 7_1 = 9 - 3 = 6 \\
+    r = \sqrt{2^2 + (-2)^2 + 6^2} = \sqrt{44}
+\end{gather}
 
-% TODO: Külön szakaszban érdemes lenne kifejteni, hogy a konkurrencia kezelése (az aktor modell) pontosan mit takar, és hogy valósul meg a nyelvben.
+$
+cos(\phi) sin(\phi) cos(\theta) sin(\theta)
+$
+
+\begin{gather}
+    cos(\phi) = \frac{x}{\sqrt{x^2 + y^2}} \\
+    sin(\phi) = \frac{y}{\sqrt{x^2 + y^2}} \\
+    cos(\theta) = \frac{\sqrt(x^2 + y^2)}{\sqrt{x^2 + y^2 + z^2}} \\
+    sin(\theta) = \frac{z}{\sqrt{x^2 + y^2 + z^2}}
+\end{gather}
+
+\newpage
+
+További számítás segédvektorok kiszámítása:
+
+\begin{gather}
+    V_x = \frac{x}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{2}{\sqrt{44}} * 10 = \frac{10\sqrt{11}}{11} = 3.0151\\
+    V_y = \frac{y}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{-2}{\sqrt{44}} * 10 = -\frac{10\sqrt{11}}{11} = -3.0151\\\\
+    V_z = \frac{z}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{6}{\sqrt{44}} * 10 = \frac{30\sqrt{11}}{11} = 9.0453\\
+\end{gather}
+
+Összesen eltelt idő:
+
+\begin{gather}
+    t = \frac{s}{v}
+\end{gather}
+
+\begin{gather}
+    t_osszes = \frac{\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2 + (z_2 - z_1)^2}}{v} = \frac{\sqrt{(7 - 5)^2 + (4 - 6)^2 + (9 - 3)^2}}{10} = \frac{\sqrt{44}}{10}{}
+\end{gather}
+
+t idő múlva egy adott pillanatban koordináták meghatározása:
+
+\begin{gather}
+    x = X_0 + V_x * t = X_0 + \frac{X}{\sqrt{x^2 + y^2 + z^2}} * t = 5 + \frac{2}{\sqrt{44}} * 10 * t \\
+    Y = y_0 + V_y * t = y_0 + \frac{y}{\sqrt{x^2 + y^2 + z^2}} * t = 4 - \frac{2}{\sqrt{44}} * 10 * t \\
+    z = z_0 + V_z * t = z_0 + \frac{z}{\sqrt{x^2 + y^2 + z^2}} * t = 6 + \frac{6}{\sqrt{44}} * 10 * t
+\end{gather}
+
+\subsection{Az Ortodroma számítás, a föld alakját figyelembe véve}
+
+Mivel gömbi geometria lényegesen eltér az euklideszi geometriától ezért a távolságszámításra használt matematikai képletek is eltérőek.
+Az euklideszi geometriában a legrövidebb távolságot a két pontot összekötő egyenes,
+a nem euklideszi geometriában a két pontot összekötő geodetikus vonal (gömb esetén főkör) mentén mérjük.
+
+\paragraph{A legrövidebb út kiszámítása}
+\begin{gather}
+    d = arccos(sin\phi_1 * sin\phi_2 * cos\phi_1)* cos\phi_2 * cos\Delta \lambda) * R
+\end{gather}
+
+\paragraph{Irány kiszámítása}
+Ahogy az főkörön haladunk az irányunk folyamatosan változik. Tehát amikor megérkezünk a célhoz, nem ugyanabban az irányba nézünk mint amikor elindultunk.
+A drón szimulációban ez a telemetria adatokban is megfigyelhető.
+\begin{gather*}
+    \varphi = atan2(sin\Delta\lambda * cos\phi_{2}, cos\phi_{1} * sin\phi_{2} - sin\phi_{1} * cos\phi_{2} * cos\Delta\lambda)
+\end{gather*}
+ahol $\phi_{1}\lambda_{1}$ a kezdeti pont, és $\phi_{2}\lambda_{2}$ a vég pont és $\Delta\lambda$ pedig a különbség a hosszúsági fokokban.
+
+\paragraph{Cél koordináták kiszámítása, ha ismerjük a megtett távolságot, irányt, és kezdő koordinátákat}
+\begin{gather}
+    \phi_{2} = arcsin(sin \phi_{1} * cos \delta + cos \phi_{1} * sin \delta * cos \theta)\\
+    \lambda_{2} = \lambda_{1} + arctan2(sin\theta * sin\delta  * cos\phi_{1}, cos\delta - sin\phi_{1} * sin\phi_{2})
+\end{gather}
+ahol $\phi$ a szélességi fok, $\lambda$ a hosszúsági fok, $\theta$ az irány, $\delta$ a szögtávolság d/R és d a megtett távolság, R pedig a Föld sugara.
+
