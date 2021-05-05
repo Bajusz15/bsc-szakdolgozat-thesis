@@ -201,14 +201,9 @@ A docker úgy működik, hogy egy előre meghatározott lemezből és egy bizony
 Ez a build folyamat rétegezett, azaz ha a fájlt módosítjuk, a módosítás csak az adott réteget, és az arra épülő rétegeket befolyásolja.
 Így nem kell mindig újra építenünk a konténert, azt egy cache-ből előszedjük addig a rétegig, amit még nem befolyásolt a fájl módosítása.
 A Dockerfileban vannak megadva a parancsok a telepítéssel kapcsolatban.
-Egy konkrét példa Dockerfile-ra:
+Egy konkrét példa egy egyszerű Dockerfile-ra:
 \begin{docker}
     FROM golang:1.16 AS builder
-
-    #RUN apk --update add \
-    #	git openssl \
-    #	&& rm /var/cache/apk/*
-
     RUN mkdir -p /go/src/drone-delivery/server
     WORKDIR /go/src/drone-delivery/server
 
@@ -225,8 +220,8 @@ Egy konkrét példa Dockerfile-ra:
 \end{docker}
 
 
-\Section{Program struktúra}
-\subsection{Architektúra, rendszer felépítésee}\label{subsec:architektúra-program-felépítés}
+\Section{Felhasznált eszközoök}
+\subsection{Architektúra, rendszer felépítése}\label{subsec:architektúra-program-felépítés}
 A rendszer működésének szimulációjához 3 programot használunk ~\ref{fig:3program}.
 Egy program az adatközpont, egy program a drónok szerepét veszi fel, és van még egy egyszerű böngészős web kliens amin paraméterek alapján konfigurálhatjuk a másik 2 program működését.
 Az adatközpont program, és a drón-raj program a magas fokú konkurrencia kihasználásához Go nyelven készül.
@@ -358,15 +353,22 @@ Egy REST architektúrának meg kell felelni a következő megszorításoknak:
 \end{itemize}
 
 \subsubsection{Kliens-szerver architektúra}
-A kliensek el vannak különítve a szerverektől egy egységes interfész által. Az érdekeltségek ilyen nemű szétválasztása azt jelenti, például, hogy a kliensek nem foglalkoznak adattárolással, ami a szerver belső ügye marad, és így a kliens kód hordozhatósága megnő. A szerverek nem foglalkoznak a felhasználói felülettel vagy a kliens állapotával, így a szerverek egyszerűbbek és még skálázhatóbbak lehetnek. A szerverek és kliensek áthelyezhetőek és fejleszthetőek külön-külön is, egészen addig amíg az interfész nem változik meg.
+A kliensek egy egységes interfészen keresztül beszélnek.
+Az érdekeltségek ilyen nemű szétválasztása azt jelenti, például, hogy a kliensek nem foglalkoznak adattárolással, ami a szerver belső ügye marad, és így a kliens kód hordozhatósága megnő.
+A szerverek nem foglalkoznak a felhasználói felülettel vagy a kliens állapotával, így a szerverek egyszerűbbek és még skálázhatóbbak lehetnek.
+A szerverek és kliensek áthelyezhetőek és fejleszthetőek külön-külön is, egészen addig amíg az interfész nem változik meg.
 \subsubsection{Állapotmentesség}
-A kliens-szerver kommunikáció tovább korlátozott az által, hogy a szerveren nem tárolják a kliens állapotát a kérések között. Minden egyes kérés bármelyik klienstől tartalmazza az összes szükséges információt a kérés kiszolgálásához, és minden állapotot a kliens tárol. A szerver lehet állapottartó; ez a korlátozás csupán azt követeli meg, hogy a szerver oldali erőforrás-állapotok URL által címezhetőek legyenek. Ez nem csak a szerver felügyeletét teszi lehetővé, de megbízhatóbbá teszi őket a hálózati meghibásodásokkal szemben, valamint tovább fokozza a skálázhatóságot.
+A kliens-szerver kommunikáció tovább korlátozott az által, hogy a szerveren nem tárolják a kliens állapotát a kérések között.
+Minden egyes kérés bármelyik klienstől tartalmazza az összes szükséges információt a kérés kiszolgálásához, és minden állapotot a kliens tárol.
 \subsubsection{Gyorsítótárazhatóság}
-Mint ahogy a világhálón, a kliensek itt is képesek gyorsító-tárazni a válaszokat. A válaszoknak ezért impliciten vagy expliciten tartalmazniuk kell, hogy gyorsítótárazhatóak-e vagy sem. Így elkerülhető, hogy a kliens téves vagy elavult adatokat használjon fel újra. Egy jól menedzselt gyorsítótár lehetővé teszi, hogy teljesen megkerüljünk egyes kliens-szerver interakciókat, továbbá megnöveli a rendszer skálázhatóságát és a teljesítményét.
+Mint ahogy a világhálón, a kliensek itt is képesek gyorsítótárazni a válaszokat.
+A válaszoknak ezért impliciten vagy expliciten tartalmazniuk kell, hogy gyorsítótárazhatóak-e vagy sem.
+Egy jól menedzselt gyorsítótár lehetővé teszi, hogy teljesen megkerüljünk egyes kliens-szerver interakciókat, továbbá megnöveli a rendszer skálázhatóságát és a teljesítményét.
 \subsubsection{Réteges felépítés}
-Egy kliens általában nem tudja megmondani, hogy direkt csatlakozott-e a végpont szerverhez, vagy közvetítő segítségével. A közvetítő szerverek megnövelhetik a rendszer skálázhatóságát terheléseloszlás kiegyenlítéssel és megosztott gyorsítótárak használatával.
+Egy kliens általában nem tudja megmondani, hogy direkt csatlakozott-e a végpont szerverhez, vagy közvetítő segítségével.
+A közvetítő szerverek megnövelhetik a rendszer skálázhatóságát terheléseloszlással és gyorsítótárak használatával.
 \subsubsection{Egységes interfész}
-Az egységes interfész kliens és szerver között egyszerűsíti és kettéválasztja az architektúrát, és lehetővé teszi, hogy egymástól függetlenül fejlődjenek az egyes részek. Az interfész négy irányadó elve alább kerül részletezésre.
+Az egységes interfész kliens és szerver között egyszerűsíti és kettéválasztja az architektúrát, és lehetővé teszi, hogy egymástól függetlenül fejlődjenek az egyes részek.
 
 
 Ha ezeket a megkötéseket teljesíti a webes szolgáltatásunk, azt mondhatjuk hogy "RESTful".
@@ -480,9 +482,10 @@ Mivel nem szöveges, lehet hogy nehezebb implementálni és debugolni a fejleszt
 
 \subsection{Adatbázisok}
 Az adatok adatbázisba mentése, adatbázisból olvasása közben több probléma merülhet fel, a rendszer konkurrens felépítéséből kiindulva.
-Például amikor az épp szabad drónoknak adunk feladatot, lehet hogy 2 vagy több egyede az adatközpont programunknak kiolvassa azt az értéket hogy
-a drón nem csinál semmit, az állapota szabad, adhat neki feladatot ha van szállítsra váró csomag. De, az üzleti logika futtatása közben az egyik egyed módosíthatta
-az értéket arra hogy már repül, vagy épp csomagot vesz fel. Az ilyen Lost Update problémákkal szemben védelmet ad, ha az adatbázis rendelkezik ACID tulajdonságokkal.
+Például amikor az épp szabad drónoknak adunk feladatot, lehet hogy 2 vagy több egyede az adatközpont programunknak kiolvassa azt az értéket hogy a drón nem csinál semmit, az állapota szabad, adhat neki feladatot ha van szállítsra váró csomag.
+De, az üzleti logika futtatása közben az egyik egyed módosíthatta
+az értéket arra hogy már repül, vagy épp csomagot vesz fel.
+Az ilyen Lost Update problémákkal szemben védelmet ad, ha az adatbázis rendelkezik ACID tulajdonságokkal.
 Az ACID tulajdonságok \ref{fig:acid} (atomiság, konzisztencia, izoláció, tartósság) felelősek az adatbázis integritásáért.
 
 \begin{figure}[h]
