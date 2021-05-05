@@ -29,7 +29,7 @@ func NewStorage(sc StorageConfig) (*Storage, error) {
 	var err error
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	log.Println("mongodb://" + sc.UserName + ":" + sc.PW + "@" + sc.Host + ":" + sc.Port + "/" + sc.Database)
+	//log.Println("mongodb://" + sc.UserName + ":" + sc.PW + "@" + sc.Host + ":" + sc.Port + "/" + sc.Database)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+sc.UserName+":"+sc.PW+"@"+sc.Host+":"+sc.Port+"/"+sc.Database))
 	//client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+sc.Host+":"+sc.Port+"/"+sc.Database))
 	if err != nil {
@@ -43,10 +43,10 @@ func NewStorage(sc StorageConfig) (*Storage, error) {
 	}
 	log.Println("You are connected to your database")
 	s.db = s.client.Database(sc.Database)
-	err = s.db.CreateCollection(ctx, "warehouse")
-	err = s.db.CreateCollection(ctx, "telemetry")
-	err = s.db.CreateCollection(ctx, "drone")
-	err = s.db.CreateCollection(ctx, "parcel")
+	_ = s.db.CreateCollection(ctx, "warehouse")
+	_ = s.db.CreateCollection(ctx, "telemetry")
+	_ = s.db.CreateCollection(ctx, "drone")
+	_ = s.db.CreateCollection(ctx, "parcel")
 	return s, nil
 }
 

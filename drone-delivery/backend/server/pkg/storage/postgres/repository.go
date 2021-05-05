@@ -55,8 +55,7 @@ func (s *Storage) GetWarehouse() (models.Warehouse, error) {
 
 func (s *Storage) GetTelemetriesByDrone(droneID int) ([]models.Telemetry, error) {
 	var t []models.Telemetry
-	err := s.db.Select(&t, `SELECT id, drone_id, speed, longitude "location.longitude",latitude "location.latitude", altitude, bearing,
-       								acceleration, battery_level, battery_temperature, motor_temperatures,time_stamp 
+	err := s.db.Select(&t, `SELECT id, drone_id, speed, longitude "location.longitude",latitude "location.latitude", altitude, bearing, acceleration, battery_level, battery_temperature, motor_temperatures,time_stamp 
 									FROM telemetry 
 									WHERE drone_id=$1`, droneID)
 	if err != nil {
@@ -67,8 +66,9 @@ func (s *Storage) GetTelemetriesByDrone(droneID int) ([]models.Telemetry, error)
 
 func (s *Storage) InsertTelemetry(t models.Telemetry) error {
 	motorTemps := pq.Array(t.MotorTemperatures)
-	_, err := s.db.Exec(`INSERT INTO telemetry (drone_id, speed, latitude, longitude, altitude, bearing, acceleration, battery_level,
-                       			battery_temperature, motor_temperatures, time_stamp) VALUES ($1, $2, $3,$4,$5,$6,$7, $8, $9, $10, $11) `,
+	_, err := s.db.Exec(`INSERT INTO telemetry 
+    							(drone_id, speed, latitude, longitude, altitude, bearing, acceleration, battery_level,battery_temperature, motor_temperatures, time_stamp)
+                       			VALUES ($1, $2, $3,$4,$5,$6,$7, $8, $9, $10, $11) `,
 		t.DroneID, t.Speed, t.Location.Latitude, t.Location.Longitude, t.Altitude, t.Bearing, t.Acceleration, t.BatteryLevel,
 		t.BatteryTemperature, motorTemps, t.TimeStamp)
 	return err
@@ -152,7 +152,8 @@ func (s *Storage) GetAllTelemetry() ([]models.Telemetry, error) {
 	var err error
 	var telemetries []models.Telemetry
 	err = s.db.Select(&telemetries, `SELECT  drone_id, speed, latitude "location.latitude", longitude "location.longitude", altitude,
-       bearing, acceleration, battery_level, battery_temperature, time_stamp FROM telemetry 
+       bearing, acceleration, battery_level, battery_temperature, time_stamp 
+		FROM telemetry 
 		ORDER BY time_stamp`)
 	if err != nil {
 		return nil, err
@@ -169,7 +170,9 @@ func (s *Storage) GetLatestTelemetryOfDrones() ([]models.Telemetry, error) {
 	//}
 
 	err = s.db.Select(&telemetries, `SELECT  DISTINCT ON (drone_id) drone_id, speed, latitude "location.latitude", longitude "location.longitude", altitude,
-       bearing, acceleration, battery_level, battery_temperature, time_stamp FROM telemetry  ORDER BY drone_id, time_stamp DESC`)
+       bearing, acceleration, battery_level, battery_temperature, time_stamp 
+		FROM telemetry  
+		ORDER BY drone_id, time_stamp DESC`)
 	if err != nil {
 		return nil, err
 	}
@@ -192,14 +195,16 @@ func (s *Storage) ReInitializeDeliveryData(drones []models.Drone, parcels []mode
 	}
 
 	for _, d := range drones {
-		_, err = s.db.Exec(`INSERT INTO drone (id, state, weight, consumption) VALUES ($1, $2, $3, $4)`, d.ID, d.State, d.Weight, d.Consumption)
+		_, err = s.db.Exec(`INSERT INTO drone (id, state, weight, consumption) 
+			VALUES ($1, $2, $3, $4)`, d.ID, d.State, d.Weight, d.Consumption)
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, p := range parcels {
-		_, err = s.db.Exec(`INSERT INTO parcel (id, name, weight, drop_off_latitude, drop_off_longitude ) VALUES ($1, $2, $3, $4, $5)`, p.ID, p.Name, p.Weight, p.DropOffSite.Latitude, p.DropOffSite.Longitude)
+		_, err = s.db.Exec(`INSERT INTO parcel (id, name, weight, drop_off_latitude, drop_off_longitude ) 
+				VALUES ($1, $2, $3, $4, $5)`, p.ID, p.Name, p.Weight, p.DropOffSite.Latitude, p.DropOffSite.Longitude)
 		if err != nil {
 			return err
 		}

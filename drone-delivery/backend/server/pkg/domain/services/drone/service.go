@@ -31,7 +31,6 @@ type Repository interface {
 
 type OutboundAdapter interface {
 	FetchProvisionDroneEndpoint(wh models.Warehouse, d models.Drone) (success bool, err error)
-	//GetDrones() ([]models.Drone, error)
 }
 
 type service struct {

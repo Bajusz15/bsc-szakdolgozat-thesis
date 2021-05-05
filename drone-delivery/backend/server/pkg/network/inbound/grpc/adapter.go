@@ -4,7 +4,6 @@ import (
 	"drone-delivery/server/pkg/domain/models"
 	"drone-delivery/server/pkg/domain/services/telemetry"
 	"drone-delivery/server/pkg/network/inbound/grpc/protobuf"
-	"fmt"
 	"google.golang.org/grpc"
 	"io"
 	"log"
@@ -21,7 +20,7 @@ func NewAdapter(telemetryService telemetry.Service, server *grpc.Server) *adapte
 }
 
 func (a *adapter) TelemetryStream(stream protobuf.TelemetryService_TelemetryStreamServer) error {
-	fmt.Printf("SaveTelemetryStream function was invoked with a streaming request\n")
+	log.Printf("SaveTelemetryStream function was invoked with a streaming request\n")
 	result := "OK"
 	for {
 		req, err := stream.Recv()

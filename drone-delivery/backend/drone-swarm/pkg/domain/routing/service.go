@@ -5,10 +5,7 @@ import "github.com/StefanSchroeder/Golang-Ellipsoid/ellipsoid"
 type Service interface {
 	UpdateRoute() error
 	CalculateDroneDistanceAndDirectionFromDestination(currentLat, currentLon, destinationLat, destinationLon float64) (distance, bearing float64)
-	CalculateDroneNextCoordinates(lat, lon, dist, bearing float64) (nextLat,nextLon float64)
-}
-
-type Repository interface {
+	CalculateDroneNextCoordinates(lat, lon, dist, bearing float64) (nextLat, nextLon float64)
 }
 
 type service struct {
@@ -20,19 +17,16 @@ func (s *service) UpdateRoute() error {
 }
 
 func NewService(geo ellipsoid.Ellipsoid) *service {
-	 return &service{geo}
+	return &service{geo}
 }
 
-func (s *service) CalculateDroneDistanceAndDirectionFromDestination(currentLat, currentLon, destinationLat, destinationLon float64) (distance, bearing float64){
+func (s *service) CalculateDroneDistanceAndDirectionFromDestination(currentLat, currentLon, destinationLat, destinationLon float64) (distance, bearing float64) {
 	distance, bearing = s.geometry.To(currentLat, currentLon, destinationLat, destinationLon)
 	return distance, bearing
 }
 
-func (s *service) CalculateDroneNextCoordinates(lat, lon, dist, bearing float64) (nextLat,nextLon float64) {
+func (s *service) CalculateDroneNextCoordinates(lat, lon, dist, bearing float64) (nextLat, nextLon float64) {
 	// Calculate where you are when going from  lat/long with direction and distance
 	nextLat, nextLon = s.geometry.At(lat, lon, dist, bearing)
 	return nextLat, nextLon
 }
-
-
-

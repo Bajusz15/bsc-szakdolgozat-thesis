@@ -9,14 +9,11 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-//type Adapter interface {
-//	SendTelemetryDataToServer(droneID int, t models.Telemetry) error
-//}
-
 type StreamClient struct {
 	Tsc    protobuf.TelemetryServiceClient
 	Stream protobuf.TelemetryService_TelemetryStreamClient
 }
+
 type Adapter struct {
 	cc  *grpc.ClientConn
 	tsc protobuf.TelemetryServiceClient

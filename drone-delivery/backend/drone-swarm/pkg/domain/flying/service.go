@@ -16,9 +16,6 @@ type Service interface {
 	DropParcel() error
 }
 
-type Repository interface {
-}
-
 type service struct {
 	//repo   Repository
 	ts     telemetry.Service
