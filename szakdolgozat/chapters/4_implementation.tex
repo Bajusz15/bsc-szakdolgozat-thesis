@@ -502,8 +502,15 @@ Ezután elindítok egy PostgreSQL 11 adatbázist, az én fejlesztői környezete
 Megbizonyosodok arról, hogy létezik a dbdrone\_delivery adatbázis, és létezenek a megfelelő táblák. Ha nem léteznek, lefuttatom telepítéshez szükséges scriptet \ref{subsubsec:postgresql-telepítése-a-programhoz}.
 
 \subsubsection{Alkalmazás indítása Dockerrel}
+Az alkalmazást konténerben indítom el a teszteléshez, így mindenki fejleszői környezetében elindul, ha fel van telepítve a Docker.
+Megbizonyosodom, hogy az adatbázisok futnak, és a \textit{docker-compose.yml} fájlban a megfelelő konfiguráció van beállítva.
+A \textit{drone-delivery} jegyzékben, a terminálban kiadom a következő parancsot.
+\begin{lstlisting}[language=bash]
+  $ docker-compose up --build
+\end{lstlisting}
 
-%TODO: Docker, elindul, milyen servicek vannak, mit csinalnak stb.
+Ez megépíti a konténereket, letölti a szoftverfüggőségeket, majd a konténerekben elindulnak a programok.
+Ezután nincs más dolgunk, mint a \textit{drone-delivery/web-client} jegyzékben található \textit{index.html} fájlt megnyitni a böngészőben, az egyértelmű kezelőfelülettel tudjuk konfigurálni és indítani a szimulációt.
 
 \section{Szállítási probléma a programban}
 \subsubsection{Az adatközpont távolság számítása}
