@@ -19,7 +19,7 @@ import (
 )
 
 func main() {
-	fmt.Println("ez a raktár a szimulacioban, a raktár és drónok példányait szimulálja.")
+	fmt.Println("ez a drón-raj a szimulacioban, a drónok példányait szimulálja.")
 	config.SetConfig()
 	var logger goKitLog.Logger
 	logger = goKitLog.NewLogfmtLogger(os.Stderr)

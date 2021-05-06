@@ -481,7 +481,7 @@ A folyamat \ref{fig:mukodes} röviden úgy néz ki, hogy:
 
 
 
-\section{Tesztelés}
+\section{Telepítés, tesztelés}
 \subsubsection{Adatbázisok elindítása}
 A rendszer indítása úgy kezdődik, hogy megbizonyosodunk arról, hogy a MongoDB adatbázis és a PostgreSQL adatbázis fut és lehet rá csatlakozni.
 Ha ez a 2 adatbáziskezelő nem található meg gépünkön, akkor először telepíteni kell őket.
@@ -498,23 +498,23 @@ Ha nem létezik, lefuttatom a telepítéshez szükséges parancsokat \ref{subsub
 \end{lstlisting}
 
 
-Ezután elindítok egy PostgreSQL 11 adatbázist, az én fejlesztői környezetemben ez egy Postgres nevű grafikus kezelőfelületű program által történik.
+Ezután elindítok egy PostgreSQL 11 vagy újabb verziójú PostgreSQL adatbázist, az én fejlesztői környezetemben ez egy Postgres nevű grafikus kezelőfelületű program által történik.
 Megbizonyosodok arról, hogy létezik a dbdrone\_delivery adatbázis, és létezenek a megfelelő táblák. Ha nem léteznek, lefuttatom telepítéshez szükséges scriptet \ref{subsubsec:postgresql-telepítése-a-programhoz}.
 
 \subsubsection{Alkalmazás indítása Dockerrel}
-Az alkalmazást konténerben indítom el a teszteléshez, így mindenki fejleszői környezetében elindul, ha fel van telepítve a Docker.
-Megbizonyosodom, hogy az adatbázisok futnak, és a \textit{docker-compose.yml} fájlban a megfelelő konfiguráció van beállítva.
+Az alkalmazást Docker konténerben indítom el a teszteléshez, így minden fejleszői környezetében elindul, ahol van telepítve a Docker.
+Az indításhoz elengedhetetlen 2 feltétel teljesülése: az adatbázisok futnak, és a \textit{docker-compose.yml} fájlban a megfelelő konfiguráció van beállítva.
 A \textit{drone-delivery} jegyzékben, a terminálban kiadom a következő parancsot.
 \begin{lstlisting}[language=bash]
   $ docker-compose up --build
 \end{lstlisting}
 
-Ez megépíti a konténereket, letölti a szoftverfüggőségeket, majd a konténerekben elindulnak a programok.
+Ez megépíti a konténereket, letölti a szoftver függőségeket illetve csomagokat, majd a konténerekben elindulnak a programok.
 Ezután nincs más dolgunk, mint a \textit{drone-delivery/web-client} jegyzékben található \textit{index.html} fájlt megnyitni a böngészőben, az egyértelmű kezelőfelülettel tudjuk konfigurálni és indítani a szimulációt.
 
 \section{Szállítási probléma a programban}
 \subsubsection{Az adatközpont távolság számítása}
-Az adatközpont program az Ortodroma számítást használja, hogy kiszámolj a távolságot a legoptimálisabb útvonal keresése közben.
+Az adatközpont program az Ortodroma számítást használja, hogy kiszámolja a távolságot a legoptimálisabb útvonal keresése közben.
 \begin{python}
     func (s *service) CalculateDistance(lat1, lng1, lat2,
     lng2 float64, unit ...string) float64 {
@@ -555,11 +555,9 @@ A pontos szimulációs értékekhez egy könyvtárat használunk, ami megfelel a
 Ezzel a könyvtárral pontos adatokat tudunk generálni a drón helyzetéről, irányáról.
 
 \begin{python}
-
     geo := ellipsoid.Init("WGS84", ellipsoid.Degrees, ellipsoid.Meter,
     ellipsoid.LongitudeIsSymmetric, ellipsoid.BearingIsSymmetric)
     routingService := routing.NewService(geo)
-
 \end{python}
 
 Ezután a útvonalakért felelős szervízben két metódussal számoljuk ki a szükséges értékeket.
@@ -582,7 +580,74 @@ A \textit{CalculateDroneNextCoordinates} metódus megmondja adott induló koordi
     }
 \end{python}
 
-\Section{Benchmarkok}
+\Section{Mérések}
 
-%hogy hogyan is lesz mikroszerviz. Go kit ben van service discovery,  beepitett Observability (Prometheus), többszintes logger, és A hexagonal architektúrát támogatja
-%Pl más hasonló mikroszervizeket kezelő framework (pl. Micro) nem elég rugalmas, sok mindent nem enged meg, egy féleképpen lehet használni.
+Az alkalmazással kapcsolatban méréseket is végeztem, JMeter\cite{apache}  és ghz\cite{ghz} programokat használtam.
+Ezeket a méréseket fogom megmutatni és összehasonlítani.
+Összehasonlításra kerülnek az alkalmazásban használt különböző protokollok, formátumok és adatbázisok.
+Minden mérés a telemetria adatok küldését és mentését ábrázolja, ugyanolyan körülmények között.
+Üres adatbázissal, összesen 10000 telemetria adatot küldünk, 100 szálon.
+Minden egyes méréshez tartozik egy rövid összegzés, hisztogramok a teljesítményről.
+
+\subsubsection{HTTP/1.1 JSON, PostgreSQL adatbázissal}
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[scale=0.2]{images/jmeter-json-postgres}
+    \caption{Jmeter mérései PostgreSQL adatbázissal HTTP/1.1 protokoll JSON formátummal}
+    \label{fig:jmeter-json-postgres}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[scale=0.3]{images/json-postgres-response-times}
+    \caption{Válaszidők}
+    \label{fig:json-postgres-response-times}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[scale=0.3]{images/json-time-vs-threads}
+    \caption{Idő és szálak kapcsolata}
+    \label{fig:json-time-vs-threads}
+\end{figure}
+
+\subsubsection{HTTP/1.1 JSON, MongoDB adatbázissal}
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[scale=0.2]{images/jmeter-json-postgres}
+    \caption{Jmeter mérései MongoDB adatbázissal HTTP/1.1 protokoll JSON formátummal}
+    \label{fig:jmeter-json-mongo}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[scale=0.3]{images/json-mongo-response-times}
+    \caption{Válaszidők}
+    \label{fig:json-mongo-response-times}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[scale=0.3]{images/json-mongo-time-vs-threads}
+    \caption{Idő és szálak kapcsolata}
+    \label{fig:json-mongo-time-vs-threads}
+\end{figure}
+
+\subsubsection{HTTP/2 gRPC, PostgreSQL adatbázissal}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[scale=0.3]{images/ghz-postgres}
+    \caption{Ghz mérései PostgreSQL adatbázison, gRPC}
+    \label{fig:ghz-postgres}
+\end{figure}
+
+\subsubsection{HTTP/2 gRPC, MongoDB adatbázissal}
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[scale=0.3]{images/ghz-mongo}
+    \caption{Ghz mérései MongoDB adatbázison, gRPC}
+    \label{fig:ghz-mongo}
+\end{figure}
+
+
