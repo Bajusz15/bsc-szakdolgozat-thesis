@@ -108,7 +108,7 @@ A relációs adatbázissal is működik a szimuláció.
 \subsubsection{Lost Update probléma}
 A legtöbb relációs adatbázis támogatja a tranzakciókat. A tranzakciók ACID tulajdonságokkal bírnak.
 Adatbázisok esetén az ACID az Atomicity (atomiság), Consistency (konzisztencia), Isolation (izoláció), és Durability (tartósság) rövidítése. Ezek nélkül az adatbázis integritása nem garantálható.
-A PostgreSQL többféle izolációs szintet biztosít a tranzakciókhoz \cite{postgres-transaction}. A Lost Update problémát garantáltan megoldja a PostgreSQL `Serializable` izolációs szintje.
+A PostgreSQL többféle izolációs szintet biztosít a tranzakciókhoz \cite{postgresql}. A Lost Update problémát garantáltan megoldja a PostgreSQL `Serializable` izolációs szintje.
 \begin{table}[h]
     \centering
     \caption{ Standard SQL Transaction Isolation Levels}
