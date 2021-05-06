@@ -1,0 +1,427 @@
+2021-05-06 19:04:29,412 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2021-05-06 19:04:29,432 INFO o.a.j.JMeter: Loading user properties from: /usr/local/Cellar/jmeter/5.4.1/libexec/bin/user.properties
+2021-05-06 19:04:29,433 INFO o.a.j.JMeter: Loading system properties from: /usr/local/Cellar/jmeter/5.4.1/libexec/bin/system.properties
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: Copyright (c) 1998-2021 The Apache Software Foundation
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: Version 5.4.1
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: java.version=15.0.2
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: os.name=Mac OS X
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: os.arch=x86_64
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: os.version=11.2.3
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: file.encoding=UTF-8
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: java.awt.headless=true
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: Max memory     =1073741824
+2021-05-06 19:04:29,439 INFO o.a.j.JMeter: Available Processors =12
+2021-05-06 19:04:29,445 INFO o.a.j.JMeter: Default Locale=English (EN)
+2021-05-06 19:04:29,446 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2021-05-06 19:04:29,446 INFO o.a.j.JMeter: JMeterHome=/usr/local/Cellar/jmeter/5.4.1/libexec
+2021-05-06 19:04:29,446 INFO o.a.j.JMeter: user.dir  =/Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres
+2021-05-06 19:04:29,446 INFO o.a.j.JMeter: PWD       =/Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres
+2021-05-06 19:04:29,447 INFO o.a.j.JMeter: IP: 127.0.0.1 Name: Bajuszs-MacBook-Pro.local FullName: localhost
+2021-05-06 19:04:29,450 INFO o.a.j.JMeter: Setting property 'jmeter.reportgenerator.outputdir' to:'/Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres/./output'
+2021-05-06 19:04:29,453 INFO o.a.j.s.FileServer: Default base='/Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres'
+2021-05-06 19:04:29,453 INFO o.a.j.s.FileServer: Set new base='/Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres/./..'
+2021-05-06 19:04:29,572 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2021-05-06 19:04:29,590 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2021-05-06 19:04:29,592 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2021-05-06 19:04:29,594 INFO o.a.j.s.SaveService: Loading file: ./../telemetria.jmx
+2021-05-06 19:04:29,627 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2021-05-06 19:04:29,627 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2021-05-06 19:04:29,627 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2021-05-06 19:04:29,627 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2021-05-06 19:04:29,628 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2021-05-06 19:04:29,628 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2021-05-06 19:04:29,646 INFO o.a.j.JMeter: Creating summariser <summary>
+2021-05-06 19:04:29,648 INFO o.a.j.r.d.ReportGenerator: ReportGenerator will use for Parsing the separator: ','
+2021-05-06 19:04:29,649 INFO o.a.j.r.d.ReportGenerator: Will generate report at end of test from  results file: ./benchmark.csv
+2021-05-06 19:04:29,649 INFO o.a.j.r.d.ReportGenerator: Reading report generator properties from: /usr/local/Cellar/jmeter/5.4.1/libexec/bin/reportgenerator.properties
+2021-05-06 19:04:29,650 INFO o.a.j.r.d.ReportGenerator: Merging with JMeter properties
+2021-05-06 19:04:29,654 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.temp_dir' not found, using default value 'temp' instead.
+2021-05-06 19:04:29,656 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.apdex_per_transaction' not found, using default value 'null' instead.
+2021-05-06 19:04:29,656 INFO o.a.j.r.c.ReportGeneratorConfiguration: apdex_per_transaction is empty, not APDEX per transaction customization
+2021-05-06 19:04:29,656 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.sample_filter' not found, using default value 'null' instead.
+2021-05-06 19:04:29,656 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.report_title' not found, using default value 'null' instead.
+2021-05-06 19:04:29,656 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.start_date' not found, using default value 'null' instead.
+2021-05-06 19:04:29,656 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.end_date' not found, using default value 'null' instead.
+2021-05-06 19:04:29,656 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.date_format' not found, using default value 'null' instead.
+2021-05-06 19:04:29,657 INFO o.a.j.r.c.ReportGeneratorConfiguration: Will use date range start date: null, end date: null
+2021-05-06 19:04:29,660 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.totalTPS.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.activeThreadsOverTime.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.timeVsThreads.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimeDistribution.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.transactionsPerSecond.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentiles.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentilesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.connectTimeOverTime.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,661 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.latenciesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2021-05-06 19:04:29,662 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.filters_only_sample_series' not found, using default value 'true' instead.
+2021-05-06 19:04:29,662 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.series_filter' not found, using default value '' instead.
+2021-05-06 19:04:29,662 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.show_controllers_only' not found, using default value 'false' instead.
+2021-05-06 19:04:29,662 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.filters_only_sample_series' not found, using default value 'true' instead.
+2021-05-06 19:04:29,662 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.series_filter' not found, using default value '' instead.
+2021-05-06 19:04:29,663 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.show_controllers_only' not found, using default value 'false' instead.
+2021-05-06 19:04:29,665 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2021-05-06 19:04:29,666 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2021-05-06 19:04:29,666 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2021-05-06 19:04:29,670 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2021-05-06 19:04:29,670 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2021-05-06 19:04:29,728 INFO o.a.j.JMeter: Running test (1620320669728)
+2021-05-06 19:04:29,745 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : Thread Group
+2021-05-06 19:04:29,745 INFO o.a.j.e.StandardJMeterEngine: Starting 100 threads for group Thread Group.
+2021-05-06 19:04:29,745 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2021-05-06 19:04:29,745 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=100 ramp-up=1 delayedStart=false
+2021-05-06 19:04:29,750 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-1
+2021-05-06 19:04:29,758 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-2
+2021-05-06 19:04:29,766 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-3
+2021-05-06 19:04:29,771 INFO o.a.j.p.h.s.HTTPHCAbstractImpl: Local host = Bajuszs-MacBook-Pro.local
+2021-05-06 19:04:29,776 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2021-05-06 19:04:29,776 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2021-05-06 19:04:29,779 INFO o.a.j.p.h.s.HTTPHC4Impl: HTTP request retry count = 0
+2021-05-06 19:04:29,779 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-4
+2021-05-06 19:04:29,781 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2021-05-06 19:04:29,781 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to ISO-8859-1
+2021-05-06 19:04:29,781 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2021-05-06 19:04:29,781 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2021-05-06 19:04:29,788 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-5
+2021-05-06 19:04:29,797 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-6
+2021-05-06 19:04:29,808 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-7
+2021-05-06 19:04:29,816 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-8
+2021-05-06 19:04:29,830 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-9
+2021-05-06 19:04:29,840 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-10
+2021-05-06 19:04:29,849 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-11
+2021-05-06 19:04:29,859 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-12
+2021-05-06 19:04:29,866 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-13
+2021-05-06 19:04:29,882 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-14
+2021-05-06 19:04:29,888 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-15
+2021-05-06 19:04:29,895 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-16
+2021-05-06 19:04:29,908 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-17
+2021-05-06 19:04:29,917 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-18
+2021-05-06 19:04:29,926 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-19
+2021-05-06 19:04:29,938 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-20
+2021-05-06 19:04:29,946 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-21
+2021-05-06 19:04:29,958 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-22
+2021-05-06 19:04:29,966 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-23
+2021-05-06 19:04:29,976 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-24
+2021-05-06 19:04:29,988 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-25
+2021-05-06 19:04:30,001 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-26
+2021-05-06 19:04:30,002 INFO o.a.j.r.Summariser: summary +     69 in 00:00:00 =  253.7/s Avg:    31 Min:    10 Max:    80 Err:     0 (0.00%) Active: 26 Started: 26 Finished: 0
+2021-05-06 19:04:30,010 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-27
+2021-05-06 19:04:30,017 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-28
+2021-05-06 19:04:30,031 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-29
+2021-05-06 19:04:30,041 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-30
+2021-05-06 19:04:30,046 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-31
+2021-05-06 19:04:30,058 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-32
+2021-05-06 19:04:30,067 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-33
+2021-05-06 19:04:30,076 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-34
+2021-05-06 19:04:30,088 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-35
+2021-05-06 19:04:30,096 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-36
+2021-05-06 19:04:30,109 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-37
+2021-05-06 19:04:30,120 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-38
+2021-05-06 19:04:30,126 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-39
+2021-05-06 19:04:30,140 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-40
+2021-05-06 19:04:30,146 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-41
+2021-05-06 19:04:30,158 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-42
+2021-05-06 19:04:30,169 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-43
+2021-05-06 19:04:30,176 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-44
+2021-05-06 19:04:30,188 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-45
+2021-05-06 19:04:30,195 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-46
+2021-05-06 19:04:30,209 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-47
+2021-05-06 19:04:30,216 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-48
+2021-05-06 19:04:30,226 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-49
+2021-05-06 19:04:30,238 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-50
+2021-05-06 19:04:30,245 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-51
+2021-05-06 19:04:30,258 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-52
+2021-05-06 19:04:30,266 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-53
+2021-05-06 19:04:30,281 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-54
+2021-05-06 19:04:30,288 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-55
+2021-05-06 19:04:30,297 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-56
+2021-05-06 19:04:30,308 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-57
+2021-05-06 19:04:30,317 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-58
+2021-05-06 19:04:30,326 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-59
+2021-05-06 19:04:30,339 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-60
+2021-05-06 19:04:30,350 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-61
+2021-05-06 19:04:30,360 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-62
+2021-05-06 19:04:30,369 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-63
+2021-05-06 19:04:30,377 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-64
+2021-05-06 19:04:30,387 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-65
+2021-05-06 19:04:30,396 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-66
+2021-05-06 19:04:30,408 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-67
+2021-05-06 19:04:30,418 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-68
+2021-05-06 19:04:30,427 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-69
+2021-05-06 19:04:30,438 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-70
+2021-05-06 19:04:30,448 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-71
+2021-05-06 19:04:30,458 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-72
+2021-05-06 19:04:30,469 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-73
+2021-05-06 19:04:30,480 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-74
+2021-05-06 19:04:30,488 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-75
+2021-05-06 19:04:30,498 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-76
+2021-05-06 19:04:30,508 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-77
+2021-05-06 19:04:30,520 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-78
+2021-05-06 19:04:30,530 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-79
+2021-05-06 19:04:30,538 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-80
+2021-05-06 19:04:30,546 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-81
+2021-05-06 19:04:30,558 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-82
+2021-05-06 19:04:30,565 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-83
+2021-05-06 19:04:30,576 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-84
+2021-05-06 19:04:30,590 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-85
+2021-05-06 19:04:30,600 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-86
+2021-05-06 19:04:30,610 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-87
+2021-05-06 19:04:30,617 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-88
+2021-05-06 19:04:30,626 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-89
+2021-05-06 19:04:30,640 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-90
+2021-05-06 19:04:30,648 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-91
+2021-05-06 19:04:30,658 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-92
+2021-05-06 19:04:30,666 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-93
+2021-05-06 19:04:30,677 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-94
+2021-05-06 19:04:30,688 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-95
+2021-05-06 19:04:30,695 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-96
+2021-05-06 19:04:30,708 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-97
+2021-05-06 19:04:30,716 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-98
+2021-05-06 19:04:30,726 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-99
+2021-05-06 19:04:30,737 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-100
+2021-05-06 19:04:44,083 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-3
+2021-05-06 19:04:44,084 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-3
+2021-05-06 19:04:44,136 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-6
+2021-05-06 19:04:44,137 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-6
+2021-05-06 19:04:44,270 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-59
+2021-05-06 19:04:44,270 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-59
+2021-05-06 19:04:44,584 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-4
+2021-05-06 19:04:44,584 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-4
+2021-05-06 19:04:44,600 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-8
+2021-05-06 19:04:44,600 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-8
+2021-05-06 19:04:44,602 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-18
+2021-05-06 19:04:44,603 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-18
+2021-05-06 19:04:44,793 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-31
+2021-05-06 19:04:44,793 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-31
+2021-05-06 19:04:44,808 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-13
+2021-05-06 19:04:44,808 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-13
+2021-05-06 19:04:44,817 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-7
+2021-05-06 19:04:44,817 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-7
+2021-05-06 19:04:44,818 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-23
+2021-05-06 19:04:44,818 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-23
+2021-05-06 19:04:44,850 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-14
+2021-05-06 19:04:44,850 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-14
+2021-05-06 19:04:44,930 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-12
+2021-05-06 19:04:44,930 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-12
+2021-05-06 19:04:44,948 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-40
+2021-05-06 19:04:44,948 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-40
+2021-05-06 19:04:45,007 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-10
+2021-05-06 19:04:45,007 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-10
+2021-05-06 19:04:45,025 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-35
+2021-05-06 19:04:45,026 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-35
+2021-05-06 19:04:45,032 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-15
+2021-05-06 19:04:45,032 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-15
+2021-05-06 19:04:45,032 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-2
+2021-05-06 19:04:45,032 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-2
+2021-05-06 19:04:45,032 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-46
+2021-05-06 19:04:45,033 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-46
+2021-05-06 19:04:45,036 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-1
+2021-05-06 19:04:45,037 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-1
+2021-05-06 19:04:45,041 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-65
+2021-05-06 19:04:45,041 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-65
+2021-05-06 19:04:45,094 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-16
+2021-05-06 19:04:45,094 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-16
+2021-05-06 19:04:45,122 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-41
+2021-05-06 19:04:45,123 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-41
+2021-05-06 19:04:45,166 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-54
+2021-05-06 19:04:45,167 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-54
+2021-05-06 19:04:45,190 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-53
+2021-05-06 19:04:45,190 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-53
+2021-05-06 19:04:45,215 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-17
+2021-05-06 19:04:45,215 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-29
+2021-05-06 19:04:45,215 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-17
+2021-05-06 19:04:45,215 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-29
+2021-05-06 19:04:45,231 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-9
+2021-05-06 19:04:45,231 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-9
+2021-05-06 19:04:45,233 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-28
+2021-05-06 19:04:45,233 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-28
+2021-05-06 19:04:45,254 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-33
+2021-05-06 19:04:45,254 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-33
+2021-05-06 19:04:45,257 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-27
+2021-05-06 19:04:45,257 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-27
+2021-05-06 19:04:46,294 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-22
+2021-05-06 19:04:46,294 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-22
+2021-05-06 19:04:46,310 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-20
+2021-05-06 19:04:46,311 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-20
+2021-05-06 19:04:46,314 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-25
+2021-05-06 19:04:46,314 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-44
+2021-05-06 19:04:46,314 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-25
+2021-05-06 19:04:46,317 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-44
+2021-05-06 19:04:46,328 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-47
+2021-05-06 19:04:46,328 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-47
+2021-05-06 19:04:46,328 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-69
+2021-05-06 19:04:46,328 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-24
+2021-05-06 19:04:46,329 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-24
+2021-05-06 19:04:46,329 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-69
+2021-05-06 19:04:46,362 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-21
+2021-05-06 19:04:46,363 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-21
+2021-05-06 19:04:46,363 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-52
+2021-05-06 19:04:46,363 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-52
+2021-05-06 19:04:46,364 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-5
+2021-05-06 19:04:46,364 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-5
+2021-05-06 19:04:46,395 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-49
+2021-05-06 19:04:46,395 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-49
+2021-05-06 19:04:46,428 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-37
+2021-05-06 19:04:46,429 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-37
+2021-05-06 19:04:46,454 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-56
+2021-05-06 19:04:46,454 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-56
+2021-05-06 19:04:46,491 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-30
+2021-05-06 19:04:46,491 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-60
+2021-05-06 19:04:46,491 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-30
+2021-05-06 19:04:46,491 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-60
+2021-05-06 19:04:46,514 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-70
+2021-05-06 19:04:46,514 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-70
+2021-05-06 19:04:46,554 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-36
+2021-05-06 19:04:46,554 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-36
+2021-05-06 19:04:46,577 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-50
+2021-05-06 19:04:46,577 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-50
+2021-05-06 19:04:46,617 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-95
+2021-05-06 19:04:46,617 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-95
+2021-05-06 19:04:46,633 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-91
+2021-05-06 19:04:46,633 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-91
+2021-05-06 19:04:46,664 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-66
+2021-05-06 19:04:46,664 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-66
+2021-05-06 19:04:46,673 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-55
+2021-05-06 19:04:46,674 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-55
+2021-05-06 19:04:46,683 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-32
+2021-05-06 19:04:46,683 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-32
+2021-05-06 19:04:46,683 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-62
+2021-05-06 19:04:46,683 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-62
+2021-05-06 19:04:46,694 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-71
+2021-05-06 19:04:46,694 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-71
+2021-05-06 19:04:46,736 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-11
+2021-05-06 19:04:46,736 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-51
+2021-05-06 19:04:46,736 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-11
+2021-05-06 19:04:46,736 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-51
+2021-05-06 19:04:46,737 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-45
+2021-05-06 19:04:46,737 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-45
+2021-05-06 19:04:46,757 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-93
+2021-05-06 19:04:46,757 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-93
+2021-05-06 19:04:46,766 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-72
+2021-05-06 19:04:46,766 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-72
+2021-05-06 19:04:46,791 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-77
+2021-05-06 19:04:46,792 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-77
+2021-05-06 19:04:46,801 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-38
+2021-05-06 19:04:46,802 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-38
+2021-05-06 19:04:46,804 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-19
+2021-05-06 19:04:46,805 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-19
+2021-05-06 19:04:46,841 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-48
+2021-05-06 19:04:46,841 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-48
+2021-05-06 19:04:46,849 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-58
+2021-05-06 19:04:46,849 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-58
+2021-05-06 19:04:46,872 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-88
+2021-05-06 19:04:46,872 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-88
+2021-05-06 19:04:46,875 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-92
+2021-05-06 19:04:46,875 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-92
+2021-05-06 19:04:46,881 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-57
+2021-05-06 19:04:46,881 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-57
+2021-05-06 19:04:46,887 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-85
+2021-05-06 19:04:46,887 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-85
+2021-05-06 19:04:46,889 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-34
+2021-05-06 19:04:46,889 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-34
+2021-05-06 19:04:46,892 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-89
+2021-05-06 19:04:46,893 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-89
+2021-05-06 19:04:46,893 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-39
+2021-05-06 19:04:46,893 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-39
+2021-05-06 19:04:46,901 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-26
+2021-05-06 19:04:46,901 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-26
+2021-05-06 19:04:46,905 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-68
+2021-05-06 19:04:46,905 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-68
+2021-05-06 19:04:46,909 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-96
+2021-05-06 19:04:46,909 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-96
+2021-05-06 19:04:46,912 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-79
+2021-05-06 19:04:46,913 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-79
+2021-05-06 19:04:46,916 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-42
+2021-05-06 19:04:46,916 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-42
+2021-05-06 19:04:46,917 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-87
+2021-05-06 19:04:46,917 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-87
+2021-05-06 19:04:46,917 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-100
+2021-05-06 19:04:46,917 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-100
+2021-05-06 19:04:46,918 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-99
+2021-05-06 19:04:46,918 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-99
+2021-05-06 19:04:46,924 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-75
+2021-05-06 19:04:46,925 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-75
+2021-05-06 19:04:46,924 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-74
+2021-05-06 19:04:46,925 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-74
+2021-05-06 19:04:46,926 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-63
+2021-05-06 19:04:46,926 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-63
+2021-05-06 19:04:46,930 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-97
+2021-05-06 19:04:46,930 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-97
+2021-05-06 19:04:46,931 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-64
+2021-05-06 19:04:46,931 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-43
+2021-05-06 19:04:46,932 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-64
+2021-05-06 19:04:46,932 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-43
+2021-05-06 19:04:46,934 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-73
+2021-05-06 19:04:46,935 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-73
+2021-05-06 19:04:46,939 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-83
+2021-05-06 19:04:46,940 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-83
+2021-05-06 19:04:46,943 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-84
+2021-05-06 19:04:46,943 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-61
+2021-05-06 19:04:46,943 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-84
+2021-05-06 19:04:46,943 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-61
+2021-05-06 19:04:46,952 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-76
+2021-05-06 19:04:46,952 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-76
+2021-05-06 19:04:46,955 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-78
+2021-05-06 19:04:46,956 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-78
+2021-05-06 19:04:46,962 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-86
+2021-05-06 19:04:46,962 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-86
+2021-05-06 19:04:46,964 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-81
+2021-05-06 19:04:46,964 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-81
+2021-05-06 19:04:46,968 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-82
+2021-05-06 19:04:46,968 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-82
+2021-05-06 19:04:46,969 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-67
+2021-05-06 19:04:46,969 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-67
+2021-05-06 19:04:46,974 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-80
+2021-05-06 19:04:46,974 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-80
+2021-05-06 19:04:46,984 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-98
+2021-05-06 19:04:46,985 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-98
+2021-05-06 19:04:46,992 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-94
+2021-05-06 19:04:46,992 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-90
+2021-05-06 19:04:46,992 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-94
+2021-05-06 19:04:46,992 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-90
+2021-05-06 19:04:46,992 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2021-05-06 19:04:46,994 INFO o.a.j.r.Summariser: summary +   9931 in 00:00:17 =  584.4/s Avg:   159 Min:     3 Max:  1280 Err:     3 (0.03%) Active: 0 Started: 100 Finished: 100
+2021-05-06 19:04:46,995 INFO o.a.j.r.Summariser: summary =  10000 in 00:00:17 =  579.2/s Avg:   158 Min:     3 Max:  1280 Err:     3 (0.03%)
+2021-05-06 19:04:46,995 INFO o.a.j.JMeter: Generating Dashboard
+2021-05-06 19:04:46,995 INFO o.a.j.r.d.ReportGenerator: Flushing result collector before report Generation
+2021-05-06 19:04:47,013 INFO o.a.j.r.p.NormalizerSampleConsumer: Using format, 'ms', to parse timeStamp field
+2021-05-06 19:04:47,590 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): beginDate produced 0 samples
+2021-05-06 19:04:47,590 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): endDate produced 0 samples
+2021-05-06 19:04:47,593 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ApdexSummaryConsumer#stopProducing(): apdexSummary produced 0 samples
+2021-05-06 19:04:47,593 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.RequestsSummaryConsumer#stopProducing(): requestsSummary produced 0 samples
+2021-05-06 19:04:47,603 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.StatisticsSummaryConsumer#stopProducing(): statisticsSummary produced 0 samples
+2021-05-06 19:04:47,606 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.Top5ErrorsBySamplerConsumer#stopProducing(): top5ErrorsBySampler produced 0 samples
+2021-05-06 19:04:47,606 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ErrorsSummaryConsumer#stopProducing(): errorsSummary produced 0 samples
+2021-05-06 19:04:47,606 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.HitsPerSecondGraphConsumer#stopProducing(): hitsPerSecond produced 0 samples
+2021-05-06 19:04:47,702 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyVSRequestGraphConsumer#stopProducing(): latencyVsRequest produced 0 samples
+2021-05-06 19:04:47,703 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.SyntheticResponseTimeDistributionGraphConsumer#stopProducing(): syntheticResponseTimeDistribution produced 0 samples
+2021-05-06 19:04:47,703 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.BytesThroughputGraphConsumer#stopProducing(): bytesThroughputOverTime produced 0 samples
+2021-05-06 19:04:47,703 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.CodesPerSecondGraphConsumer#stopProducing(): codesPerSecond produced 0 samples
+2021-05-06 19:04:47,789 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeVSRequestGraphConsumer#stopProducing(): responseTimeVsRequest produced 0 samples
+2021-05-06 19:04:47,790 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): startIntervalControlerFilter produced 70000 samples
+2021-05-06 19:04:47,790 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TotalTPSGraphConsumer#stopProducing(): totalTPS produced 0 samples
+2021-05-06 19:04:47,790 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ActiveThreadsGraphConsumer#stopProducing(): activeThreadsOverTime produced 0 samples
+2021-05-06 19:04:47,790 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TimeVSThreadGraphConsumer#stopProducing(): timeVsThreads produced 0 samples
+2021-05-06 19:04:47,790 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeDistributionGraphConsumer#stopProducing(): responseTimeDistribution produced 0 samples
+2021-05-06 19:04:47,791 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TransactionsPerSecondGraphConsumer#stopProducing(): transactionsPerSecond produced 0 samples
+2021-05-06 19:04:47,791 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesGraphConsumer#stopProducing(): responseTimePercentiles produced 0 samples
+2021-05-06 19:04:47,792 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesOverTimeGraphConsumer#stopProducing(): responseTimePercentilesOverTime produced 0 samples
+2021-05-06 19:04:47,794 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeOverTimeGraphConsumer#stopProducing(): responseTimesOverTime produced 0 samples
+2021-05-06 19:04:47,794 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ConnectTimeOverTimeGraphConsumer#stopProducing(): connectTimeOverTime produced 0 samples
+2021-05-06 19:04:47,795 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyOverTimeGraphConsumer#stopProducing(): latenciesOverTime produced 0 samples
+2021-05-06 19:04:47,795 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): nameFilter produced 150000 samples
+2021-05-06 19:04:47,795 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): dateRangeFilter produced 30000 samples
+2021-05-06 19:04:47,795 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.NormalizerSampleConsumer#stopProducing(): normalizer produced 10000 samples
+2021-05-06 19:04:47,795 INFO o.a.j.r.p.CsvFileSampleSource: produce(): 10000 samples produced in 760ms on channel 0
+2021-05-06 19:04:47,795 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'json' of className:'org.apache.jmeter.report.dashboard.JsonExporter'
+2021-05-06 19:04:47,885 INFO o.a.j.r.d.JsonExporter: Found data for consumer statisticsSummary in context
+2021-05-06 19:04:47,885 INFO o.a.j.r.d.JsonExporter: Creating statistics for overall
+2021-05-06 19:04:47,885 INFO o.a.j.r.d.JsonExporter: Creating statistics for other transactions
+2021-05-06 19:04:47,886 INFO o.a.j.r.d.JsonExporter: Checking output folder
+2021-05-06 19:04:47,886 INFO o.a.j.r.d.JsonExporter: Writing statistics JSON to /Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres/./output/statistics.json
+2021-05-06 19:04:47,914 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'html' of className:'org.apache.jmeter.report.dashboard.HtmlTemplateExporter'
+2021-05-06 19:04:47,916 INFO o.a.j.r.d.HtmlTemplateExporter: Will generate dashboard in folder: /Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres/./output
+2021-05-06 19:04:47,997 INFO o.a.j.r.d.HtmlTemplateExporter: Report will be generated in: /Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres/./output, creating folder structure
+2021-05-06 19:04:48,000 INFO o.a.j.r.d.TemplateVisitor: Copying folder from '/usr/local/Cellar/jmeter/5.4.1/libexec/bin/report-template' to '/Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres/./output', got message: /Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres/./output, found non empty folder with following content [/Users/bajuszmate/GolandProjects/bsc-szakdolgozat-thesis/drone-delivery/benchmark/jmeter/postgres/./output/statistics.json], will be ignored
+2021-05-06 19:04:48,238 INFO o.a.j.JMeter: Dashboard generated
