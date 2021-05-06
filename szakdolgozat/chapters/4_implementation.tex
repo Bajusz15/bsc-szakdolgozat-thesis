@@ -600,16 +600,18 @@ Minden egyes méréshez tartozik egy rövid összegzés, hisztogramok a teljesí
 \begin{figure}[hbt!]
     \centering
     \includegraphics[scale=0.3]{images/json-postgres-response-times}
-    \caption{Válaszidők}
+    \caption{Válaszidők PostgreSQL / JSON konfiguráció}
     \label{fig:json-postgres-response-times}
 \end{figure}
 
 \begin{figure}[hbt!]
     \centering
     \includegraphics[scale=0.3]{images/json-time-vs-threads}
-    \caption{Idő és szálak kapcsolata}
+    \caption{Idő és szálak kapcsolata PostgreSQL / JSON konfiguráció}
     \label{fig:json-time-vs-threads}
 \end{figure}
+
+A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolatot, így 3-szor hibával tért vissza a mentés.
 
 \subsubsection{HTTP/1.1 JSON, MongoDB adatbázissal}
 \begin{figure}[hbt!]
@@ -622,16 +624,21 @@ Minden egyes méréshez tartozik egy rövid összegzés, hisztogramok a teljesí
 \begin{figure}[hbt!]
     \centering
     \includegraphics[scale=0.3]{images/json-mongo-response-times}
-    \caption{Válaszidők}
+    \caption{Válaszidők MongoDB / JSON konfiguráció}
     \label{fig:json-mongo-response-times}
 \end{figure}
 
 \begin{figure}[hbt!]
     \centering
     \includegraphics[scale=0.3]{images/json-mongo-time-vs-threads}
-    \caption{Idő és szálak kapcsolata}
+    \caption{Idő és szálak kapcsolata MongoDB / JSON konfiguráció}
     \label{fig:json-mongo-time-vs-threads}
 \end{figure}
+\begin{remark}
+    A MongoDB adatbázis jobban teljesített mint a PostgreSQL.
+    Az erőforrásokat is jobban használta ki, a mérések alapán azt a következtetést vonhatjuk le, hogy a PostgreSQL-ben sok konkurrens írás nem hatékony, a teljesítmény rovására megy.
+\end{remark}
+
 
 \subsubsection{HTTP/2 gRPC, PostgreSQL adatbázissal}
 
@@ -642,6 +649,11 @@ Minden egyes méréshez tartozik egy rövid összegzés, hisztogramok a teljesí
     \label{fig:ghz-postgres}
 \end{figure}
 
+\begin{remark}
+    A HTTP/2 gRPC sokkal jobban teljesített mint a HTTP/1.1 JSON, ezt a diagramon is láthatjuk.
+    Tehát a következtetéseink jók voltak, a HTTP/2 gRPC sokkal hatékonyabb mint a HTTP/1.1 JSON.
+\end{remark}
+
 \subsubsection{HTTP/2 gRPC, MongoDB adatbázissal}
 \begin{figure}[hbt!]
     \centering
@@ -649,5 +661,8 @@ Minden egyes méréshez tartozik egy rövid összegzés, hisztogramok a teljesí
     \caption{Ghz mérései MongoDB adatbázison, gRPC}
     \label{fig:ghz-mongo}
 \end{figure}
+
+Összességében elmondható, hogy a gRPC a gyorsabb protokoll, és a MongoDB hatékonyabb erre a feladatra mint a PostgreSQL.
+
 
 

@@ -179,7 +179,7 @@ Tehát a mikroszervizek, a nevéből értetődően kis részekből állnak, és 
 Viszont ahhoz, hogy a kis, különálló szervizeket amiknek sokszor nagyon eltér a technológiai összetétele, megbízhatóan tudjuk működtetni ahhoz egy kiszámítható környezetbe kell zárni amely el van szigetelve más programoktól.
 Ugyanis csak így lehet tesztelni, hogy a szoftverfüggőségek teljesülnek, és eltérő infrastruktúra alatt is működni fog az adott szervíz, alkalmazás.
 Például éles és teszt környezetben eltérő infrastruktúra lehet.
-De a fejlesztők dolgát is megkönnyíti ez módszer.
+De a fejlesztők dolgát is megkönnyíti ez a módszer.
 Ezeket a kiszámítható környezetekhez régen virtuális gépeket használtak, de ez mára elavult, helyette konténereket használnak amelyek "könnyebbek" és jobban kihasználják az erőforrásokat.
 Az alábbi diagram \ref{fig:docker-vm} mutatja a virtuális gépek és konténerek kapcsolatát.
 
@@ -197,30 +197,32 @@ Egy applikációt fejleszt 3 fejlesztő, a fejlesztők rendre Windows, Mac OS-t 
 Konténerek nélkül mindegyiküknek órákon át tartó erőfeszítés lenne az alkalmazás telepítése a saját fejlesztői környezetükbe, és további erőfeszítéseket kell majd tenniük annak érdekében, hogy ugyanazt az alkalmazást később felhőbe telepítsék.
 A Docker konténerek tehát egy olyan környezetet biztosítanak minden számítógépen amin fut a Docker, ami ugyanúgy működik.
 Legyen szó fejlesztői, teszt vagy éles környezetről, mindig kiszámítható a működés.
-A docker úgy működik, hogy egy előre meghatározott lemezből és egy bizonyos Dockefile-ból épít egy konténert egy úgynevezett build folyamaton kereszül.
+A docker úgy működik, hogy egy előre meghatározott lemezből és egy bizonyos Dockerfile-ból épít egy konténert egy úgynevezett build folyamaton kereszül.
 Ez a build folyamat rétegezett, azaz ha a fájlt módosítjuk, a módosítás csak az adott réteget, és az arra épülő rétegeket befolyásolja.
 Így nem kell mindig újra építenünk a konténert, azt egy cache-ből előszedjük addig a rétegig, amit még nem befolyásolt a fájl módosítása.
 A Dockerfileban vannak megadva a parancsok a telepítéssel kapcsolatban.
-Egy konkrét példa egy egyszerű Dockerfile-ra:
-\begin{docker}
-    FROM golang:1.16 AS builder
-    RUN mkdir -p /go/src/drone-delivery/server
-    WORKDIR /go/src/drone-delivery/server
+\begin{example}
+    Egy konkrét példa egy egyszerű Dockerfile-ra:
+    \begin{docker}
+        FROM golang:1.16 AS builder
+        RUN mkdir -p /go/src/drone-delivery/server
+        WORKDIR /go/src/drone-delivery/server
 
-    COPY go.mod /go/src/drone-delivery/server
-    COPY go.sum /go/src/drone-delivery/server
-    RUN go mod download
-    COPY ./ /go/src/drone-delivery/server
-    WORKDIR /go/src/drone-delivery/server/cmd/drone-delivery-server
-    RUN go install
+        COPY go.mod /go/src/drone-delivery/server
+        COPY go.sum /go/src/drone-delivery/server
+        RUN go mod download
+        COPY ./ /go/src/drone-delivery/server
+        WORKDIR /go/src/drone-delivery/server/cmd/drone-delivery-server
+        RUN go install
 
-    ENTRYPOINT ["/go/bin/drone-delivery-server"]
-    EXPOSE 5000
-    EXPOSE 50051
-\end{docker}
+        ENTRYPOINT ["/go/bin/drone-delivery-server"]
+        EXPOSE 5000
+        EXPOSE 50051
+    \end{docker}
+\end{example}
 
 
-\Section{Felhasznált eszközoök}
+\Section{Felhasznált eszközök}
 \subsection{Architektúra, rendszer felépítése}\label{subsec:architektúra-program-felépítés}
 A rendszer működésének szimulációjához 3 programot használunk ~\ref{fig:3program}.
 Egy program az adatközpont, egy program a drónok szerepét veszi fel, és van még egy egyszerű böngészős web kliens amin paraméterek alapján konfigurálhatjuk a másik 2 program működését.
@@ -296,14 +298,14 @@ A implementációt az adapterek valósítják meg, az objektum orientált nyelve
 \end{figure}
 
 \subsection{DDD tervezési elv}
-A domain vezérelt design (Domain-driven design, DDD) \cite{wiki:Domain-driven_design} egy tervezési alapelv.
+A domain vezérelt tervezés (Domain-driven design, DDD) \cite{wiki:Domain-driven_design} egy tervezési alapelv.
 A koncepciója az, hogy a szoftver struktúra és kód a domain üzleti logika alapján legyen felépítve.
 Tehát a jegyzék neveket, osztály neveket, metódus neveket, szervíz elnevezéseket az üzleti logikáról kell mintázni.
 Tehát a program kódja az üzleti logika folyamatát követi, írja le.
 Például, ha egy szoftver söröket tart nyilván, söröket lehet hozzáadni és lekérdezni, akkor olyan osztályai lehetnek mint például Beer.
 Szervízt vagy valamilyen folyamatokat, műveleteket leíró absztraktot nevezhetünk el úgy mint adding, fetching.
 Valamint olyan metódusok is lehetnek mint AddBeer, GetBeers.
-A domain vezérelt designt a következő problémák megoldására használják:
+A domain vezérelt tervezés a következő problémák megoldására használják:
 
 \begin{itemize}
     \item A projekt középpontjában a program magja, a domain üzleti logika van.
@@ -500,6 +502,7 @@ Hogy 2 eltérő adatbázist hasonlítsunk össze, egy SQL és egy NoSQL adatbáz
 A PostgreSQL adatbázis kíváló relációs adatbázis, nem véletlen, hogy az egyik legelterjedtebb. Teljesíti az ACID tulajdonságokat, és már 35 éve használják így biztosan megfelelően tesztelt.
 A MongoDB dokumentum alapú adatbázis ACID, de csak dokumentum szintent. A mi szimulációnkhoz viszont így is megfelel a követelményeknek.
 Érdekességként, a legtöbb dokumentum alapú adatbázis nem ACID, ezért nem annyira népszerűek.
+A dokumentum alapú adatbázisok általában jobban teljesítenek ha nagyon sok írás történik lekérdezés pedig kevés, vagy ha nincs bonyolult lekérdezés ami több JOIN-t igényel.
 
 \subsection{Protokollok és adatbázisok szerepe a programban}
 A drón raj programot és az adatközpontot úgy tervezzük meg, hogy a telemetria adatok küldéséhez használt rész kicserélhető legyen valamilyen módon (például dependency injekción keresztül).
@@ -524,8 +527,6 @@ A következő kód példában láthatjuk, hogy működhet a dependency injekció
     ds = drone.NewService(postgresStorage, jsonAdapter, logger, rs)
 \end{python}
 
-%TODO: ide még írni és a program struktúráját jobban megmutatni, a konkrét jegyzék struktúra is akár, hogy mi tartozik infrastruktúrához, mi a program magja stb. Interfacek kapcsolata,
-%TODO: Új section ami a program folyamatával foglalkozik, nem a struktúrával
 \Section{Szimuláció működésének folyamata}
 
 A szimuláció működése azzal kezdődik, hogy elindítjuk az adatközpont programot.
@@ -566,71 +567,4 @@ Ezeket a telemetria adatokat az adatközpont program fogadja a megadott porton �
     \label{fig:adatkozpont-flow}
 \end{figure}
 
-
-\Section{Táblázatok}
-
-Táblázatokhoz a \texttt{table} környezetet ajánlott használni.
-Erre egy minta \aref{tab:minta} táblázat.
-A hivatkozáshoz az egyedi \texttt{label} értéke konvenció szerint \texttt{tab:} prefixszel kezdődik.
-
-\begin{table}[h]
-\centering
-\caption{Minta táblázat. A táblázat felirata a táblázat felett kell legyen!}
-\label{tab:minta}
-\begin{tabular}{l|c|c|}
-a & b & c \\
-\hline
-1 & 2 & 3 \\
-4 & 5 & 6 \\
-\hline
-\end{tabular}
-\end{table}
-
-\Section{Ábrák}
-
-Ábrákat a \texttt{figure} környezettel lehet használni.
-A használatára egy példa \aref{fig:cimer}. ábrán látható.
-Az \texttt{includegraphics} parancsba 
-Az ábrák felirata az ábra alatt kell legyen.
-Az ábrák hivatkozásához használt nevet konvenció szerint \texttt{fig:}-el célszerű kezdeni.
-
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.3]{images/me_logo.png}
-\caption{A Miskolci Egyetem címere.}
-\label{fig:cimer}
-\end{figure}
-
-\Section{További környezetek}
-
-A matematikai témájú dolgozatokban szükség lehet tételek és bizonyításaik megadására.
-Ehhez szintén vannak készen elérhető környezetek.
-
-\begin{definition}
-Ez egy definíció
-\end{definition}
-
-\begin{lemma}
-Ez egy lemma
-\end{lemma}
-
-\begin{theorem}
-Ez egy tétel
-\end{theorem}
-
-\begin{proof}
-Ez egy bizonyítás
-\end{proof}
-
-\begin{corollary}
-Ez egy tétel
-\end{corollary}
-
-\begin{remark}
-Ez egy megjegyzés
-\end{remark}
-
-\begin{example}
-Ez egy példa
-\end{example}
 
