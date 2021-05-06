@@ -407,9 +407,81 @@ Majd a szolgáltásokat átadjuk egy vezérlő adapternek, egy REST API-nak ami 
 
 %TODO: szekvencia diagramok is a mukodesrol, a kodban. Main fgv. -> newservice ... -> rest es grpc endpoint
 
+\subsubsection{Konfiguráció}
+A konfiguráció beállításáért a config csomag felel.
+Az adatközpont, és drón-raj programban is található egy SetConfig függvény a config csomagban.
+Ez környezeti változókat olvas ki, és az alapján beállítja a megfelelő értékeket.
+A környezeti változókat a docker-compose.yml fájlban tudjuk módosítani.
+
+\begin{python}
+    func SetConfig() {
+        flag.StringVar(&DroneSwarmURL, "drone swarm domain url", os.Getenv("DRONE_SWARM_URL"),
+        "An url for the drone swarm application, with protocol")
+
+        PostgresConfig.UserName = os.Getenv("PGUSER")
+        PostgresConfig.Database = os.Getenv("PGDATABASE")
+        PostgresConfig.Host = os.Getenv("PGHOST")
+        PostgresConfig.Port = os.Getenv("PGPORT")
+        PostgresConfig.SSSLMode = os.Getenv("PGSSL")
+        PostgresConfig.PW = os.Getenv("PGPASSWORD")
+
+        MongoConfig.UserName = os.Getenv("MONGO_USER")
+        MongoConfig.Database = os.Getenv("MONGO_DB")
+        MongoConfig.Host = os.Getenv("MONGO_HOST")
+        MongoConfig.Port = os.Getenv("MONGO_PORT")
+        MongoConfig.PW = os.Getenv("MONGO_PWD")
+    }
+\end{python}
+
+\begin{python}
+    func SetConfig() {
+        flag.StringVar(&ServerHTTPDomain, "server domain for http", os.Getenv("SERVER_DOMAIN"), "domain of server, with protocol")
+        flag.StringVar(&ServerHTTPPort, "server port for http", os.Getenv("SERVER_PORT"), "the port the server is listening on")
+        flag.StringVar(&ServerGRPCDomain, "server domain for grpc", os.Getenv("SERVER_GRPC_DOMAIN"), "domain of server, with protocol")
+        flag.StringVar(&ServerGRPCPort, "server port for grpc", os.Getenv("SERVER_GRPC_PORT"), "the port the server is listening on")
+
+        PostgresConfig.UserName = os.Getenv("PGUSER")
+        PostgresConfig.Database = os.Getenv("PGDATABASE")
+        PostgresConfig.Host = os.Getenv("PGHOST")
+        PostgresConfig.Port = os.Getenv("PGPORT")
+        PostgresConfig.SSSLMode = os.Getenv("PGSSL")
+        PostgresConfig.PW = os.Getenv("PGPASSWORD")
+    }
+\end{python}
+
+
 
 \section{Az rendszer működése}
 
+A rendszer úgy működik, hogy először elindul az adatközpont program, felcsatlakozik az adatbázisokra, létrejönnek a vezérelt adapterek.
+Ezeket az adaptereket átadjuk a szolgáltatásoknak. Létrehozzuk a vezérlő adaptereket, ezeknek az adaptereknek átadjuk a szolgáltatásokat.
+A két vezérló adapter az adatközpontban a REST API ami 5000-es porton hallgat, illetve a gRPC végpont ami 50051-es porton hallgat.
+A drón raj program elindul, hasonló módon mint az adatközpont programban, először a vezérelt adapterek, majd a vezérlő adapterek jönnek létre.
+Létrejön a gRPC kapcsolat az adatközpont és drón-raj program között.
+A drón raj program REST API-ja a 2000-es porton hallgat.
+A web klienssel indíthatjuk a szimulációt, miután megnyitottuk a böngészővel, egy egyszerű kezelő felület fogad.
+
+A folyamat \ref{fig:mukodes} röviden úgy néz ki, hogy:
+\begin{enumerate}
+    \item A web kliensben kiválasztjuk, hogy milyen protokollt és formátumot, valamint adatbázist szeretnénk használni. Alapértelmezettként PostgreSQL adatbázis és HTTP/1.1 protokoll JSON formátummal van kiválasztva.
+    \item A szimuláció indítása gomb megnyomásával az adatközpont program REST API \textit{/api/delivery} végpontjára küld egy POST requestet a web kliens.
+    \item Az adatközpont lekérdezi a drónokat és csomagokat, majd ezek alapján optimalizálja az útvonalakat.
+        A drónoknak most már megvan a hozzájuk tartozó csomagjuk és az útvonal amin haladniuk kell.
+    \item Ezt az információt az adatközpont elküldi egy POST requestben a drón raj program REST API \textit{/provision} végpontjára.
+    \item A drón-raj program szimulálja a drónok működését, és telemetria adatokat küld az adatközpontnak JSON vagy gRPC formátumban, attól függ mit választottunk.
+    \item Az adatközpont elmenti az adatokat PostgreSQL vagy MongoDB adatbázisba, attól függ melyikbe, hogy mit választottunk.
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/mukodes}
+    \caption{Az szimuláció folyamata}
+    \label{fig:mukodes}
+\end{figure}
+
+
+
+\section{Tesztelés}
 \subsubsection{Adatbázisok elindítása}
 A rendszer indítása úgy kezdődik, hogy megbizonyosodunk arról, hogy a MongoDB adatbázis és a PostgreSQL adatbázis fut és lehet rá csatlakozni.
 Ha ez a 2 adatbáziskezelő nem található meg gépünkön, akkor először telepíteni kell őket.
@@ -417,8 +489,9 @@ Nálam a következőképp néz ki az indítás. A terminálban elindítom a Mong
 \begin{lstlisting}[language=bash]
   $ brew services stop mongodb-community@4.4
 \end{lstlisting}
+
 Ezután a mongo parancsot kiadva egy kapcsolódom az adatbáziskezelő konzolos felületére.
-Megbizonyosodom, hogy létezik a drone_delivery adatbázis.
+Megbizonyosodom, hogy létezik a drone\_delivery adatbázis.
 Ha nem létezik, lefuttatom a telepítéshez szükséges parancsokat \ref{subsubsec:mongodb-telepítése-az-alkalmazáshoz}.
 \begin{lstlisting}[language=bash]
   $ mongo
@@ -426,7 +499,7 @@ Ha nem létezik, lefuttatom a telepítéshez szükséges parancsokat \ref{subsub
 
 
 Ezután elindítok egy PostgreSQL 11 adatbázist, az én fejlesztői környezetemben ez egy Postgres nevű grafikus kezelőfelületű program által történik.
-Megbizonyosodok arról, hogy létezik a dbdrone_delivery adatbázis, és létezenek a megfelelő táblák. Ha nem léteznek, lefuttatom telepítéshez szükséges scriptet \ref{subsubsec:postgresql-telepítése-a-programhoz}.
+Megbizonyosodok arról, hogy létezik a dbdrone\_delivery adatbázis, és létezenek a megfelelő táblák. Ha nem léteznek, lefuttatom telepítéshez szükséges scriptet \ref{subsubsec:postgresql-telepítése-a-programhoz}.
 
 \subsubsection{Alkalmazás indítása Dockerrel}
 
