@@ -126,7 +126,7 @@ Serializable & Not possible & Not possible & Not Possible \\
     \end{tabular}
 \end{table}
 
-\subsubsection{Telepítése a programhoz}
+\subsubsection{PostgreSQL telepítése az alkalmazáshoz}\label{subsubsec:postgresql-telepítése-a-programhoz}
 
 Az adatbáziskezelőhöz csatlakozva, le kell futtatni a következő SQL scriptet.
 
@@ -204,7 +204,7 @@ Az adatbáziskezelőhöz csatlakozva, le kell futtatni a következő SQL scripte
     \label{fig:mongodb}
 \end{figure}
 
-\subsubsection{Telepítése a programhoz}
+\subsubsection{MongoDB telepítése az alkalmazáshoz}\label{subsubsec:mongodb-telepítése-az-alkalmazáshoz}
 Az adatbáziskezelő konzolján keresztül le kell futtatni a következő két parancsot, egy megfelelő jogosultságú felhasználóval.
 Ez egyik parancs létrehozza a drone\_delivery adatbázist, a másik parancs létrehoz nekünk egy felhasználót az előbb létrehozott adatbázishoz.
 A későbbiekben ezzel a felhasználóval csatlakozunk az adatbázishoz.
@@ -364,18 +364,72 @@ Mivel a "SendTelemetryDataToServer(t models.Telemetry) error " metódus megtálh
 
 \end{python}
 
-Az adatközpont program adatbázist megvalósító adapterek a pkg/storage jegyzékben helyezkednek el. Itt találhatjuk a MongoDB és PostgreSQL adatbázist használó adaptereket.
+Az adatközpont program MongoDB és PostgreSQL adatbázisához kapcsolódó, a Repository interfészt megvalósító adapterek a pkg/storage jegyzékben helyezkednek el.
 
 
 \subsubsection{Dependency Injection}
+A Hexagonal architektúra elvárja a kicserélhetőséget, laza kapcsolatokat és hogy az alkalmazás komponensek portokon kapcsolódjanak össze.
+Ennek más előnyei is vannak, így lényegesen könnyebb a tesztelhetőség és karbantartás.
+Arról már volt szó, hogy mik az adapterek és hogyan használjuk őket a portokon keresztül.
+De arról még nem volt szó, hogy pontosan hogyan adjuk át az adaptereket, hogyan hivatkozunk az adapterekre.
+Ehhez dependency injekciót használunk.
+Azaz létrehozunk egy adaptert, szolgáltatást (szervíz) és azt átadjuk egy másik szolgáltatásnak, adapternek.
+Olyan is előfordulhat, hogy a az alkalmazás domain részében két szolgáltatás egymás között portokon kommunikál.
+Például a drón szolgáltatás létrehozásához szükséges paramétereket az alábbi kódrészletben láthatjuk.
+Ezekből a paraméterekből a Repository, OutboundAdapter típusúak portok más adapterekhez.
+Később a szolgáltatásban ezekre a portokra hivatkozunk, ezeken keresztül érjük el az adapterek metódusait.
+
+\begin{python}
+    func NewService(r Repository, ea OutboundAdapter, l gokitlog.Logger, rs routing.Service) *service {
+        return &service{r, ea, l, rs}
+    }
+\end{python}
+
+Az alábbi példán láthatjuk, hogy a postgreSQL, mongoDB adatbázisokat implementáló, és a külső kommunikációért felelős JSON adaptert átadjuk különböző szolgáltatásoknak.
+Ezek rendre postgresStorage, mongoStorage, jsonAdapter.
+\begin{python}
+    postgresStorage, err := postgres.NewStorage(config.PostgresConfig)
+    ...
+    mongoStorage, err := mongodb.NewStorage(config.MongoConfig)
+    ...
+    jsonAdapter := outbound.NewJSONAdapter()
+    geo := ellipsoid.Init("WGS84", ellipsoid.Degrees, ellipsoid.Meter, ellipsoid.LongitudeIsSymmetric, ellipsoid.BearingIsSymmetric)
+    ...
+    ts = telemetry.NewService(postgresStorage, logger, geo)
+    rs = routing.NewService(logger)
+    ds = drone.NewService(postgresStorage, jsonAdapter, logger, rs)
+\end{python}
+
+Majd a szolgáltásokat átadjuk egy vezérlő adapternek, egy REST API-nak ami kéréseket fogad és ez alapján a szolgáltatások portjain a megfelelő metódust meghívja.
+\begin{python}
+    router := rest.Handler(ds, ts, postgresStorage, mongoStorage)
+\end{python}
+
 %TODO: szekvencia diagramok is a mukodesrol, a kodban. Main fgv. -> newservice ... -> rest es grpc endpoint
-
-
 
 
 \section{Az rendszer működése}
 
-%TODO: brew services start mongodb-community@4.4, Postgres inditasa
+\subsubsection{Adatbázisok elindítása}
+A rendszer indítása úgy kezdődik, hogy megbizonyosodunk arról, hogy a MongoDB adatbázis és a PostgreSQL adatbázis fut és lehet rá csatlakozni.
+Ha ez a 2 adatbáziskezelő nem található meg gépünkön, akkor először telepíteni kell őket.
+Nálam a következőképp néz ki az indítás. A terminálban elindítom a MongoDB adatbázist.
+\begin{lstlisting}[language=bash]
+  $ brew services stop mongodb-community@4.4
+\end{lstlisting}
+Ezután a mongo parancsot kiadva egy kapcsolódom az adatbáziskezelő konzolos felületére.
+Megbizonyosodom, hogy létezik a drone_delivery adatbázis.
+Ha nem létezik, lefuttatom a telepítéshez szükséges parancsokat \ref{subsubsec:mongodb-telepítése-az-alkalmazáshoz}.
+\begin{lstlisting}[language=bash]
+  $ mongo
+\end{lstlisting}
+
+
+Ezután elindítok egy PostgreSQL 11 adatbázist, az én fejlesztői környezetemben ez egy Postgres nevű grafikus kezelőfelületű program által történik.
+Megbizonyosodok arról, hogy létezik a dbdrone_delivery adatbázis, és létezenek a megfelelő táblák. Ha nem léteznek, lefuttatom telepítéshez szükséges scriptet \ref{subsubsec:postgresql-telepítése-a-programhoz}.
+
+\subsubsection{Alkalmazás indítása Dockerrel}
+
 %TODO: Docker, elindul, milyen servicek vannak, mit csinalnak stb.
 
 \section{Szállítási probléma a programban}
