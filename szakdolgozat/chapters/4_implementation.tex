@@ -611,7 +611,7 @@ Minden egyes méréshez tartozik egy rövid összegzés, hisztogramok a teljesí
     \label{fig:json-time-vs-threads}
 \end{figure}
 
-A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolatot, így 3-szor hibával tért vissza a mentés.
+A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolatot \ref{fig:jmeter-json-postgres}, így 3-szor hibával tért vissza a mentés.
 
 \subsubsection{HTTP/1.1 JSON, MongoDB adatbázissal}
 \begin{figure}[hbt!]
@@ -640,7 +640,7 @@ A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolat
 \end{remark}
 
 
-\subsubsection{HTTP/2 gRPC, PostgreSQL adatbázissal}
+\subsubsection{HTTP/2 gRPC, PostgreSQL adatbázissal \ref{fig:ghz-postgres}}
 
 \begin{figure}[hbt!]
     \centering
@@ -654,7 +654,7 @@ A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolat
     Tehát a következtetéseink jók voltak, a HTTP/2 gRPC sokkal hatékonyabb mint a HTTP/1.1 JSON.
 \end{remark}
 
-\subsubsection{HTTP/2 gRPC, MongoDB adatbázissal}
+\subsubsection{HTTP/2 gRPC, MongoDB adatbázissal \ref{fig:ghz-mongo}}
 \begin{figure}[hbt!]
     \centering
     \includegraphics[scale=0.3]{images/ghz-mongo}
