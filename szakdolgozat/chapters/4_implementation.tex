@@ -549,8 +549,22 @@ A \textit{drone-delivery} jegyzékben, a terminálban kiadom a következő paran
   $ docker-compose up --build
 \end{lstlisting}
 
-Ez megépíti a konténereket, letölti a szoftver függőségeket illetve csomagokat, majd a konténerekben elindulnak a programok.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/docker-build}
+    \caption{Docker build, elindulnak a programok}
+    \label{fig:docker-build}
+\end{figure}
+
+Ez megépíti a konténereket, letölti a szoftver függőségeket illetve csomagokat, majd a konténerekben elindulnak a programok\ref{fig:docker-build}.
 Ezután nincs más dolgunk, mint a \textit{drone-delivery/web-client} jegyzékben található \textit{index.html} fájlt megnyitni a böngészőben, az egyértelmű kezelőfelülettel tudjuk konfigurálni és indítani a szimulációt.
+Egy 3D diagramon nézhetjük ahogy a drónok mozognak.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.2]{images/web-client}
+    \caption{Web kliens, szimuláció 3D diagramon}
+    \label{fig:web-client}
+\end{figure}
 
 \section{Szállítási probléma a programban}
 \subsubsection{Az adatközpont távolság számítása}

@@ -42,10 +42,10 @@ var chart = new Highcharts.Chart({
         valueSuffix: ' '
     },
     title: {
-        text: 'Draggable box'
+        text: 'Drón szállítás szimuláció'
     },
     subtitle: {
-        text: 'Click and drag the plot area to rotate in space'
+        text: 'Az egérrel lehet mozgatni a 3D diagramot'
     },
     plotOptions: {
         scatter: {
@@ -57,22 +57,28 @@ var chart = new Highcharts.Chart({
     yAxis: {
         min: 4720630,
         max: 4724347,
-        title: 'Altitude'
+        title: {
+            text: 'Altitude'
+        }
     },
     xAxis: {
         min: 3989881,
         max: 3994539,
         gridLineWidth: 1,
-        title: 'Latitude'
+        title: {
+            text: 'Latitude'
+        }
     },
     zAxis: {
         min: 1512999,
         max: 1515999,
         showFirstLabel: false,
-        title: 'Longitude'
+        title: {
+            text: 'Longitude'
+        }
     },
     legend: {
-        enabled: false
+        enabled: true
     },
     series: [{
         name: 'Data',
