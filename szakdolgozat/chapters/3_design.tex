@@ -506,7 +506,7 @@ A dokumentum alapú adatbázisok általában jobban teljesítenek ha nagyon sok 
 
 \subsection{Protokollok és adatbázisok szerepe a programban}
 A drón raj programot és az adatközpontot úgy tervezzük meg, hogy a telemetria adatok küldéséhez használt rész kicserélhető legyen valamilyen módon (például dependency injekción keresztül).
-Így valósítjuk meg a több protokollon keresztüli kommunikációt. Az adatbázis végpontot is hasonlóan ki kell tudnunk cserélni, hogy ne kelljen módosítani a programon a különböző szimulációkhoz.
+Így tudjuk összehasonlítani a több protokollon keresztüli kommunikációt. Az adatbázis végpontot is hasonlóan ki kell tudnunk cserélni, hogy ne kelljen módosítani a programon a különböző szimulációkhoz.
 A következő kód példában láthatjuk, hogy működhet a dependency injekció. Itt a postgreSQL adatbázissal hoztuk létre a szervízt, de a mongoDB adatbázissal is létrehozhatjuk, ha teljesíti az interfész követelményeit.
 \begin{python}
     postgresStorage, err := postgres.NewStorage(config.PostgresConfig)
@@ -527,44 +527,6 @@ A következő kód példában láthatjuk, hogy működhet a dependency injekció
     ds = drone.NewService(postgresStorage, jsonAdapter, logger, rs)
 \end{python}
 
-\Section{Szimuláció működésének folyamata}
 
-A szimuláció működése azzal kezdődik, hogy elindítjuk az adatközpont programot.
-Felcsatlakozik az adatbázisokra, majd létrehozza a szervizeket, és a REST API-n várja a bejövő kéréseket.
-Ez lehet például egy konfigurációs kérés, a drónok lekérdezése, vagy a szállítás indítása.
-
-Közben a drón-raj program is elindul, ez a program is egy REST API-n várja a kéréseket.
-A drón raj program az API-n megkapja a drónokat és a hozzájuk rendelt csomagokat, majd megkezdódik a szimuláció, a drón-raj program telemetria adatokat küld az adatközpont programnak.
-A drón-raj program olyan telemetria adatokat fog generálni, amelyek minél jobban a valsóságot tükrözik és ezeket az adatokat tovább fogja küldeni az adatközpontnak.
-\begin{python}
-{
-    "telemetry": {
-    "speed": 2,
-    "location": {
-    "latitude": 48.08092020178216,
-    "longitude": 20.766208061642047
-    },
-    "altitude": 50,
-    "bearing": 178.68412647009515,
-    "acceleration": 0,
-    "battery_level": 98,
-    "motor_temperatures": [
-    41,
-    43
-    ],
-    "time_stamp": "2021-04-01T15:04:05.630Z",
-    "drone_id": 2
-    }
-}
-\end{python}
-
-Ezeket a telemetria adatokat az adatközpont program fogadja a megadott porton és lementi az adott adatbázisba. \ref{fig:adatkozpont-flow}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.3]{images/adatkozpont-flow.png}
-    \caption{Adatközpont program működésének folyamata}
-    \label{fig:adatkozpont-flow}
-\end{figure}
 
 
