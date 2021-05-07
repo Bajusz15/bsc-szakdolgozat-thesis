@@ -18,8 +18,8 @@ Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különb
 \begin{itemize}
     \item Muszáj egy drón pilótának ellenőrizni a repülést és szükség esetén kötelező közbeavatkoznia.
     \item Egy ilyen pilóta csak 1 drónt felügyelhet egyszerre, kivéve ha rendelkezik több felügyeletéhez megfelelő engedéllyel.
-    \item A drónokat nem lehet közvetlen egy személy vagy gépjármű fellett működtetni.
-    \item Problémát jelent továbba, hogy nem minden légtér megfelelő a drónokkal való szállításra. A reptér mellett fekvő nagyvárosokban például biztos hogy nem lehet drónokkal szállítani.
+    \item A drónokat nem lehet közvetlen egy személy vagy gépjármű felett működtetni.
+    \item Problémát jelent továbbá, hogy nem minden légtér megfelelő a drónokkal való szállításra. A reptér mellett fekvő nagyvárosokban például biztos hogy nem lehet drónokkal szállítani.
     \item A csomagot szállító drónnak is kell rendelkeznie engedéllyel, hogy alkalmas kereskedelmi szállításra.
 \end{itemize}
 
@@ -48,7 +48,7 @@ Már van kész megoldásuk a következőkre:
 \end{itemize}
 
 Elterjedt termékük a FlytNow, ami úgy működik, hogy a drónunkat összekötjük egy appon keresztül a felhőben lévő FlytNow rendszerrel,
-majd interneteN keresztül elérünk egy verzérélőpultot \ref{fig:flytdash} amin irányíthatjuk a drónjainkat és láthatjhuk az adatokat.
+majd interneten keresztül elérünk egy verzérélőpultot \ref{fig:flytdash} amin irányíthatjuk a drónjainkat és láthatjhuk az adatokat.
 Ez a rendszer arra összpontosít hogy gyorsan, bonyolult telepítés és beállítás nélkül tudjunk drónokat irányítani.
 Ezt a rendszer magánembereknek és cégeknek egyaránt elérhető, több csomagban.
 Van egy másik FlytWare nevű termékük raktár menedzselésre és logisztikai feladatokra. Olyan feladatokra specializálódnak a drónok mint a bárkód szkennelés,
@@ -69,8 +69,8 @@ Ebben a rendszerben minden drón el van látva radarral, kamerával és más sze
 egy sokkal pontosabb képet kapunk ami hasznos a navigációhoz, és akár fél percre előre meg tudjuk mondani mi lesz az adatok alapján, előre jelezve az esetleges hibákat.
 
 
-A \textit{BeeCluster}\cite{beecluster} egy nyílt forráskódú, Golang-ban írt drón orchesztrációs rendszer. Előnye, hogy prediktív optimizációt használ.
-Tehát a feladatok előtt egy eszimulációt futtat, ami alapján optimalizálja, azaz hatékonyabbá és gyorsabbá teszi a valós folyamatot.
+A \textit{BeeCluster}\cite{beecluster} egy nyílt forráskódú, Golang-ban írt drón orchesztrációs rendszer. Előnye, hogy prediktív optimalizációt használ.
+Tehát a feladatok előtt egy előszimulációt futtat, ami alapján optimalizálja, azaz hatékonyabbá és gyorsabbá teszi a valós folyamatot.
 Olyan feladaotkra használják mint a földrajzi térképezés, wifi lefedettség térkép, új utak feltérképezése.
 
 
@@ -78,9 +78,9 @@ Jelenleg nincs a piacon olyan, \textbf{bárki számára elérhető} szállítás
 érdekelt cégek használnak ilyen drónokat, de sajnos nem osztják meg a pontos paramétereket. Annyi használható
 információ érhető el, hogy az Amazon teszt drónjai átlag 70 km/h sebességgel 12 kilométeres körzetben tudnak szállítani
 2,3 kg-tól könnyebb csomagokat.
-De nem tudjuk a drón súlyát és azt se, hogy mennyi üzemanyagot fogyaszt.
+De nem tudjuk a drón súlyát és azt se, hogy mennyi energiát fogyaszt.
 
-A Missouri Egyetemen végeztek egy \textit{a drónok fogyasztására irányuló kutatást}\cite{dron-szallitas-kutatas},
+A Missouri Egyetemen végeztek egy \textit{a drónok energia fogyasztására irányuló kutatást}\cite{dron-szallitas-kutatas},
 amiből több érdekes dolog is kiderül. Mind a kis (1-3 kg) és nagy (5-15kg) drónok hatékony sebessége  12m/s körül van.
 
 \begin{figure}[h]
@@ -213,10 +213,12 @@ Elemzi a drónok és a csomagok paraméterei alapján, hogy hogyan lenne a legop
 alapján az adatközpont a csomagokhoz drónokat rendel a megfelelő útvonallal. A drónok elhagyják a raktárat a csomaggal, és folyamatosan küldik az adatokat állapotukról,
 az adatközpont pedig elemzi és feldolgozza ezeket.
 
-Pédaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg. A drón a kijelölt útvonalon halad, nem adódik semmilyen probléma a cél
-elérése közben. A drón leadja a csomagot a kijelölt helyen, és jelez az adatközpontnak hogy sikeresen kézbesítette a csomagot.
-Ekkor az adatközpont jelez a megrendelőnek hogy a csomagját átveheti. A drón felemelkedik és visszatér a raktárba, a kijelölt útvonalon. Itt az akkumulátorját szükség esetén
-feltöltik, majd a drón felveheti a következő csomagot.
+Pédaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg.
+A drón a kijelölt útvonalon halad, nem adódik semmilyen probléma a cél elérése közben.
+A drón leadja a csomagot a kijelölt helyen, és jelez az adatközpontnak hogy sikeresen kézbesítette a csomagot.
+Ekkor az adatközpont jelez a megrendelőnek hogy a csomagját átveheti.
+A drón felemelkedik és visszatér a raktárba, a kijelölt útvonalon.
+Itt az akkumulátorját szükség esetén cserélik/feltöltik, majd a drón felveheti a következő csomagot.
 
 Egy másik példaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg. A drón a szállítás közben különösen magas hálózat interferenciát érzékel,
 és hibajelet küld az adatközpontnak. Az adatközpont az elemzés szerint arra jut hogy az interferencia nem természetes,

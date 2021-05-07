@@ -335,7 +335,7 @@ Itt a REST API az adapter, pontosabban vezérlő adapter.
     }
 \end{python}
 Vezérelt adaptere az adatbázist és kimenő kommunikációt megvalósító adapterek.
-Az adatközpon programban az adatbázisoknak a Repository interfészt kell implementálni, de a gRPC és JSON kommunikációhoz is tartozik interfész.
+Az adatközpont programban az adatbázisoknak a Repository interfészt kell implementálni, de a gRPC és JSON kommunikációhoz is tartozik interfész.
 \begin{python}
     type Repository interface {
         GetFreeDrones() ([]models.Drone, error)
@@ -528,7 +528,7 @@ Nálam a következőképp néz ki az indítás. A terminálban elindítom a Mong
   $ brew services stop mongodb-community@4.4
 \end{lstlisting}
 
-Ezután a mongo parancsot kiadva egy kapcsolódom az adatbáziskezelő konzolos felületére.
+Ezután a mongo parancsot kiadva kapcsolódom az adatbáziskezelő konzolos felületére.
 Megbizonyosodom, hogy létezik a drone\_delivery adatbázis.
 Ha nem létezik, lefuttatom a telepítéshez szükséges parancsokat \ref{subsubsec:mongodb-telepítése-az-alkalmazáshoz}.
 \begin{lstlisting}[language=bash]
@@ -536,7 +536,7 @@ Ha nem létezik, lefuttatom a telepítéshez szükséges parancsokat \ref{subsub
 \end{lstlisting}
 
 
-Ezután elindítok egy PostgreSQL 11 vagy újabb verziójú PostgreSQL adatbázist, az én fejlesztői környezetemben ez egy Postgres nevű grafikus kezelőfelületű program által történik.
+Ezután elindítok egy PostgreSQL 11 vagy újabb verziójú PostgreSQL adatbázist, a fejlesztői környezetemben ez egy Postgres nevű grafikus kezelőfelületű program által történik.
 Megbizonyosodok arról, hogy létezik a dbdrone\_delivery adatbázis, és létezenek a megfelelő táblák. Ha nem léteznek, lefuttatom telepítéshez szükséges scriptet \ref{subsubsec:postgresql-telepítése-a-programhoz}.
 
 \subsubsection{Alkalmazás indítása Dockerrel}
@@ -621,7 +621,7 @@ A \textit{CalculateDroneNextCoordinates} metódus megmondja adott induló koordi
 \Section{Mérések}
 
 Az alkalmazással kapcsolatban méréseket is végeztem, JMeter\cite{apache}  és ghz\cite{ghz} programokat használtam.
-Ezeket a méréseket fogom megmutatni és összehasonlítani.
+Ezeket a méréseket fogom bemutatni és összehasonlítani.
 Összehasonlításra kerülnek az alkalmazásban használt különböző protokollok, formátumok és adatbázisok.
 Minden mérés a telemetria adatok küldését és mentését ábrázolja, ugyanolyan körülmények között.
 Üres adatbázissal, összesen 10000 telemetria adatot küldünk, 100 szálon.

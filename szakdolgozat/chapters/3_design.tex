@@ -98,7 +98,7 @@ kell alkalmazni ami védelmet biztosít a megosztott memória felett. A Golang c
     // assign value to v.
 \end{python}
 Alapértelmezett beaállítás szerint a csatornák blokkolnak amíg az egyik oldal küld vagy fogad.
-Ez lehetővé teszi a szinkrinizációt anélkül hogy zárakat vagy feltétel változókat hoznánk létre.
+Ez lehetővé teszi a szinkronizációt anélkül hogy zárakat vagy feltétel változókat hoznánk létre.
 
 Bufferelt csatornák
 \begin{python}
@@ -151,18 +151,18 @@ Tartalmaz interfészeket, a típusokhoz így a structhoz is tudunk hozzárendeln
 \section{Docker és a mikroszervízek}
 
 A mikroszervizes rendszer tervezési architektúra napjainkabn nagyon elterjedt, azért mert triviális előnyei vannak a hagyományos monolitikus rendszer architektúrával szemben.
-2 legnagyobb előnye, hogy könnyű megváltoztatni a szoftver és jobban skálázható mint a monolitikus rendszerek.\\
+Két legnagyobb előnye, hogy könnyű megváltoztatni a szoftver és jobban skálázható mint a monolitikus rendszerek.\\
 \paragraph{A \emph{monolitikus} rendszerek hátrányai:}
 \begin{itemize}
     \item Ahogy nő az alkalmazás, vele együtt egyre nehezebb a fejlesztőknek továbbfejleszteni, és karbantartani azt.
-    \item Megváltoztatni az az applikáció technológiai összetételét szinte lehetetlen, a fejlesztőknek egy rémálom.
+    \item Megváltoztatni az applikáció technológiai összetételét szinte lehetetlen, a fejlesztőknek egy rémálom.
     \item Minden egyes változtatás kihat az egész alkalmazásra, így azt minden szinten újra át kell nézni, karbantartani, fejleszteni. Ez felesleges munka a fejlesztők részéről.
     \item Nem skálázható horizontálisan.
 \end{itemize}
 
 \paragraph{A \emph{mikroszervizes} rendszerek \ref{fig:micro} előnyei: }
 \begin{itemize}
-    \item Csökkenti a komplexitást azzal, hogy a fejlesztők csapatokba oszlanak, minden csapat 1 vagy viszonylag kevés szervízt fejleszt.
+    \item Csökkenti a komplexitást azzal, hogy a fejlesztők csapatokba oszlanak, minden csapat egy vagy viszonylag kevés szervízt fejleszt.
     \item Csökkenti a fejlesztés kockázatát, nem kell újraépíteni az egész alkalmazást egy fejlesztés után.
     \item Könnyű karbantartás, rugalmas fejlesztés mivel inkrementálisan tudunk fejleszteni egy vagy több szervízt, nem kell mindent egyszerre.
     \item Egyszerű skálázhatóság.
@@ -193,7 +193,7 @@ Az alábbi diagram \ref{fig:docker-vm} mutatja a virtuális gépek és konténer
 A Docker a világ vezető szoftver konténerizáló platformja.
 A megadott alkalmazást, mikroszervízt beilleszt egy úgynevezett Docker konténerbe, amelyet aztán függetlenül lehet karbantartani és telepíteni.
 Hogy jobban megértsük a Docker működését nézzünk egy konkrét példát.
-Egy applikációt fejleszt 3 fejlesztő, a fejlesztők rendre Windows, Mac OS-t és Linuxot használnak.
+Egy applikációt fejleszt három fejlesztő, a fejlesztők rendre Windows, Mac OS-t és Linuxot használnak.
 Konténerek nélkül mindegyiküknek órákon át tartó erőfeszítés lenne az alkalmazás telepítése a saját fejlesztői környezetükbe, és további erőfeszítéseket kell majd tenniük annak érdekében, hogy ugyanazt az alkalmazást később felhőbe telepítsék.
 A Docker konténerek tehát egy olyan környezetet biztosítanak minden számítógépen amin fut a Docker, ami ugyanúgy működik.
 Legyen szó fejlesztői, teszt vagy éles környezetről, mindig kiszámítható a működés.
@@ -224,7 +224,7 @@ A Dockerfileban vannak megadva a parancsok a telepítéssel kapcsolatban.
 
 \Section{Felhasznált eszközök}
 \subsection{Architektúra, rendszer felépítése}\label{subsec:architektúra-program-felépítés}
-A rendszer működésének szimulációjához 3 programot használunk ~\ref{fig:3program}.
+A rendszer működésének szimulációjához három programot használunk ~\ref{fig:3program}.
 Egy program az adatközpont, egy program a drónok szerepét veszi fel, és van még egy egyszerű böngészős web kliens amin paraméterek alapján konfigurálhatjuk a másik 2 program működését.
 Az adatközpont program, és a drón-raj program a magas fokú konkurrencia kihasználásához Go nyelven készül.
 
@@ -241,8 +241,8 @@ Az adatközpontot szimuláló program lesz a legbonyolultabb.
 Ennek a programnak tudnia kell elvégezni a szállítás logisztikai feladatait, valamint hatékonyan feldolgozni és tárolnia az adatokat amiket a drónok küldenek.
 
 
-Ahhoz hogy a programot a követelmányben megfogalmazott módon építsük fel, értem ez alatt azt hogy több protokollt és adatbázist hasonlítsunk össze, egy olyan program architektúrát és tervezést kell választani ami megendegi ezt.
-Erre a problémára megoldásként a Hexagonal (ports and adapters) architektúrát~\ref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
+Ahhoz hogy a programot a követelmányben megfogalmazott módon építsük fel és cserélhető maradjon az adatbázis és a kommunikációs protokoll és adatformátum, egy olyan szoftver architektúrát és tervezést kell választani ami megendegi ezt.
+Erre a problémára megoldásként a Hexagonal (másnéven ports and adapters) architektúrát~\ref{fig:hexagonal-inward} és DDD tervezési alapelvet fogom alkalmazni.
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.07]{images/hexa-inward.png}
@@ -250,15 +250,15 @@ Erre a problémára megoldásként a Hexagonal (ports and adapters) architektúr
     \label{fig:hexagonal-inward}
 \end{figure}
 
-Így a program belülről kifelé epül fel, a program magja ahol az üzleti logika van interfaceket alkalmazva kommunikál a program többi részével, és nem támaszkodik semmilyen külső részre. Az intefacek miatt a külső rész a pontos implemetációja absztraktálva van, azaz csak az üzleti logikát ismerjük biztosan, minden ráépülő réteg implementációja cserélhető marad.
+Így a program belülről kifelé epül fel, a program magja ahol az üzleti logika van interfaceket (portokat) alkalmazva kommunikál a program többi részével (adapterekkel), és nem támaszkodik semmilyen külső részre. Az interfacek miatt a külső rész a pontos implemetációja absztraktálva van, azaz csak az üzleti logikát ismerjük biztosan, minden ráépülő rész implementációja cserélhető marad.
 Minden réteg csak befelé mutat \ref{fig:hexagonal-inward}, így az üzleti logikánk megmaradhat, miközben az alkalmazás teljes infrastuktúráját kicserélhetnénk.
 Így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.
-Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \ref{fig:hexagonal-inward} tökéletesen bemutatja.
+Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \ref{fig:hexagonal-inward} mutatja.
 Az alkalmazást fel lehet osztani verérlő és vezérelt részre. Ez nagyon jól igazodik az üzleti logikához, egy inputra szinte mindig valamiféle vezérlést várunk el,
-tehát ahogz az alkalmazásunkat használjuk, vezéreljük akkor az adatok hatására valamit csináljon. Ezután az alkalmazásunk beszélhet más, külső forrásokkal, amiket az alkalmazás használ, azaz vezéreli őket.
+tehát ahogy az alkalmazásunkat használjuk, vezéreljük akkor az adatok hatására valamilyen folyamatot elvárunk. Ezután az alkalmazásunk kommunikálhat más, külső forrásokkal, amiket az alkalmazás használ, azaz vezéreli őket.
 Ilyen lehet egy adatbázis implementációja, vagy egy üzenet sor, amibe adatokat rakunk be, hogy valami más később kiolvassa.
-Azért jó ez a felépítés, mert így az alkalmazásunkat több helyről meghívhatjuk, vagy felcserélhetőek ezek a helyek.
-A vezérelt egységeket is ki lehet cserélni, nem vagyunk röghöz kötve mert egyszer így lett megírva az alkalmazésunk, csak a megfelelő réteget kicseréljük, feltéve hogy megírtuk hozzá az implementációnkat és az implementációnk
+Azért jó ez a felépítés, mert így az alkalmazásunkat több helyről meghívhatjuk, de ugyanazt a működést produkálja az alkalmazás. Ezzel együtt jár, hogy felcserélhetőek ezen végpontok implementációi.
+A vezérelt egységeket is ki lehet cserélni, nem vagyunk röghöz kötve mert egyszer így lett megírva az alkalmazésunk, csak a megfelelő adaptert kicseréljük, feltéve hogy megírtuk hozzá az implementációnkat és az implementációnk
 az intefészen keresztül teljesít minden feltételt. Így például könnyen átállhatunk relációs adatbázisról egy dokumentum alapúra, vagy egy API-t is kicserélhetünk például JSON REST API-t gRPC-re ha valami miatt szükség van rá.
 A Netflix is ezt az architektúrát használja \cite{netflix}, ugyanis a gyors növekedésük közben több skálázhatósággal összefüggő problémába ütköztek, amit úgy oldottak meg hogy
 ebben az architektúrában\ref{fig:hexagonal-actor} szétosztották a feladatokat több, az adott kis feladatra megfelelő adatbázisra, mikroszervízre.
@@ -283,7 +283,7 @@ Hátránya az, hogy több kódot kell írni, így valamivel lassab nagy projekte
 
 \subsubsection{Működése részletesen}
 A program magját, a domain komponenst írjuk meg először, ebbe definiáljuk az interfészeket amik a portok a külső komponensekhez.
-Csak ezután kezdjük el fejlesztjük a többi komponenst.
+Csak ezután kezdjük el fejleszteni a többi komponenst.
 Minden komponens nyitott egy "porton".
 A komponensek közti kommunikáció ezeken a portokon történik.
 A portok egy absztrak API-t definiálnak ami a megfelelő eszközzel implementálható\cite{hexagonal}.
@@ -309,7 +309,7 @@ A domain vezérelt tervezés a következő problémák megoldására használjá
 
 \begin{itemize}
     \item A projekt középpontjában a program magja, a domain üzleti logika van.
-    \item Komplex folyamatok va amik domainre épülnek.
+    \item Komplex folyamatok vannak, amik a domainre épülnek.
     \item Ha magas fokú együttműködés szükséges a programozók és a domain szakértői között.
 \end{itemize}
 
@@ -417,7 +417,7 @@ De ez a megoldás a teljesítmény rovására megy, ugyanis a következő probl�
     \item A HTTP/1.1  szöveg alapú és nagyon "nehéz". A kommunikáció hatalmas adatmennyiséget igényel, ez egy felesleges teher.
     \item A HTTP/1.1  állapotmentes, ezért az állapotokat csak a fejlécben tudjuk jelezni, ami nem tömörített.
     \item A HTTP/1.1  unáris - azaz - egy kérésre egy választ kapsz. Nem lehet egyszerre több kérdést küldeni, minden kérésre pontosan egy válasz jön.
-    \item Minden egyes HTTP/1.1 kéréshez 3 irányú üzenet váltáshoz van szükség, csak hogy létrehozzuk a TCP kapcsolatot, mivel a TCP kapcsolat full duplex, és mindkét fél szinkronizálja és nyugtázza egymást.
+    \item Minden egyes HTTP/1.1 kéréshez három irányú üzenet váltáshoz van szükség, csak hogy létrehozzuk a TCP kapcsolatot, mivel a TCP kapcsolat full duplex, és mindkét fél szinkronizálja és nyugtázza egymást.
 \end{itemize}
 Ebből arra következtetünk, hogy olyan szerver és szerver közötti kommunikációra ahol viszonylag sok apró kérés van, vagy a fenti problémák
 akadályozzák a programunk működését, akkor érdemes más megoldások után néznünk.
@@ -498,7 +498,7 @@ Az ACID tulajdonságok \ref{fig:acid} (atomiság, konzisztencia, izoláció, tar
 \end{figure}
 
 Tehát csak olyan adatbázisok jöhetnek szóba a program implementálásánál aminek az integritása garantálható.
-Hogy 2 eltérő adatbázist hasonlítsunk össze, egy SQL és egy NoSQL adatbázis ami teljesíti az ACID integritást megfelelő lesz.
+Hogy két eltérő adatbázist hasonlítsunk össze, egy SQL és egy NoSQL adatbázis ami teljesíti az ACID integritást megfelelő lesz.
 A PostgreSQL adatbázis kíváló relációs adatbázis, nem véletlen, hogy az egyik legelterjedtebb. Teljesíti az ACID tulajdonságokat, és már 35 éve használják így biztosan megfelelően tesztelt.
 A MongoDB dokumentum alapú adatbázis ACID, de csak dokumentum szintent. A mi szimulációnkhoz viszont így is megfelel a követelményeknek.
 Érdekességként, a legtöbb dokumentum alapú adatbázis nem ACID, ezért nem annyira népszerűek.
