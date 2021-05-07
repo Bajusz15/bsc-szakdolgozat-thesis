@@ -128,6 +128,7 @@ Serializable & Not possible & Not possible & Not Possible \\
 
 \subsubsection{PostgreSQL telepítése az alkalmazáshoz}\label{subsubsec:postgresql-telepítése-a-programhoz}
 
+Ha nem található a fejlesztői környezetünkben PostgreSQL adatbázis, akkor \href{https://www.postgresql.org/download/}{telepíteni kell azt}.
 Az adatbáziskezelőhöz csatlakozva, le kell futtatni a következő SQL scriptet.
 
 \begin{lstlisting}[language=sql]
@@ -205,6 +206,7 @@ Az adatbáziskezelőhöz csatlakozva, le kell futtatni a következő SQL scripte
 \end{figure}
 
 \subsubsection{MongoDB telepítése az alkalmazáshoz}\label{subsubsec:mongodb-telepítése-az-alkalmazáshoz}
+Ha nem található a fejlesztői környezetünkben MongoDB adatbázis, akkor \href{https://www.mongodb.com/try/download/community}{telepíteni kell azt}.
 Az adatbáziskezelő konzolján keresztül le kell futtatni a következő két parancsot, egy megfelelő jogosultságú felhasználóval.
 Ez egyik parancs létrehozza a drone\_delivery adatbázist, a másik parancs létrehoz nekünk egy felhasználót az előbb létrehozott adatbázishoz.
 A későbbiekben ezzel a felhasználóval csatlakozunk az adatbázishoz.
@@ -627,6 +629,25 @@ Minden mérés a telemetria adatok küldését és mentését ábrázolja, ugyan
 Üres adatbázissal, összesen 10000 telemetria adatot küldünk, 100 szálon.
 Minden egyes méréshez tartozik egy rövid összegzés, hisztogramok a teljesítményről.
 
+\subsection{JMeter}
+A Jmeteres méréshez készítettem egy \textit{telemetria.jmx}\ref{fig:jmeter-meres} konfigurációs fájlt.
+A mérést úgy állítottam be, hogy 100 szálon küldünk összesen 10000 db telemetria adatot.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/jmeter-meres}
+    \caption{Jmeter telemetria.jmx}
+    \label{fig:jmeter-meres}
+\end{figure}
+Ez a \textit{drone-delivery/benchmark/jmeter} jegyzékben található.
+A mérést úgy végeztem, hogy két jegyzékben lefuttattam a következő parancsot.
+\begin{itemize}
+    \item \textit{drone-delivery/benchmark/jmeter/mongo}
+    \item \textit{drone-delivery/benchmark/jmeter/postgres}
+\end{itemize}
+\begin{lstlisting}[language=bash]
+  $ jmeter -n -t ./../telemetria.jmx -l ./benchmark.csv -e -o  ./output
+\end{lstlisting}
+
 \subsubsection{HTTP/1.1 JSON, PostgreSQL adatbázissal}
 \begin{figure}[hbt!]
     \centering
@@ -677,6 +698,53 @@ A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolat
     Az erőforrásokat is jobban használta ki, a mérések alapán azt a következtetést vonhatjuk le, hogy a PostgreSQL-ben sok konkurrens írás nem hatékony, a teljesítmény rovására megy.
 \end{remark}
 
+\subsection{ghz}
+A ghz egy gRPC terhelés tesztelő program. Nincs hozzá grafikus felület.
+Először \href{https://github.com/bojand/ghz}{feltelepítjük a ghz programot}, majd a következő paranccsal tudjuk tesztelni, a kliens oldali Telemetria streamelést az alkalmazásunkhoz.
+Azaz itt a drón raj helyett a ghz program küldi a telemetria adatokat.
+Az output formátumnak html-t adtam meg, a \textit{-c} paraméter a konkurrencia (szál) értéket jelöli, 100-at adtam meg.
+A \textit{-n} paraméter requestek számát jelöli, ezt 10000-re állítottam.
+
+\begin{lstlisting}[language=bash]
+  $  ~ ghz -c 100 -n 10000 --format html --output report-gRPC-postgres.html  --insecure \
+  --proto /Users/bajuszmate/go/src/github.com/bajusz15/ghz-benchmark/ghz/cmd/benchmark/protobuf/telemetry.proto \
+  --call telemetry_grpc.TelemetryService.TelemetryStream \
+  -d '[
+  {
+    "telemetry": {
+      "speed": 2,
+      "location": {
+        "latitude": 48.08092020178216,
+        "longitude": 20.766208061642047
+      },
+      "altitude": 50,
+      "bearing": 178.68412647009515,
+      "acceleration": 0,
+      "battery_level": 98,
+      "motor_temperatures": [],
+      "time_stamp": "2021-04-01T15:04:05.630Z",
+      "drone_id": 2
+    }
+  },
+  {
+    "telemetry": {
+      "speed": 2,
+      "location": {
+        "latitude": 48.08092020178216,
+        "longitude": 20.766208061642047
+      },
+      "altitude": 50,
+      "bearing": 178.68412647009515,
+      "acceleration": 0,
+      "battery_level": 98,
+      "motor_temperatures": [],
+      "time_stamp": "2021-04-01T15:04:05.630Z",
+      "drone_id": 2
+    }
+  }
+]' \
+  localhost:50051
+\end{lstlisting}
 
 \subsubsection{HTTP/2 gRPC, PostgreSQL adatbázissal \ref{fig:ghz-postgres}}
 
@@ -688,9 +756,11 @@ A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolat
 \end{figure}
 
 \begin{remark}
-    A HTTP/2 gRPC sokkal jobban teljesített mint a HTTP/1.1 JSON, ezt a diagramon is láthatjuk.
+    A HTTP/2 gRPC sokkal jobban teljesített mint a HTTP/1.1 JSON.
+    Ezt a diagramon is láthatjuk.
     Tehát a következtetéseink jók voltak, a HTTP/2 gRPC sokkal hatékonyabb mint a HTTP/1.1 JSON.
 \end{remark}
+
 
 \subsubsection{HTTP/2 gRPC, MongoDB adatbázissal \ref{fig:ghz-mongo}}
 \begin{figure}[hbt!]
