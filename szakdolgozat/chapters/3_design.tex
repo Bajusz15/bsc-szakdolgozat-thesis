@@ -171,7 +171,7 @@ Két legnagyobb előnye, hogy könnyű megváltoztatni a szoftver és jobban sk�
 \begin{figure}
     \centering
     \includegraphics[scale=0.6]{images/microservices.png}
-    \caption{Mikroszevizek}
+    \caption{Mikroszevizek \cite{microservices.io}}
     \label{fig:micro}
 \end{figure}
 
@@ -182,15 +182,17 @@ Például éles és teszt környezetben eltérő infrastruktúra lehet.
 De a fejlesztők dolgát is megkönnyíti ez a módszer.
 Ezeket a kiszámítható környezetekhez régen virtuális gépeket használtak, de ez mára elavult, helyette konténereket használnak amelyek "könnyebbek" és jobban kihasználják az erőforrásokat.
 Az alábbi diagram \ref{fig:docker-vm} mutatja a virtuális gépek és konténerek kapcsolatát.
+Legegyszerűbben a kettő kapcsolatát úgy lehetne leírni, hogy a virtuális gépek a rendszereket izolálják el egymástól, míg a konténerek az applikációkat izolálja.
 
 \begin{figure}
     \centering
     \includegraphics[scale=0.3]{images/docker-vs-vms.jpg}
-    \caption{Docker konténerek és VM}
+    \caption{Docker konténerek és VM \cite{janetakis}}
     \label{fig:docker-vm}
 \end{figure}
+
 \subsubsection{Docker}
-A Docker a világ vezető szoftver konténerizáló platformja.
+A Docker a világ vezető szoftver konténerizáló platformja \cite{docker}.
 A megadott alkalmazást, mikroszervízt beilleszt egy úgynevezett Docker konténerbe, amelyet aztán függetlenül lehet karbantartani és telepíteni.
 Hogy jobban megértsük a Docker működését nézzünk egy konkrét példát.
 Egy applikációt fejleszt három fejlesztő, a fejlesztők rendre Windows, Mac OS-t és Linuxot használnak.
@@ -246,7 +248,7 @@ Erre a problémára megoldásként a Hexagonal (másnéven ports and adapters) a
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.07]{images/hexa-inward.png}
-    \caption{Hexagonal architecture inward pointing dependencies}
+    \caption{Hexagonal architecture inward pointing dependencies \cite{netflix}}
     \label{fig:hexagonal-inward}
 \end{figure}
 
@@ -254,20 +256,32 @@ Erre a problémára megoldásként a Hexagonal (másnéven ports and adapters) a
 Minden réteg csak befelé mutat \ref{fig:hexagonal-inward}, így az üzleti logikánk megmaradhat, miközben az alkalmazás teljes infrastuktúráját kicserélhetnénk.
 Így a végpontok ha teljesítik az interface elvárásait, csak dependency injection-el kicseréljük a végpontot és minden ugyanúgy működik, ám teljesen más az implementáció.
 Azt hogy több fajta input és output végpontot hogy  támogatja az alkalmazás a következő ábra \ref{fig:hexagonal-inward} mutatja.
-Az alkalmazást fel lehet osztani verérlő és vezérelt részre. Ez nagyon jól igazodik az üzleti logikához, egy inputra szinte mindig valamiféle vezérlést várunk el,
+Az alkalmazást fel lehet osztani verérlő és vezérelt részre \ref{fig:hexagonal-actor}. Ez nagyon jól igazodik az üzleti logikához, egy inputra szinte mindig valamiféle vezérlést várunk el,
 tehát ahogy az alkalmazásunkat használjuk, vezéreljük akkor az adatok hatására valamilyen folyamatot elvárunk. Ezután az alkalmazásunk kommunikálhat más, külső forrásokkal, amiket az alkalmazás használ, azaz vezéreli őket.
 Ilyen lehet egy adatbázis implementációja, vagy egy üzenet sor, amibe adatokat rakunk be, hogy valami más később kiolvassa.
 Azért jó ez a felépítés, mert így az alkalmazásunkat több helyről meghívhatjuk, de ugyanazt a működést produkálja az alkalmazás. Ezzel együtt jár, hogy felcserélhetőek ezen végpontok implementációi.
 A vezérelt egységeket is ki lehet cserélni, nem vagyunk röghöz kötve mert egyszer így lett megírva az alkalmazésunk, csak a megfelelő adaptert kicseréljük, feltéve hogy megírtuk hozzá az implementációnkat és az implementációnk
 az intefészen keresztül teljesít minden feltételt. Így például könnyen átállhatunk relációs adatbázisról egy dokumentum alapúra, vagy egy API-t is kicserélhetünk például JSON REST API-t gRPC-re ha valami miatt szükség van rá.
 A Netflix is ezt az architektúrát használja \cite{netflix}, ugyanis a gyors növekedésük közben több skálázhatósággal összefüggő problémába ütköztek, amit úgy oldottak meg hogy
-ebben az architektúrában\ref{fig:hexagonal-actor} szétosztották a feladatokat több, az adott kis feladatra megfelelő adatbázisra, mikroszervízre.
+ebben az architektúrában\ref{fig:ports-adapters} szétosztották a feladatokat több, az adott kis feladatra megfelelő adatbázisra, mikroszervízre.
+
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.3]{images/hexa-actor.png}
-    \caption{Hexagonal architecture ports and adapters}
+    \caption{Hexagonal architecture driver and driven actors \cite{varela_2020}}
     \label{fig:hexagonal-actor}
 \end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/Hexagonal-Architecture-Ports-and-Adapters-Design-Pattern}
+    \caption{Hexagonal architecture ports and adapters~\cite{ports-and-adapters-figure}}
+    \label{fig:ports-adapters}
+\end{figure}
+
+
+
 
 \subsection{A Hexagonal architektúra és összehasonlítás a hagyma architektúrával}\label{subsec:a-hexagonal-architektúráról-bővebben}
 A hexagonal architektúra~\cite{hexagonal}, vagy másnéven portok és adapterek architektúra a szoftver tervezés során használt design.
@@ -286,14 +300,14 @@ A program magját, a domain komponenst írjuk meg először, ebbe definiáljuk a
 Csak ezután kezdjük el fejleszteni a többi komponenst.
 Minden komponens nyitott egy "porton".
 A komponensek közti kommunikáció ezeken a portokon történik.
-A portok egy absztrak API-t definiálnak ami a megfelelő eszközzel implementálható\cite{hexagonal}.
-A implementációt az adapterek valósítják meg, az objektum orientált nyelvekben interfész metódusokkal (port) vannak összekötve.
+A portok egy absztrak API-t definiálnak aminek az implementációjátaz adapterek valósítják meg, az objektum orientált nyelvekben interfész metódusokkal (port) vannak összekötve.
+
 
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.3]{images/ports-adapters}
-    \caption{Hexagonal architecture driver and driven actors}
+    \caption{Hexagonal architecture driver and driven adapters}
     \label{fig:hexagonal-ports-adapters}
 \end{figure}
 
@@ -327,8 +341,7 @@ A DDD-ben vannak a domain kifejezésére, létrehozására, lekérdezésére has
     Az aggregátumon kívüli objektumok hivatkozhatnak az aggregátum gyökerére, de más objektumára nem.
     Az aggregátum gyökere felelős az aggregátum változásainak konzisztenciájának ellenőrzéséért.
     \item \textbf{\underline{Domain Event}}
-    Egy domain objektum, ami meghatároz egy esemény.
-    A domain esemény egy olyan esemény, ami a domain szempontjából fontos.
+    Egy objektum, ami a domain szemponjából fontos eseményt ír le.
     \item \textbf{\underline{Service}}
     Amikor egy művelet vagy folyamat fogalmilag nem tartozik egyetlen objektumhoz sem.
     A probléma természetes körvonalait követve ezeket a műveleteket megvalósíthatjuk a szervizekben.
@@ -355,22 +368,22 @@ Egy REST architektúrának meg kell felelni a következő megszorításoknak:
 \end{itemize}
 
 \subsubsection{Kliens-szerver architektúra}
-A kliensek egy egységes interfészen keresztül beszélnek.
-Az érdekeltségek ilyen nemű szétválasztása azt jelenti, például, hogy a kliensek nem foglalkoznak adattárolással, ami a szerver belső ügye marad, és így a kliens kód hordozhatósága megnő.
+A kliensek és szerverek egy egységes interfészen keresztül kommunikálnak.
+"Az érdekeltségek ilyen nemű szétválasztása azt jelenti, például, hogy a kliensek nem foglalkoznak adattárolással, ami a szerver belső ügye marad, és így a kliens kód hordozhatósága megnő.
 A szerverek nem foglalkoznak a felhasználói felülettel vagy a kliens állapotával, így a szerverek egyszerűbbek és még skálázhatóbbak lehetnek.
-A szerverek és kliensek áthelyezhetőek és fejleszthetőek külön-külön is, egészen addig amíg az interfész nem változik meg.
+A szerverek és kliensek áthelyezhetőek és fejleszthetőek külön-külön is, egészen addig amíg az interfész nem változik meg."
 \subsubsection{Állapotmentesség}
 A kliens-szerver kommunikáció tovább korlátozott az által, hogy a szerveren nem tárolják a kliens állapotát a kérések között.
-Minden egyes kérés bármelyik klienstől tartalmazza az összes szükséges információt a kérés kiszolgálásához, és minden állapotot a kliens tárol.
+"Minden egyes kérés bármelyik klienstől tartalmazza az összes szükséges információt a kérés kiszolgálásához, és minden állapotot a kliens tárol."
 \subsubsection{Gyorsítótárazhatóság}
-Mint ahogy a világhálón, a kliensek itt is képesek gyorsítótárazni a válaszokat.
+"Mint ahogy a világhálón, a kliensek itt is képesek gyorsítótárazni a válaszokat.
 A válaszoknak ezért impliciten vagy expliciten tartalmazniuk kell, hogy gyorsítótárazhatóak-e vagy sem.
-Egy jól menedzselt gyorsítótár lehetővé teszi, hogy teljesen megkerüljünk egyes kliens-szerver interakciókat, továbbá megnöveli a rendszer skálázhatóságát és a teljesítményét.
+Egy jól menedzselt gyorsítótár lehetővé teszi, hogy teljesen megkerüljünk egyes kliens-szerver interakciókat, továbbá megnöveli a rendszer skálázhatóságát és a teljesítményét."
 \subsubsection{Réteges felépítés}
-Egy kliens általában nem tudja megmondani, hogy direkt csatlakozott-e a végpont szerverhez, vagy közvetítő segítségével.
-A közvetítő szerverek megnövelhetik a rendszer skálázhatóságát terheléseloszlással és gyorsítótárak használatával.
+"Egy kliens általában nem tudja megmondani, hogy direkt csatlakozott-e a végpont szerverhez, vagy közvetítő segítségével.
+A közvetítő szerverek megnövelhetik a rendszer skálázhatóságát terheléseloszlással és gyorsítótárak használatával."
 \subsubsection{Egységes interfész}
-Az egységes interfész kliens és szerver között egyszerűsíti és kettéválasztja az architektúrát, és lehetővé teszi, hogy egymástól függetlenül fejlődjenek az egyes részek.
+"Az egységes interfész kliens és szerver között egyszerűsíti és kettéválasztja az architektúrát, és lehetővé teszi, hogy egymástól függetlenül fejlődjenek az egyes részek."
 
 
 Ha ezeket a megkötéseket teljesíti a webes szolgáltatásunk, azt mondhatjuk hogy "RESTful".
