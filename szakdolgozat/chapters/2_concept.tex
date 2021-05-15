@@ -3,9 +3,9 @@
 \Section{Hasonló rendszerek, megoldások áttekintése}
 
 Az Amazonnak már működő szállítási rendszere van, mely drónnal 30 percen belül eljuttatja a 2,3 kg-nál kisebb tömegű csomagokat az ügyfelekhez.
-Ezek a drónok csak 24 km-es hatótávval rendelkeznek, így csak akkor biztonságos egy kézbesítés ha a célállomás maximum 12 km-re van.
+Ezek a drónok csak 24 km-es hatótávval rendelkeznek, így csak akkor biztonságos egy kézbesítés, ha a célállomás maximum 12 km-re van.
 A csomag maximum térfogatáról nincsenek pontos adatok.
-Ezt a rendszert \textit{Prime Air}-nek hívják \cite{prime-air}. Az Amazon Prime Air egy drónja látható \aref{fig:prime}. ábrán.
+Ezt a rendszert \textit{Prime Air}-nek hívják \cite{prime-air}. Az Amazon Prime Air egy drónja látható \aref{fig:prime} ábrán.
 
 \begin{figure}[h]
     \centering
@@ -16,18 +16,21 @@ Ezt a rendszert \textit{Prime Air}-nek hívják \cite{prime-air}. Az Amazon Prim
 
 Először 2016-ban próbálták ki, azóta még nem sikerült bevezetni különböző jogi korlátozások miatt. Olyan jogi elvárásoknak \cite{drone-approval-legal-reasons} kell megfelelni, mint például az alábbiak.
 \begin{itemize}
-    \item Muszáj egy drón pilótának ellenőrizni a repülést és szükség esetén kötelező közbeavatkoznia.
+    \item Muszáj egy drón pilótának ellenőrizni a repülést, szükség esetén kötelező közbeavatkoznia.
     \item Egy ilyen pilóta csak 1 drónt felügyelhet egyszerre, kivéve ha rendelkezik több felügyeletéhez megfelelő engedéllyel.
     \item A drónokat nem lehet közvetlen egy személy vagy gépjármű felett működtetni.
     \item Problémát jelent továbbá, hogy nem minden légtér megfelelő a drónokkal való szállításra. A reptér mellett fekvő nagyvárosokban például biztos hogy nem lehet drónokkal szállítani.
     \item A csomagot szállító drónnak is kell rendelkeznie engedéllyel, hogy alkalmas kereskedelmi szállításra.
 \end{itemize}
 
-Az FAA 2020-ban engedélyezte az Amazonnak a drónokkal való csomagszállítást, de egyelőre csak tesztelik a technológiát pár városban.A jövőben teljesen elképzelhető, hogy a csomagok felét drónok szállítják ki. Önmagában az Amazon naponta átlagosan 7 millió csomagot szállít ki, és bevallásuk szerint a csomagok 86\%-a drónnal szállítható lenne.
+Az FAA 2020-ban engedélyezte az Amazonnak a drónokkal való csomagszállítást, de egyelőre csak tesztelik a technológiát pár városban.
+A jövőben teljesen elképzelhető, hogy a csomagok felét drónok szállítják ki.
+Önmagában az Amazon naponta átlagosan 7 millió csomagot szállít ki, és bevallásuk szerint a csomagok 86\%-a drónnal szállítható lenne.
 
 Az Amazon felhőszolgáltásai között is található olyan szolgáltatás, amellyel könnyedén kezelhetjük az IoT eszközöket, jelen esetben a drónokat.
 Ilyen az \textit{IoT Core} vagy az \textit{IoT Things Graph} amin grafikus felületen összeköthetjük és beállíthatjuk az eszközeink közötti kommunikációt.
-A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal. Ők egy úgynevezett  \textit{Parcelcopter}-el szállították a csomagokat (\ref{fig:parcelcopter}. ábra).
+A DHL is próbálkozott hasonló csomagkézbesítő megoldásokkal.
+Ők egy úgynevezett  \textit{Parcelcopter}-el szállították a csomagokat (\ref{fig:parcelcopter}. ábra).
 
 \begin{figure}[h]
     \centering
@@ -41,18 +44,20 @@ A DHL Percelcopter alapvetően más problémát akar megoldani, a nagyon nehezen
 A \textit{FlytBase} \cite{flyt} vállalat már kínál szoftveres megoldásokat drónok automatizációjára és valós idejű figyelésére és irányítására, útvonal tervezésre valamint flotta menedzselésre.
 Már van kész megoldásuk a következőkre:
 \begin{itemize}
-    \item Biztonsági megfigyelések
-    \item Automatikus dokkolás állomásokhoz
-    \item Veszélyhelyzetre reagálás, ez lehet vér, szerv vagy gyógyszer szállítás.
-    \item Csomag szállítás
+    \item biztonsági megfigyelések,
+    \item automatikus dokkolás állomásokhoz,
+    \item veszélyhelyzetre reagálás (ez lehet vér, szerv vagy gyógyszer szállítás),
+    \item csomag szállítás.
 \end{itemize}
 
-Elterjedt termékük a FlytNow, ami úgy működik, hogy a drónunkat összekötjük egy appon keresztül a felhőben lévő FlytNow rendszerrel,
-majd interneten keresztül elérünk egy verzérélőpultot \ref{fig:flytdash} amin irányíthatjuk a drónjainkat és láthatjhuk az adatokat.
-Ez a rendszer arra összpontosít hogy gyorsan, bonyolult telepítés és beállítás nélkül tudjunk drónokat irányítani.
+Elterjedt termékük a FlytNow, ami úgy működik, hogy a drónunkat összekötjük egy alkalmazáson keresztül a felhőben lévő FlytNow rendszerrel,
+majd interneten keresztül elérünk egy verzérélőpultot (\ref{fig:flytdash}. ábra) amin irányíthatjuk a drónjainkat és láthatjuk az adatokat.
+Ez a rendszer arra összpontosít, hogy gyorsan, bonyolult telepítés és beállítás nélkül tudjunk drónokat irányítani.
 Ezt a rendszer magánembereknek és cégeknek egyaránt elérhető, több csomagban.
-Van egy másik FlytWare nevű termékük raktár menedzselésre és logisztikai feladatokra. Olyan feladatokra specializálódnak a drónok mint a bárkód szkennelés,
-zárt környezetben repülés. Természetesen a raktár adatait elérjük a rendszer vezérlőpultján. Így például egy leltár sokkal egyszerűbben megoldható.
+Van egy másik FlytWare nevű termékük raktár menedzselésre és logisztikai feladatokra.
+Olyan feladatokra specializálódnak a drónok, mint a bárkód szkennelés, zárt környezetben repülés.
+Természetesen a raktár adatait elérjük a rendszer vezérlőpultján.
+Így például egy leltár sokkal egyszerűbben megoldható.
 
 
 \begin{figure}[h]
@@ -62,26 +67,24 @@ zárt környezetben repülés. Természetesen a raktár adatait elérjük a rend
     \label{fig:flytdash}
 \end{figure}
 
-Az \textit{ANRA Techonlogies}\cite{anra} cég is foglalkozik mindenféle drón irányítás, megfigyeléssel. A SmartSkies néven futó rendszere például drónokat használ mindenféle szenzorral,
-ahhoz hogy a pontosabb adatokat kapjunk megfigyeléses mérésekhez. Például egy olyan légtérben ahol rengeteg drón repül előfordulhatnak hibák, egy drón rossz adatokat küld helyzetéről vagy
-teljesen megszűnik a kommunikáció, esetleg idegen tárgyak akadályozzák a légtérben  való forgalmat, stb.
-Ebben a rendszerben minden drón el van látva radarral, kamerával és más szenzorokkal. Így az összegyűjtött adatokat kombinálva
-egy sokkal pontosabb képet kapunk ami hasznos a navigációhoz, és akár fél percre előre meg tudjuk mondani mi lesz az adatok alapján, előre jelezve az esetleges hibákat.
+Az \textit{ANRA Techonlogies}\cite{anra} cég is foglalkozik különféle drón irányítás, megfigyeléssel.
+A SmartSkies néven futó rendszere például drónokat használ többféle szenzorral, ahhoz hogy a pontosabb adatokat kapjunk megfigyeléses mérésekhez.
+Például egy olyan légtérben, ahol rengeteg drón repül, előfordulhatnak hibák, egy drón rossz adatokat küld a helyzetéről vagy teljesen megszűnik a kommunikáció, esetleg idegen tárgyak akadályozzák a légtérben  való forgalmat, stb.
+Ebben a rendszerben minden drón el van látva radarral, kamerával és más szenzorokkal.
+Így az összegyűjtött adatokat kombinálva egy sokkal pontosabb képet kapunk, ami hasznos a navigációhoz, és akár fél percre előre meg tudjuk mondani mi lesz az adatok alapján, előre jelezve az esetleges hibákat.
 
 
-A \textit{BeeCluster}\cite{beecluster} egy nyílt forráskódú, Golang-ban írt drón orchesztrációs rendszer. Előnye, hogy prediktív optimalizációt használ.
-Tehát a feladatok előtt egy előszimulációt futtat, ami alapján optimalizálja, azaz hatékonyabbá és gyorsabbá teszi a valós folyamatot.
-Olyan feladaotkra használják mint a földrajzi térképezés, wifi lefedettség térkép, új utak feltérképezése.
+A \textit{BeeCluster}\cite{beecluster} egy nyílt forráskódú, Golang-ban írt drón orchesztrációs rendszer.
+Előnye, hogy prediktív optimalizációt használ, tehát a feladatok előtt egy előszimulációt futtat, ami alapján optimalizálja, azaz hatékonyabbá és gyorsabbá teszi a valós folyamatot.
+Olyan feladatokra használják, mint a földrajzi feltérképezés, Wi-Fi lefedettség térkép készítése, új utak feltérképezése.
 
 
-Jelenleg nincs a piacon olyan, \textbf{bárki számára elérhető} szállításra gyártott drón ami hatékonyan szállít csomagot. Egyelőre csak a szállításban
-érdekelt cégek használnak ilyen drónokat, de sajnos nem osztják meg a pontos paramétereket. Annyi használható
-információ érhető el, hogy az Amazon teszt drónjai átlag 70 km/h sebességgel 12 kilométeres körzetben tudnak szállítani
-2,3 kg-tól könnyebb csomagokat.
-De nem tudjuk a drón súlyát és azt se, hogy mennyi energiát fogyaszt.
+Jelenleg nincs a piacon olyan, bárki számára elérhető szállításra gyártott drón, ami hatékonyan szállít csomagot.
+Egyelőre csak a szállításban érdekelt cégek használnak ilyen drónokat, de sajnos nem osztják meg a pontos paramétereket.
+Annyi használható információ érhető el, hogy az Amazon teszt drónjai átlag 70 km/h sebességgel 12 kilométeres körzetben tudnak szállítani 2,3 kg-tól könnyebb csomagokat, de nem tudjuk a drón súlyát és azt se, hogy mennyi energiát fogyaszt.
 
-A Missouri Egyetemen végeztek egy \textit{a drónok energia fogyasztására irányuló kutatást}\cite{dron-szallitas-kutatas},
-amiből több érdekes dolog is kiderül. Mind a kis (1-3 kg) és nagy (5-15kg) drónok hatékony sebessége  12m/s körül van.
+A Missouri Egyetemen végeztek egy, \textit{a drónok energia fogyasztására irányuló kutatást}\cite{dron-szallitas-kutatas},
+amiből több érdekes dolog is kiderül. Mind a kis (1-3 kg) és nagy (5-15 kg) drónok hatékony sebessége  12 m/s körül van (\ref{fig:kis}. és \ref{fig:nagy}. ábra).
 
 \begin{figure}[h]
     \centering
@@ -97,49 +100,52 @@ amiből több érdekes dolog is kiderül. Mind a kis (1-3 kg) és nagy (5-15kg) 
     \caption{Nagy drónok fogyasztása}
     \label{fig:nagy}
 \end{figure}
-%TODO: Ide még irni, hogy mi alapjan lehetne optimalizalni, mennyisegeket hogy mennyi adat keletkezik.
 
+A szállítást célszerű az energiafogyasztás, vagy a gyorsaság szempontjából optimalizálni.
+Ha az eddig meglévő adatokkal számolunk, tehát hogy egy drón 12 m/s átlagsebességgel fog haladni és maximum 12 km-re van a célállomás, teljesen életszerű hogy egy 5 km-re lévő célállomáshoz való csomagszállítás pár perc alatt megtörténik.
+Ha kétszáz milliszekundumonként küld adatot egy drón, az az adatbázisban többezer beszúrást eredményez.
 
 \Chapter{Szállítási probléma}
 \Section{A szállítási probléma absztrakt modellje}
 
 A szállítási modellünk alapvetően úgy nézne ki, hogy a raktár és a kiszállítási hely közti távolság függvényében a csomagokat a raktárból drónok, vagy drónokkal felszerelt teherautók viszik ki.
-A teherautók a kiszállítási hely közelében használnák a drónokat hogy kézbesítsék a csomagokat.
+A teherautók a kiszállítási hely közelében használnák a drónokat, hogy kézbesítsék a csomagokat.
 
-Feltételezzük, hogy a drón és a csomag ugyanazon a raktárba vagy tehergépkocsiba található, de a szimuláció szemszögéből nem fontos hogy raktár vagy tehergépkocsi, az a lényeges, hogy egy helyen található, és a drón automatikusan fel tudja venni az adott csomagot
-valamilyen rendszeren keresztül.
+Feltételezzük, hogy a drón és a csomag ugyanazon a raktárba vagy tehergépkocsiba található, de a szimuláció szemszögéből nem fontos, hogy raktár vagy tehergépkocsi, az a lényeges, hogy egy helyen található, és a drón automatikusan fel tudja venni az adott csomagot valamilyen rendszeren keresztül.
 
 A drónok 3G, 4G vagy 5G hálózaton kommunikálnának az adatközpontokkal.
 Az adott hálózaton elérhető sávszélesség függvényében a drónok változtathatják az elküldött adatok mennyiségét és a küldés ütemezését, gyakoriságát.
 
 A drónok repülése előre megtervezett. A szállítási feladat egy speciális esetét feltételezzük, a hozzárendelési feladatot.
-Tehát hogy egy drónhoz 1 csomagot rendelünk. A kis hatótáv és erőforrások hiánya miatt a drónok egyébként sem tudnának egynél több csomagot szállítani csak nagyon ritka esetben.
+Tehát, hogy egy drónhoz pontosan egy csomagot rendelünk. A kis hatótáv és erőforrások hiánya miatt a drónok egyébként sem tudnának egynél több csomagot szállítani, csak nagyon ritka esetben.
 Azt, hogy melyik drónhoz melyik csomag tartozik a hozzárendelési feladat optimalizálásával kapjuk meg.
 A drónokból a szállítás során keletkező nagymennyiségű adatot az adatközpontoknak valós időben, hibamentesen
 és hatékonyan kell tudnia kezelni anomáliák nélkül.
 Ehhez nagyon fontos a terhelés megfelelő elosztása.
 
-A drónok csomag szállítási folyamatáról a következőket feltételezzük:
+A drónok csomagszállítási folyamatáról a következőket feltételezzük:
 \begin{itemize}
-    \item Egy drón  véges akkumulátoridővel vagy üzemanyaggal rendelkezik és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
+    \item Egy drón  véges akkumulátoridővel vagy üzemanyaggal rendelkezik, és mindig vissza kell tudnia térnie egy töltőállomásra, amely lehet egy drónszállító teherautó vagy raktár.
     \item A csomag kézbesítésnek a csomag átvételére vonatkozó ideje elhanyagolható.
     \item Minden drón fel van szerelve megfelelő kommunikácós és helymeghatározó eszközökkel, valamint kommunikál az adatközpontokkal.
-    \item Feltételezzük hogy a drónok el vannak látva szenzorokkal hogy felismerjék az akadályokat és erről értesítsék az adatközpontokat.
+    \item Feltételezzük, hogy a drónok el vannak látva szenzorokkal, hogy felismerjék az akadályokat, és erről értesítsék az adatközpontokat, de maguktól is képesek beavatkozni.
     \item Egy drón csak 1 csomagot képes szállítani.
 \end{itemize}
 
 A mi esetünkben csak akkumlátorral üzemelő drónok lesznek, és a drónok fogyasztása előre ismert.
 Minden drón küld telemetria adatokat.
-A drónok a telemetria adatok részeként küldenek helymeghatérozásra alkalmas földrajzi szélesség, hosszúság koordinátákat és magasságot.
-Továbbá, kapunk még információkat a drón sebességéről,gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről,
-akkumulátor(ok) töltöttségről és hőmérsékléről, mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
+A drónok a telemetria adatok részeként küldenek helymeghatározásra alkalmas földrajzi szélesség, hosszúság koordinátákat és magasságot.
+Továbbá, kapunk még információkat a drón sebességéről, gyorsulásáról, tájoló iránytűjének állásáról, motorjainak hőmérsékletéről, akkumulátor(ok) töltöttségről és hőmérsékléről, mindezt egy időpecséttel megbélyegezve hogy az üzenetek elküldésének idejét is tudjuk.
 Hogy el tudjuk dönteni melyik drón hova tud a leghatékonyabban szállítani, a következő mennyiségeket jelölni kell. Hány km-re van a felszállási ponttól a csomag leadási helye (távolság km-ben), mekkora a drón fogyasztása egy adott csomag súlyával együtt.
 Mivel minden drónhoz csak 1 csomagot rendelünk, ez a szállítási feladat egy speciális fajtája, úgynevezett hozzárendelési feladat amit a \textit{magyar módszer algoritmussal}\cite{magyar-modszer} meg lehet oldani.
-Tehát ha ismerjük a drónokat és a csomagokat, minden drónhoz rendelhetünk egy képletet ami megmutatja a fogyasztási költséget az adott csomaggal. Mivel ismerjük a drónok felszállási helyét és a csomagok címzett helyét is, jelölni tudjuk a távolságot is.
-A távolság és fogyasztásból kijön egy adott szállítás költsége. Értelemszerűen az adott szállításhoz azt a drónt keressük amelyik minimális költséggel szállítja el a csomagot. Tehát a fogyasztást szeretnénk minimalizálni.
-Persze ezeket lehetne még bonyolítani, tiltási tényezőket használni, például hogy egy drón maximum milyen súlyú csomagot vihet.
+Tehát, ha ismerjük a drónokat és a csomagokat, minden drónhoz rendelhetünk egy képletet ami megmutatja a fogyasztási költséget az adott csomaggal.
+Mivel ismerjük a drónok felszállási helyét és a csomagok címzett helyét is, jelölni tudjuk a távolságot is.
+A távolság és fogyasztásból kijön egy adott szállítás költsége.
+Értelemszerűen az adott szállításhoz azt a drónt keressük, amelyik minimális költséggel szállítja el a csomagot.
+Azaz a fogyasztást szeretnénk minimalizálni.
+Persze az optimalizációt lehetne még bonyolítani, tiltási tényezőket használni, például hogy egy drón maximum milyen súlyú csomagot vihet.
 
-\paragraph{Konkrét példa}
+\subsection{Konkrét példa optimalizálásra}
 Egy optimalizálási feladat a következőképp nézhet ki. Az egyszerűség kedvéért tegyük fel, hogy 4 drón és 4 csomag kapcsolatát vizsgáljuk. Jelölje $d_{i}$ a drónokat és $c_{j}$ a csomagokat, $i, j = 1, 2, 3.$
 A feladat modellje a következő:
 
@@ -156,7 +162,7 @@ $c_{3}$ távolsága = 2,269
 $c_{4}$ távolsága = 1,844 \\
 
 A költségeket a következő képlettel számolhatjuk ki.
-$K\ddot olts\acute eg_{ij} = d_{i} * c_{j}$.
+$K\ddot olts\acute eg_{ij} = d_{i} \cdot c_{j}$.
 A kapott költségek a következő táblázatban \ref{tab:optim} figyelhetőek meg.
 
 \begin{table}[h]
@@ -178,7 +184,7 @@ A kapott költségek a következő táblázatban \ref{tab:optim} figyelhetőek m
 \begin{gather*}
     599.92x_{11} +524.93x_{12} +487.43x_{13} +292.46x_{14} +1004.19x_{21} +878.67x_{22} +{}\\
     815.9x_{23} +489.54x_{24} +1815.68x_{31} +1588.72x_{32} +1475.24x_{33} +885.14x_{34} +{}\\
-    1475.76x_{41} +1291.29x_{42} +1199.1x_{43} +719.43x_{44} \rightarrow min \\
+    1475.76x_{41} +1291.29x_{42} +1199.1x_{43} +719.43x_{44} \rightarrow \min . \\
 \end{gather*}
 
 A feladat megoldását kezdjük a költségmátrix felírásával, ami lényegében megegyezik az előző táblázattal.
@@ -209,108 +215,112 @@ A következő mátrix már csak a megoldást tartalmazza az eredeti költségmá
 
 \Section{A szállítási probléma egy konkrét példája}
 
-A szállítás úgy kezdődik, hogy az adatközpont lekérdezi a szállításra váró csomagokat. Ezután lekérdezi az összes szabad drónt.
-Elemzi a drónok és a csomagok paraméterei alapján, hogy hogyan lenne a legoptimálisabb a szállítás. Ez valamilyen eredményt generál, ami
-alapján az adatközpont a csomagokhoz drónokat rendel a megfelelő útvonallal. A drónok elhagyják a raktárat a csomaggal, és folyamatosan küldik az adatokat állapotukról,
-az adatközpont pedig elemzi és feldolgozza ezeket.
+A szállítás úgy kezdődik, hogy az adatközpont lekérdezi a szállításra váró csomagokat.
+Ezután lekérdezi az összes szabad drónt.
+Elemzi a drónok és a csomagok paraméterei alapján, hogy hogyan lenne optimális a szállítás.
+Ez valamilyen eredményt szolgáltat, ami alapján az adatközpont a csomagokhoz drónokat rendel a megfelelő útvonallal.
+A drónok elhagyják a raktárat a csomaggal, és folyamatosan küldik az adatokat állapotukról, az adatközpont pedig elemzi és feldolgozza ezeket.
 
-Pédaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg.
+Pédakén,t egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg.
 A drón a kijelölt útvonalon halad, nem adódik semmilyen probléma a cél elérése közben.
 A drón leadja a csomagot a kijelölt helyen, és jelez az adatközpontnak hogy sikeresen kézbesítette a csomagot.
 Ekkor az adatközpont jelez a megrendelőnek hogy a csomagját átveheti.
 A drón felemelkedik és visszatér a raktárba, a kijelölt útvonalon.
 Itt az akkumulátorját szükség esetén cserélik/feltöltik, majd a drón felveheti a következő csomagot.
 
-Egy másik példaként egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg. A drón a szállítás közben különösen magas hálózat interferenciát érzékel,
-és hibajelet küld az adatközpontnak. Az adatközpont az elemzés szerint arra jut hogy az interferencia nem természetes,
-túl nagy az esélye hogy a drónt szándékosan zavarják. Az adatközpont jelez a drónnak, hogy a szállítást szakítsa meg, térjen vissza a raktárba.
-A drónnak a hiba miatt a legközelebbi repülés előtt több diagnosztikai teszten át kell mennie, hogy megbizonyosodjunk az drón üzemképes működéséről.
-%TODO
-% TODO: Készíteni kellene egy sematikus ábrát, amin egy szállítási állapot, gráfos formában megadott probléma látható.
+Egy másik példaként, egy drón felszáll egy csomaggal, a csomagban lévő tárgy kevesebb mint 1kg.
+A drón a szállítás közben különösen magas hálózat interferenciát érzékel, és hibajelet küld az adatközpontnak.
+Az adatközpont az elemzés szerint arra jut, hogy az interferencia nem természetes, túl nagy az esélye hogy a drónt szándékosan zavarják.
+Az adatközpont jelez a drónnak, hogy a szállítást szakítsa meg, térjen vissza a raktárba.
+A drónnak a hiba miatt a legközelebbi repülés előtt több diagnosztikai teszten át kell mennie, hogy megbizonyosodjunk a drón üzemképes működéséről.
+
 
 
 \Section{A szállításhoz kapcsolódó számítási problémák}
 A szállítás pontos szimulációjához a Föld alakját is figyelembe kell venni a repülésnél.
-Ugyanis itt a Cartesian féle geometria nem jól működik, mivel a Földnek gömb alakja van.
-Emiatt teljesen máshogy kell számolni távolságot, mint a Cartesian féle geometriában.
-\subsection{Cartesian szerinti}
-\begin{gather}
-    P_1(5,6,3) \\
-    P_2(7,4,9) \\
-    V = 10 \frac{m}{s}
-\end{gather}
+Ugyanis itt a Descartes féle koordináta rendszer nem jól működik, mivel a Földnek gömb alakja van.
+Emiatt teljesen máshogy kell számolni távolságot, mint a Descartes féle geometriában.
+\subsection{Descartes szerinti}
+\begin{gather*}
+    P_1(5,6,3), \\
+    P_2(7,4,9), \\
+    V = 10 \frac{m}{s} .
+\end{gather*}
 
 
-Kiszamitas:
+Koordináták kiszámítása polárkoordináták segítségével:
 
-\begin{gather}
-    x = r * cos(\phi) * sin(\theta) \\
-    y = r * sin(\phi) * sin(\theta) \\
-    z = r * cos(\theta)
-\end{gather}
+\begin{gather*}
+    x = r \cdot cos(\phi) \cdot sin(\theta), \\
+    y = r \cdot sin(\phi) \cdot sin(\theta), \\
+    z = r \cdot cos(\theta).
+\end{gather*}
 
 
-X, Y, Z, r
+Koordináták kiszámítása vektorokból:
 
-\begin{gather}
-    x = X_2 - X_1 = 7 - 5 = 2 \\
-    y = Y_2 - Y_1 = 4 - 6 = -2 \\
-    z = Z_2 - 7_1 = 9 - 3 = 6 \\
-    r = \sqrt{2^2 + (-2)^2 + 6^2} = \sqrt{44}
-\end{gather}
+\begin{gather*}
+    x = X_2 - X_1 = 7 - 5 = 2, \\
+    y = Y_2 - Y_1 = 4 - 6 = -2, \\
+    z = Z_2 - 7_1 = 9 - 3 = 6, \\
+\end{gather*}
+
+Sugár kiszámítása pitagorasz tétellel:
+\begin{gather*}
+    r = \sqrt{2^2 + (-2)^2 + 6^2} = \sqrt{44}.
+\end{gather*}
 
 $
 cos(\phi) sin(\phi) cos(\theta) sin(\theta)
 $
+Szögek kiszámítása a koordinátákból:
+\begin{gather*}
+    cos(\phi) = \frac{x}{\sqrt{x^2 + y^2}}, \\
+    sin(\phi) = \frac{y}{\sqrt{x^2 + y^2}}, \\
+    cos(\theta) = \frac{\sqrt(x^2 + y^2)}{\sqrt{x^2 + y^2 + z^2}}, \\
+    sin(\theta) = \frac{z}{\sqrt{x^2 + y^2 + z^2}}.
+\end{gather*}
 
-\begin{gather}
-    cos(\phi) = \frac{x}{\sqrt{x^2 + y^2}} \\
-    sin(\phi) = \frac{y}{\sqrt{x^2 + y^2}} \\
-    cos(\theta) = \frac{\sqrt(x^2 + y^2)}{\sqrt{x^2 + y^2 + z^2}} \\
-    sin(\theta) = \frac{z}{\sqrt{x^2 + y^2 + z^2}}
-\end{gather}
 
-\newpage
+További számítások, segédvektorok kiszámítása:
 
-További számítás segédvektorok kiszámítása:
+\begin{gather*}
+    V_x = \frac{x}{\sqrt{x^2 + y^2 + z^2}} \cdot V = \frac{2}{\sqrt{44}} \cdot 10 = \frac{10\sqrt{11}}{11} = 3.0151,\\
+    V_y = \frac{y}{\sqrt{x^2 + y^2 + z^2}} \cdot V = \frac{-2}{\sqrt{44}} \cdot 10 = -\frac{10\sqrt{11}}{11} = -3.0151,\\\\
+    V_z = \frac{z}{\sqrt{x^2 + y^2 + z^2}} \cdot V = \frac{6}{\sqrt{44}} \cdot 10 = \frac{30\sqrt{11}}{11} = 9.0453,\\
+\end{gather*}
 
-\begin{gather}
-    V_x = \frac{x}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{2}{\sqrt{44}} * 10 = \frac{10\sqrt{11}}{11} = 3.0151\\
-    V_y = \frac{y}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{-2}{\sqrt{44}} * 10 = -\frac{10\sqrt{11}}{11} = -3.0151\\\\
-    V_z = \frac{z}{\sqrt{x^2 + y^2 + z^2}} *V = \frac{6}{\sqrt{44}} * 10 = \frac{30\sqrt{11}}{11} = 9.0453\\
-\end{gather}
+$t$ idő múlva egy adott pillanatban koordináták meghatározása:
 
-t idő múlva egy adott pillanatban koordináták meghatározása:
-
-\begin{gather}
-    x = X_0 + V_x * t = X_0 + \frac{X}{\sqrt{x^2 + y^2 + z^2}} * t = 5 + \frac{2}{\sqrt{44}} * 10 * t \\
-    Y = y_0 + V_y * t = y_0 + \frac{y}{\sqrt{x^2 + y^2 + z^2}} * t = 4 - \frac{2}{\sqrt{44}} * 10 * t \\
-    z = z_0 + V_z * t = z_0 + \frac{z}{\sqrt{x^2 + y^2 + z^2}} * t = 6 + \frac{6}{\sqrt{44}} * 10 * t
-\end{gather}
+\begin{gather*}
+    x = X_0 + V_x \cdot t = X_0 + \frac{X}{\sqrt{x^2 + y^2 + z^2}} \cdot t = 5 + \frac{2}{\sqrt{44}} \cdot 10 \cdot t, \\
+    Y = y_0 + V_y \cdot t = y_0 + \frac{y}{\sqrt{x^2 + y^2 + z^2}} \cdot t = 4 - \frac{2}{\sqrt{44}} \cdot 10 \cdot t, \\
+    z = z_0 + V_z \cdot t = z_0 + \frac{z}{\sqrt{x^2 + y^2 + z^2}} \cdot t = 6 + \frac{6}{\sqrt{44}} \cdot 10 \cdot t.
+\end{gather*}
 
 \subsection{Az Ortodroma számítás, a föld alakját figyelembe véve}
 
-Mivel gömbi geometria lényegesen eltér az euklideszi geometriától ezért a távolságszámításra használt matematikai képletek is eltérőek.
+Mivel gömbi geometria lényegesen eltér az euklideszi geometriától, ezért a távolságszámításra használt matematikai képletek is eltérőek.
 Az euklideszi geometriában a legrövidebb távolságot a két pontot összekötő egyenes,
 a nem euklideszi geometriában a két pontot összekötő geodetikus vonal (gömb esetén főkör) mentén mérjük.
 
-\paragraph{A legrövidebb út kiszámítása}
-\begin{gather}
-    d = arccos(sin\phi_1 * sin\phi_2 * cos\phi_1)* cos\phi_2 * cos\Delta \lambda) * R
-\end{gather}
+\subsubsection{A legrövidebb út kiszámítása}
+\begin{gather*}
+    d = arccos(sin\phi_1 \cdot sin\phi_2 \cdot cos\phi_1)\cdot cos\phi_2 \cdot cos\Delta \lambda) \cdot R
+\end{gather*}
 
-\paragraph{Irány kiszámítása}
-Ahogy az főkörön haladunk az irányunk folyamatosan változik. Tehát amikor megérkezünk a célhoz, nem ugyanabban az irányba nézünk mint amikor elindultunk.
+\subsubsection{Irány kiszámítása}
+Ahogy a főkörön haladunk az irányunk folyamatosan változik. Tehát amikor megérkezünk a célhoz, nem ugyanabban az irányba nézünk mint amikor elindultunk.
 A drón szimulációban ez a telemetria adatokban is megfigyelhető.
 \begin{gather*}
-    \varphi = atan2(sin\Delta\lambda * cos\phi_{2}, cos\phi_{1} * sin\phi_{2} - sin\phi_{1} * cos\phi_{2} * cos\Delta\lambda)
+    \varphi = atan2(sin\Delta\lambda \cdot cos\phi_{2}, cos\phi_{1} \cdot sin\phi_{2} - sin\phi_{1} \cdot cos\phi_{2} \cdot cos\Delta\lambda)
 \end{gather*}
 ahol $\phi_{1}\lambda_{1}$ a kezdeti pont, és $\phi_{2}\lambda_{2}$ a vég pont és $\Delta\lambda$ pedig a különbség a hosszúsági fokokban.
 
-\paragraph{Cél koordináták kiszámítása, ha ismerjük a megtett távolságot, irányt, és kezdő koordinátákat}
-\begin{gather}
-    \phi_{2} = arcsin(sin \phi_{1} * cos \delta + cos \phi_{1} * sin \delta * cos \theta)\\
-    \lambda_{2} = \lambda_{1} + arctan2(sin\theta * sin\delta  * cos\phi_{1}, cos\delta - sin\phi_{1} * sin\phi_{2})
-\end{gather}
-ahol $\phi$ a szélességi fok, $\lambda$ a hosszúsági fok, $\theta$ az irány, $\delta$ a szögtávolság d/R és d a megtett távolság, R pedig a Föld sugara.
+\subsubsection{Cél koordináták kiszámítása, ha ismerjük a megtett távolságot, irányt, és kezdő koordinátákat}
+\begin{gather*}
+    \phi_{2} = arcsin(sin \phi_{1} \cdot cos \delta + cos \phi_{1} \cdot sin \delta \cdot cos \theta)\\
+    \lambda_{2} = \lambda_{1} + arctan2(sin\theta \cdot sin\delta  \cdot cos\phi_{1}, cos\delta - sin\phi_{1} \cdot sin\phi_{2})
+\end{gather*}
+ahol $\phi$ a szélességi fok, $\lambda$ a hosszúsági fok, $\theta$ az irány, $\delta$ a szögtávolság $d/R$ és $d$ a megtett távolság, $R$ pedig a Föld sugara.
 

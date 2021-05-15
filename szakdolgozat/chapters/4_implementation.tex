@@ -3,7 +3,7 @@
 
 \section{Adatbázisok és modellek}
 A programban a drón, és telemetria adatmodell a legfontosabb.
-Ezeket az adatokat olvassuk és mentjük,illetve szükségesek az azonosításhoz vagy bármilyen értelmes következtetéshez a problémához kapcsolódóan.
+Ezeket az adatokat olvassuk és mentjük, illetve szükségesek az azonosításhoz vagy bármilyen értelmes következtetéshez a problémához kapcsolódóan.
 
 \subsection{Modellek az adatközpont programban}
 \subsubsection{Telemetria modell}
@@ -93,7 +93,7 @@ A drónok által szállított csomag így néz ki:
 
 \subsection{Relációs adatbázis, PostgreSQL}
 A relációs adatbázissal is működik a szimuláció.
-\paragraph{Relációs modell \ref{fig:postgres} } \mbox{} \\
+\subsection{Relációs modell (\ref{fig:postgres}. ábra) }
 
 \begin{figure}[h]
     \centering
@@ -102,14 +102,15 @@ A relációs adatbázissal is működik a szimuláció.
     \label{fig:postgres}
 \end{figure}
 
-%TODO: Esetleg Er model
 
 
 \subsubsection{Lost Update probléma}
 A legtöbb relációs adatbázis támogatja a tranzakciókat. A tranzakciók ACID tulajdonságokkal bírnak.
 Adatbázisok esetén az ACID az Atomicity (atomiság), Consistency (konzisztencia), Isolation (izoláció), és Durability (tartósság) rövidítése. Ezek nélkül az adatbázis integritása nem garantálható.
-A PostgreSQL többféle izolációs szintet biztosít a tranzakciókhoz \cite{postgresql}. A Lost Update problémát garantáltan megoldja a PostgreSQL `Serializable` izolációs szintje.
+A PostgreSQL többféle izolációs szintet biztosít a tranzakciókhoz \cite{postgresql}.
+A Lost Update problémát garantáltan megoldja a PostgreSQL \textit{Serializable} izolációs szintje (\ref{isolation-levels}. ábra).
 \begin{table}[h]
+    \label{isolation-levels}
     \centering
     \caption{ Standard SQL Transaction Isolation Levels}
     \begin{tabular}{l|c|c|c|}
@@ -196,7 +197,7 @@ Az adatbáziskezelőhöz csatlakozva, le kell futtatni a következő SQL scripte
 
 \subsection{Dokumentum alapú adatbázis, MongoDB}
 
-\subsubsection{Vizualizáció}
+
 
 \begin{figure}[hbt!]
     \centering
@@ -208,7 +209,7 @@ Az adatbáziskezelőhöz csatlakozva, le kell futtatni a következő SQL scripte
 \subsubsection{MongoDB telepítése az alkalmazáshoz}\label{subsubsec:mongodb-telepítése-az-alkalmazáshoz}
 Ha nem található a fejlesztői környezetünkben MongoDB adatbázis, akkor \href{https://www.mongodb.com/try/download/community}{telepíteni kell azt}.
 Az adatbáziskezelő konzolján keresztül le kell futtatni a következő két parancsot, egy megfelelő jogosultságú felhasználóval.
-Ez egyik parancs létrehozza a drone\_delivery adatbázist, a másik parancs létrehoz nekünk egy felhasználót az előbb létrehozott adatbázishoz.
+Ez egyik parancs létrehozza a \textit{drone\_delivery} adatbázist, a másik parancs létrehoz nekünk egy felhasználót az előbb létrehozott adatbázishoz.
 A későbbiekben ezzel a felhasználóval csatlakozunk az adatbázishoz.
 
 \begin{python}
@@ -238,7 +239,7 @@ Felcsatlakozik az adatbázisokra, majd létrehozza a szervizeket, és a REST API
 Ez lehet például egy konfigurációs kérés, a drónok lekérdezése, vagy a szállítás indítása.
 
 Közben a drón-raj program is elindul, ez a program is egy REST API-n várja a kéréseket.
-A drón raj program az API-n megkapja a drónokat és a hozzájuk rendelt csomagokat, majd megkezdódik a szimuláció, a drón-raj program telemetria adatokat küld az adatközpont programnak.
+A drón raj program az API-n megkapja a drónokat, és a hozzájuk rendelt csomagokat, majd megkezdődik a szimuláció, a drón-raj program telemetria adatokat küld az adatközpont programnak.
 A drón-raj program olyan telemetria adatokat fog generálni, amelyek minél jobban a valsóságot tükrözik és ezeket az adatokat tovább fogja küldeni az adatközpontnak.
 \begin{python}
 {
@@ -262,7 +263,7 @@ A drón-raj program olyan telemetria adatokat fog generálni, amelyek minél job
 }
 \end{python}
 
-Ezeket a telemetria adatokat az adatközpont program fogadja a megadott porton és lementi az adott adatbázisba. \ref{fig:adatkozpont-flow}
+Ezeket a telemetria adatokat az adatközpont program fogadja a megadott porton és lementi az adott adatbázisba (\ref{fig:adatkozpont-flow}. ábra).
 
 \begin{figure}[h]
     \centering
@@ -272,16 +273,15 @@ Ezeket a telemetria adatokat az adatközpont program fogadja a megadott porton �
 \end{figure}
 
 \section{A rendszer felépítése a követelmények alapján}
-%TODO: ide irni Hexagonal arch. es DDD implementaciojarol. Beszurni kodot ahol latszik a repository, interface
 \subsubsection{Szerkezeti felépítés}
-Az alkalmazás jegyzék struktúráját a következő ábra \ref{fig:szerkezet} mutatja.
-A drone-delivery jegyzék a program gyökér jegyzéke, itt található a docker-compose.yml fájl, ami az indításhoz szükséges.
-A backend/server tartalmazza az adatközpont programot és a backend/drone-swarm a drón-raj programot.
+Az alkalmazás jegyzék struktúráját a \ref{fig:szerkezet}. ábra mutatja.
+A \textit{drone-delivery} jegyzék a program gyökér jegyzéke, itt található a \textit{docker-compose.yml} fájl, ami az indításhoz szükséges.
+A \textit{backend/server} tartalmazza az adatközpont programot és a \textit{backend/drone-swarm} a drón-raj programot.
 Mindkét jegyzéknek hasonló a felépítése.
-A cmd jegyzékbe van az indító main függvény.
-A pkg jegyzék tartalmazza a kódbázis nagy részét, a domain és infrastuktúrához kapcsolódó részek itt helyezkednek el.
-A pkg/domain/ben a domain kódbázis található, az infrastruktúrát és a hozzá tartozó adaptereket megvalósító kód a storage, network jegyzékekben van.
-A drone-delivery/web-clientben található a web kliens, egy egyszerű html oldal ahonnan beállítjuk a szimulációt.
+A \textit{cmd} jegyzékbe van az indító \textit{main} függvény.
+A \textit{pkg} jegyzék tartalmazza a kódbázis nagy részét, a domain és infrastuktúrához kapcsolódó részek itt helyezkednek el.
+A \textit{pkg/domain}-ben a domain kódbázis található, az infrastruktúrát és a hozzá tartozó adaptereket megvalósító kód a \textit{storage}, \textit{network} jegyzékekben van.
+A \textit{drone-delivery/web-client}-ben található a web kliens, egy egyszerű HTML oldal ahonnan beállítjuk a szimulációt.
 
 \begin{figure}[h]
     \centering
@@ -336,7 +336,7 @@ Itt a REST API az adapter, pontosabban vezérlő adapter.
         ReinitializeDatabase(repos ...Repository) error
     }
 \end{python}
-Vezérelt adaptere az adatbázist és kimenő kommunikációt megvalósító adapterek.
+Vezérelt adapterek az adatbázist és kimenő kommunikációt megvalósító adapter.
 Az adatközpont programban az adatbázisoknak a Repository interfészt kell implementálni, de a gRPC és JSON kommunikációhoz is tartozik interfész.
 \begin{python}
     type Repository interface {
@@ -363,7 +363,11 @@ Ugyanígy a drón-raj programban.
 Az adaptereket a portokon keresztül érjük el.
 Alább a drón-raj program OutboundAdapter interfészét megvalósító adapter implementációját látjuk, gRPC-vel.
 Csak azokat a részeket tartalmazza a példa ami szükséges a megértéshez.
-Mivel a "SendTelemetryDataToServer(t models.Telemetry) error " metódus megtálható az adapterben, az interfész teljesül és az adapter használható a porton keresztül.
+Mivel a
+\begin{python}
+    SendTelemetryDataToServer(t models.Telemetry) error
+\end{python}
+metódus megtálható az adapterben, az interfész teljesül és az adapter használható a porton keresztül.
 \begin{python}
     package grpc
     ...
@@ -404,7 +408,7 @@ Mivel a "SendTelemetryDataToServer(t models.Telemetry) error " metódus megtálh
 
 \end{python}
 
-Az adatközpont program MongoDB és PostgreSQL adatbázisához kapcsolódó, a Repository interfészt megvalósító adapterek a pkg/storage jegyzékben helyezkednek el.
+Az adatközpont program MongoDB és PostgreSQL adatbázisához kapcsolódó, a Repository interfészt megvalósító adapterek a \textit{pkg/storage} jegyzékben helyezkednek el.
 
 
 \subsubsection{Dependency Injection}
@@ -416,7 +420,7 @@ Ehhez dependency injekciót használunk.
 Azaz létrehozunk egy adaptert, szolgáltatást (szervíz) és azt átadjuk egy másik szolgáltatásnak, adapternek.
 Olyan is előfordulhat, hogy a az alkalmazás domain részében két szolgáltatás egymás között portokon kommunikál.
 Például a drón szolgáltatás létrehozásához szükséges paramétereket az alábbi kódrészletben láthatjuk.
-Ezekből a paraméterekből a Repository, OutboundAdapter típusúak portok más adapterekhez.
+Ezekből a paraméterekből a \textit{Repository}, \textit{OutboundAdapter} típusúak portok más adapterekhez.
 Később a szolgáltatásban ezekre a portokra hivatkozunk, ezeken keresztül érjük el az adapterek metódusait.
 
 \begin{python}
@@ -426,7 +430,7 @@ Később a szolgáltatásban ezekre a portokra hivatkozunk, ezeken keresztül é
 \end{python}
 
 Az alábbi példán láthatjuk, hogy a postgreSQL, mongoDB adatbázisokat implementáló, és a külső kommunikációért felelős JSON adaptert átadjuk különböző szolgáltatásoknak.
-Ezek rendre postgresStorage, mongoStorage, jsonAdapter.
+Ezek rendre \textit{postgresStorage}, \textit{mongoStorage}, \textit{jsonAdapter}.
 \begin{python}
     postgresStorage, err := postgres.NewStorage(config.PostgresConfig)
     ...
@@ -448,10 +452,10 @@ Majd a szolgáltásokat átadjuk egy vezérlő adapternek, egy REST API-nak ami 
 %TODO: szekvencia diagramok is a mukodesrol, a kodban. Main fgv. -> newservice ... -> rest es grpc endpoint
 
 \subsubsection{Konfiguráció}
-A konfiguráció beállításáért a config csomag felel.
-Az adatközpont, és drón-raj programban is található egy SetConfig függvény a config csomagban.
+A konfiguráció beállításáért a \textit{config} csomag felel.
+Az adatközpont, és drón-raj programban is található egy \textit{SetConfig} függvény a config csomagban.
 Ez környezeti változókat olvas ki, és az alapján beállítja a megfelelő értékeket.
-A környezeti változókat a docker-compose.yml fájlban tudjuk módosítani.
+A környezeti változókat a \textit{docker-compose.yml} fájlban tudjuk módosítani.
 
 \begin{python}
     func SetConfig() {
@@ -501,7 +505,7 @@ Létrejön a gRPC kapcsolat az adatközpont és drón-raj program között.
 A drón raj program REST API-ja a 2000-es porton hallgat.
 A web klienssel indíthatjuk a szimulációt, miután megnyitottuk a böngészővel, egy egyszerű kezelő felület fogad.
 
-A folyamat \ref{fig:mukodes} röviden úgy néz ki, hogy:
+A folyamat (\ref{fig:mukodes}. ábra) röviden úgy néz ki, hogy:
 \begin{enumerate}
     \item A web kliensben kiválasztjuk, hogy milyen protokollt és formátumot, valamint adatbázist szeretnénk használni. Alapértelmezettként PostgreSQL adatbázis és HTTP/1.1 protokoll JSON formátummal van kiválasztva.
     \item A szimuláció indítása gomb megnyomásával az adatközpont program REST API \textit{/api/delivery} végpontjára küld egy POST requestet a web kliens.
@@ -532,14 +536,15 @@ Nálam a következőképp néz ki az indítás. A terminálban elindítom a Mong
 
 Ezután a mongo parancsot kiadva kapcsolódom az adatbáziskezelő konzolos felületére.
 Megbizonyosodom, hogy létezik a drone\_delivery adatbázis.
-Ha nem létezik, lefuttatom a telepítéshez szükséges parancsokat \ref{subsubsec:mongodb-telepítése-az-alkalmazáshoz}.
+Ha nem létezik, lefuttatom a telepítéshez szükséges parancsokat (\ref{subsubsec:mongodb-telepítése-az-alkalmazáshoz} szakasz).
 \begin{lstlisting}[language=bash]
   $ mongo
 \end{lstlisting}
 
 
 Ezután elindítok egy PostgreSQL 11 vagy újabb verziójú PostgreSQL adatbázist, a fejlesztői környezetemben ez egy Postgres nevű grafikus kezelőfelületű program által történik.
-Megbizonyosodok arról, hogy létezik a dbdrone\_delivery adatbázis, és létezenek a megfelelő táblák. Ha nem léteznek, lefuttatom telepítéshez szükséges scriptet \ref{subsubsec:postgresql-telepítése-a-programhoz}.
+Megbizonyosodok arról, hogy létezik a dbdrone\_delivery adatbázis, és létezenek a megfelelő táblák.
+Ha nem léteznek, lefuttatom telepítéshez szükséges scriptet (\ref{subsubsec:postgresql-telepítése-a-programhoz} szakasz).
 
 \subsubsection{Alkalmazás indítása Dockerrel}
 Az alkalmazást Docker konténerben indítom el a teszteléshez, így minden fejleszői környezetében elindul, ahol van telepítve a Docker.
@@ -556,9 +561,9 @@ A \textit{drone-delivery} jegyzékben, a terminálban kiadom a következő paran
     \label{fig:docker-build}
 \end{figure}
 
-Ez megépíti a konténereket, letölti a szoftver függőségeket illetve csomagokat, majd a konténerekben elindulnak a programok\ref{fig:docker-build}.
+Ez megépíti a konténereket, letölti a szoftver függőségeket illetve csomagokat, majd a konténerekben elindulnak a programok (\ref{fig:docker-build}. ábra).
 Ezután nincs más dolgunk, mint a \textit{drone-delivery/web-client} jegyzékben található \textit{index.html} fájlt megnyitni a böngészőben, az egyértelmű kezelőfelülettel tudjuk konfigurálni és indítani a szimulációt.
-Egy 3D diagramon nézhetjük ahogy a drónok mozognak.
+Egy 3D diagramon nézhetjük ahogy a drónok mozognak (\ref{fig:web-client}. és \ref{fig:web-client-diagram}. ábra).
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.2]{images/web-client}
@@ -566,9 +571,18 @@ Egy 3D diagramon nézhetjük ahogy a drónok mozognak.
     \label{fig:web-client}
 \end{figure}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{images/web-client-diagram}
+    \caption{Web kliens, szimuláció 3D diagramon}
+    \label{fig:web-client-diagram}
+\end{figure}
+
+\newpage
+
 \section{Szállítási probléma a programban}
 \subsubsection{Az adatközpont távolság számítása}
-Az adatközpont program az Ortodroma számítást használja, hogy kiszámolja a távolságot a legoptimálisabb útvonal keresése közben.
+Az adatközpont program az Ortodroma számítást használja, hogy kiszámolja a távolságot az optimális útvonal keresése közben.
 \begin{python}
     func (s *service) CalculateDistance(lat1, lng1, lat2,
     lng2 float64, unit ...string) float64 {
@@ -616,7 +630,7 @@ Ezzel a könyvtárral pontos adatokat tudunk generálni a drón helyzetéről, i
 
 Ezután a útvonalakért felelős szervízben két metódussal számoljuk ki a szükséges értékeket.
 A \textit{CalculateDroneDistanceAndDirectionFromDestination} metódussal adott induló koordináták alapján megkapjuk a legrövidebb utat a célkoordinátákhoz, és az irányt is.
-A \textit{CalculateDroneNextCoordinates} metódus megmondja adott induló koordináták és távolság valamint irány alapján hogy hova érkezünk, azaz a célkoordinátákat.
+A \textit{CalculateDroneNextCoordinates} metódus megmondja adott induló koordináták és távolság valamint irány alapján, hogy hova érkezünk, azaz a célkoordinátákat.
 
 \begin{python}
     func (s *service) CalculateDroneDistanceAndDirectionFromDestination(
@@ -644,7 +658,7 @@ Minden mérés a telemetria adatok küldését és mentését ábrázolja, ugyan
 Minden egyes méréshez tartozik egy rövid összegzés, hisztogramok a teljesítményről.
 
 \subsection{JMeter}
-A Jmeteres méréshez készítettem egy \textit{telemetria.jmx}\ref{fig:jmeter-meres} konfigurációs fájlt.
+A Jmeteres méréshez készítettem egy \textit{telemetria.jmx} (\ref{fig:jmeter-meres}. ábra) konfigurációs fájlt.
 A mérést úgy állítottam be, hogy 100 szálon küldünk összesen 10000 db telemetria adatot.
 \begin{figure}[h]
     \centering
@@ -684,7 +698,7 @@ A mérést úgy végeztem, hogy két jegyzékben lefuttattam a következő paran
     \label{fig:json-time-vs-threads}
 \end{figure}
 
-A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolatot \ref{fig:jmeter-json-postgres}, így 3-szor hibával tért vissza a mentés.
+A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolatot (\ref{fig:jmeter-json-postgres}. ábra), így 3-szor hibával tért vissza a mentés.
 
 \subsubsection{HTTP/1.1 JSON, MongoDB adatbázissal}
 \begin{figure}[hbt!]
@@ -708,7 +722,7 @@ A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolat
     \label{fig:json-mongo-time-vs-threads}
 \end{figure}
 \begin{remark}
-    A MongoDB adatbázis jobban teljesített mint a PostgreSQL.
+    A MongoDB adatbázis jobban teljesített, mint a PostgreSQL.
     Az erőforrásokat is jobban használta ki, a mérések alapán azt a következtetést vonhatjuk le, hogy a PostgreSQL-ben sok konkurrens írás nem hatékony, a teljesítmény rovására megy.
 \end{remark}
 
@@ -716,7 +730,7 @@ A mérés közben a PostgreSQL adatbázis nem tudta kezelni a túl sok kapcsolat
 A ghz egy gRPC terhelés tesztelő program. Nincs hozzá grafikus felület.
 Először \href{https://github.com/bojand/ghz}{feltelepítjük a ghz programot}, majd a következő paranccsal tudjuk tesztelni, a kliens oldali Telemetria streamelést az alkalmazásunkhoz.
 Azaz itt a drón raj helyett a ghz program küldi a telemetria adatokat.
-Az output formátumnak html-t adtam meg, a \textit{-c} paraméter a konkurrencia (szál) értéket jelöli, 100-at adtam meg.
+Az output formátumnak HTML-t adtam meg, a \textit{-c} paraméter a konkurrencia (szál) értéket jelöli, 100-at adtam meg.
 A \textit{-n} paraméter requestek számát jelöli, ezt 10000-re állítottam.
 
 \begin{lstlisting}[language=bash]
@@ -760,7 +774,7 @@ A \textit{-n} paraméter requestek számát jelöli, ezt 10000-re állítottam.
   localhost:50051
 \end{lstlisting}
 
-\subsubsection{HTTP/2 gRPC, PostgreSQL adatbázissal \ref{fig:ghz-postgres}}
+\subsubsection{HTTP/2 gRPC, PostgreSQL adatbázissal (\ref{fig:ghz-postgres}. ábra).}
 
 \begin{figure}[hbt!]
     \centering
@@ -776,7 +790,7 @@ A \textit{-n} paraméter requestek számát jelöli, ezt 10000-re állítottam.
 \end{remark}
 
 
-\subsubsection{HTTP/2 gRPC, MongoDB adatbázissal \ref{fig:ghz-mongo}}
+\subsubsection{HTTP/2 gRPC, MongoDB adatbázissal (\ref{fig:ghz-mongo}. ábra).}
 \begin{figure}[hbt!]
     \centering
     \includegraphics[scale=0.3]{images/ghz-mongo}
