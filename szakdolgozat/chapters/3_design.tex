@@ -21,7 +21,7 @@ Tehát fontos, hogy jól használjuk ki az erőforrásainkat, és a rendszer bá
 
 \subsection{Funkcionális követelmények}
 A szimulációban többféle protokollt és adattovábbításra használt formátumot hasonlítunk össze, így a programot úgy kell felépíteni, hogy ki lehessen cserélni ezeket részeket anélkül hogy a program üzleti logikájának működését befolyásolnánk.
-Az adatközpontok és drónok közötti telemetria adat kommunikációt és annak feldolgozását összehasonlítjuk egy HTTP 1.1 -en működő JSON adatformátumot használó REST~\cite{Wikipedia-REST} API-n, egy HTTP 2 -n futó gRPC-t használó végponton is.
+Az adatközpontok és drónok közötti telemetria adat kommunikációt és annak feldolgozását összehasonlítjuk egy HTTP 1.1 -en működő JSON adatformátumot használó REST API-n, egy HTTP 2 -n futó gRPC-t használó végponton is.
 Az adatok mentését is több adatbázison kell tesztelni, így az adatbázisnak is cserélhetőnek kell lennie.
 
 \Section{A Go nyelv áttekintése }
@@ -171,7 +171,7 @@ Két legnagyobb előnye, hogy könnyű megváltoztatni a szoftver és jobban sk�
 \begin{figure}
     \centering
     \includegraphics[scale=0.6]{images/microservices.png}
-    \caption{Mikroszevizek \cite{microservices.io}}
+    \caption{Mikroszevizek \cite{richardson_2019}}
     \label{fig:micro}
 \end{figure}
 
@@ -187,12 +187,12 @@ Legegyszerűbben a kettő kapcsolatát úgy lehetne leírni, hogy a virtuális g
 \begin{figure}
     \centering
     \includegraphics[scale=0.3]{images/docker-vs-vms.jpg}
-    \caption{Docker konténerek és VM \cite{janetakis}}
+    \caption{Docker konténerek és VM \cite{janetakis_2021}}
     \label{fig:docker-vm}
 \end{figure}
 
 \subsubsection{Docker}
-A Docker a világ vezető szoftver konténerizáló platformja \cite{docker}.
+A Docker a világ vezető szoftver konténerizáló platformja \cite{docker_2021}.
 A megadott alkalmazást, mikroszervízt beilleszt egy úgynevezett Docker konténerbe, amelyet aztán függetlenül lehet karbantartani és telepíteni.
 Hogy jobban megértsük a Docker működését, nézzünk egy konkrét példát.
 Egy applikációt fejleszt három fejlesztő, a fejlesztők rendre Windows, Mac OS-t és Linuxot használnak.
@@ -434,8 +434,8 @@ Ebből arra következtetünk, hogy olyan szerver és szerver közötti kommunik�
 akadályozzák a programunk működését, akkor érdemes más megoldások után néznünk.
 
 \subsection{RPC}
-Az RPC \cite{RPC} (Remote Procedure Call) egy szabvány, olyan távoli eljárás hívás amelynek segítségével használni lehet egy, ugyanabban a hálózatban található távoli gépen futó programot anélkül, hogy a hálózati részletekkel foglalkozni kellene.
-Az RPC a kliens/szerver modellt használja (a kérő a kliens, a programot futtató fél a szerver).
+Az RPC \cite{RPC} (Remote Procedure Call) egy protokoll, olyan távoli eljárás hívás amelynek segítségével, ugyanabban a hálózatban található távoli gépen futó procedúrákat futtatunk, anélkül, hogy foglalkoznánk a hálózati részletekkel.
+Az RPC a kliens-szerver modellt használja (a kérő a kliens, a programot futtató fél a szerver).
 
 \subsection{gRPC}
 A gRPC \cite{gRPC} egy Google által fejlesztett RPC keretrendszer, főleg mikroszervizek közötti kommunikációra.
